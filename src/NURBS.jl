@@ -12,12 +12,15 @@ using Requires
 #export 
 
 # functions
-#export 
+export bsplineNaive
+export findspan, basisfun, curvePoints
+export surfacePoints, plotSurface
 
 
 
 # -------- included files
-include("simpleTests.jl")
+include("bsplines.jl")
+include("plotting.jl")
 
 
 end

@@ -12,7 +12,7 @@ using Requires
 #export 
 
 # functions
-export bsplineNaive
+export bsplineNaive, bsplineNaiveDerivative
 export findspan, basisfun, curvePoints
 export surfacePoints, plotSurface
 
@@ -20,6 +20,7 @@ export surfacePoints, plotSurface
 
 # -------- included files
 include("bsplines.jl")
+include("bsplineDerivatives.jl")
 include("plotting.jl")
 
 

@@ -28,6 +28,8 @@ end
     bsplineNaive(knotVector, i::Int, degree::Int, u::Real)
 
 i-th b-spline basis function of degree 'degree' evaluated at u.
+
+Formula (2.5) of 'The NURBS Book' p. 50.
 """
 function bsplineNaive(knotVector, i::Int, degree::Int, u::Real)
 
@@ -57,6 +59,8 @@ end
     bsplineNaive(knotVector, i::Int, u::Real)
 
 i-th b-spline basis function of degree 0 evaluated at u.
+
+Formula (2.5) of 'The NURBS Book' p. 50.
 """
 function bsplineNaive(knotVector, i::Int, u::Real)
 

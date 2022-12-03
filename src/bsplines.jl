@@ -172,7 +172,7 @@ function curvePoints(degree::Int, knotVector, controlPoints, uVector)
     nbasisFun = length(knotVector) - degree - 1
 
     # determine the basis functions evaluated at uVector
-    spans = findspan(nbasisFun, uVector, knotVector)
+    spans = findSpan(nbasisFun, uVector, knotVector)
     N = basisFun(spans, uVector, degree, knotVector)
 
     # determine the curve values

@@ -1,10 +1,10 @@
 
 """
-    bsplineNaive(knotVector, i::Int, degree::Int, evalpoints; normalize=true)
+    bSplineNaive(knotVector, i::Int, degree::Int, evalpoints; normalize=true)
 
 i-th b-spline basis function of degree 'degree' evaluated at all 'evalpoints'.
 """
-function bsplineNaive(knotVector, i::Int, degree::Int, evalpoints; normalize=false)
+function bSplineNaive(knotVector, i::Int, degree::Int, evalpoints; normalize=false)
 
     # normalize knot vector entries to [0, 1]
     if normalize
@@ -17,7 +17,7 @@ function bsplineNaive(knotVector, i::Int, degree::Int, evalpoints; normalize=fal
 
     # loop over all points to be evaluated
     for (ind, u) in enumerate(evalpoints)
-        N[ind] = bsplineNaive(knotVector, i, degree, u)
+        N[ind] = bSplineNaive(knotVector, i, degree, u)
     end
 
     return N
@@ -25,16 +25,16 @@ end
 
 
 """
-    bsplineNaive(knotVector, i::Int, degree::Int, u::Real)
+    bSplineNaive(knotVector, i::Int, degree::Int, u::Real)
 
 i-th b-spline basis function of degree 'degree' evaluated at u.
 
 Formula (2.5) of 'The NURBS Book' p. 50.
 """
-function bsplineNaive(knotVector, i::Int, degree::Int, u::Real)
+function bSplineNaive(knotVector, i::Int, degree::Int, u::Real)
 
     # handle degree 0 case (end of recursion)
-    degree == 0 && return bsplineNaive(knotVector, i, u)
+    degree == 0 && return bSplineNaive(knotVector, i, u)
 
     # handle higher degree cases
     ui   = knotVector[i]
@@ -45,24 +45,24 @@ function bsplineNaive(knotVector, i::Int, degree::Int, u::Real)
     coeff1 = (u - ui) / (uiP - ui)
     coeff2 = (uiP1 - u) / (uiP1 - ui1)
 
-    # simple fix for division by 0 (not verified that it works in all scenarios)
+    # handle division by 0 ('The NURBS Book' p. 51)
     isfinite(coeff1) || (coeff1 = 0.0)
     isfinite(coeff2) || (coeff2 = 0.0)
 
-    N = coeff1 * bsplineNaive(knotVector, i, degree - 1, u) + coeff2 * bsplineNaive(knotVector, i + 1, degree - 1, u)
+    N = coeff1 * bSplineNaive(knotVector, i, degree - 1, u) + coeff2 * bSplineNaive(knotVector, i + 1, degree - 1, u)
 
     return N
 end
 
 
 """
-    bsplineNaive(knotVector, i::Int, u::Real)
+    bSplineNaive(knotVector, i::Int, u::Real)
 
 i-th b-spline basis function of degree 0 evaluated at u.
 
 Formula (2.5) of 'The NURBS Book' p. 50.
 """
-function bsplineNaive(knotVector, i::Int, u::Real)
+function bSplineNaive(knotVector, i::Int, u::Real)
 
     ui  = knotVector[i]
     ui1 = knotVector[i + 1]
@@ -78,7 +78,7 @@ end
 
 
 """
-    findspan(n::Int, u, knotVector)
+    findSpan(n::Int, u, knotVector)
 
 Find the spans of a rational B-spline knot vector at the parametric points 'u', where 'b' is the number of basis functions (control points).
 
@@ -88,7 +88,7 @@ Modification of Algorithm A2.1 from 'The NURBS Book' p. 68.
 
 Assumption that the knotVector is open! (the first and last knot are repeated degree + 1 times)
 """
-function findspan(b::Int, u, knotVector)
+function findSpan(b::Int, u, knotVector)
 
     # check input
     (minimum(u) < knotVector[1]) && (maximum(u) > knotVector[end]) && error("Some value is outside the knot span")
@@ -112,7 +112,7 @@ end
 
 
 """
-    basisfun(knotSpan, uVector, degree::Int, knotVector)
+    basisFun(knotSpan, uVector, degree::Int, knotVector)
 
 Compute the nonvanishing basis functions of degree 'degree' at the parametric points defined by 'uVector'
 
@@ -120,7 +120,7 @@ Return the basis functions vector of size length(uVector) * (degree + 1).
 
 Adapted from Algorithm A2.2 from 'The NURBS Book' p. 70.
 """
-function basisfun(knotSpan, uVector, degree::Int, knotVector)
+function basisFun(knotSpan, uVector, degree::Int, knotVector)
 
     B = zeros(length(uVector), degree + 1)
     N = zeros(degree + 1)
@@ -173,7 +173,7 @@ function curvePoints(degree::Int, knotVector, controlPoints, uVector)
 
     # determine the basis functions evaluated at uVector
     spans = findspan(nbasisFun, uVector, knotVector)
-    N = basisfun(spans, uVector, degree, knotVector)
+    N = basisFun(spans, uVector, degree, knotVector)
 
     # determine the curve values
     curve = [SVector(0.0, 0.0, 0.0) for i in eachindex(uVector)] # initialize
@@ -211,13 +211,13 @@ function surfacePoints(uDegree::Int, vDegree::Int, uKnotVector, vKnotVector, con
 
     # u-direction: determine the basis functions evaluated at uVector 
     nbasisFun = length(uKnotVector) - uDegree - 1
-    uSpan = findspan(nbasisFun, uVector, uKnotVector)
-    Nu = basisfun(uSpan, uVector, uDegree, uKnotVector)
+    uSpan = findSpan(nbasisFun, uVector, uKnotVector)
+    Nu = basisFun(uSpan, uVector, uDegree, uKnotVector)
 
     # v-direction: determine the basis functions evaluated at vVector
     nbasisFun = length(vKnotVector) - vDegree - 1
-    vSpan = findspan(nbasisFun, vVector, vKnotVector)
-    Nv = basisfun(vSpan, vVector, vDegree, vKnotVector)
+    vSpan = findSpan(nbasisFun, vVector, vKnotVector)
+    Nv = basisFun(vSpan, vVector, vDegree, vKnotVector)
 
     # intialize
     surface = [SVector(0.0, 0.0, 0.0) for i in eachindex(uVector), j in eachindex(vVector)]

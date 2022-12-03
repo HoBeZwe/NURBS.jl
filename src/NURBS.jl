@@ -12,8 +12,8 @@ using Requires
 #export 
 
 # functions
-export bsplineNaive, bsplineNaiveDerivative
-export findspan, basisfun, curvePoints
+export bSplineNaive, bSplineNaiveDerivative
+export findSpan, basisFun, derBasisFun, curvePoints
 export surfacePoints, plotSurface
 
 

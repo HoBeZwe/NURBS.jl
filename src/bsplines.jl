@@ -32,7 +32,7 @@ i-th b-spline basis function of degree 'degree' evaluated at u.
 function bsplineNaive(knotVector, i::Int, degree::Int, u::Real)
 
     # handle degree 0 case (end of recursion)
-    degree == 0 && return nurbs(knotVector, i, u)
+    degree == 0 && return bsplineNaive(knotVector, i, u)
 
     # handle higher degree cases
     ui   = knotVector[i]
@@ -40,9 +40,14 @@ function bsplineNaive(knotVector, i::Int, degree::Int, u::Real)
     uiP  = knotVector[i + degree]
     uiP1 = knotVector[i + degree + 1]
 
-    N =
-        (u - ui) / (uiP - ui) * bsplineNaive(knotVector, i, degree - 1, u) +
-        (uiP1 - u) / (uiP1 - ui1) * bsplineNaive(knotVector, i + 1, degree - 1, u)
+    coeff1 = (u - ui) / (uiP - ui)
+    coeff2 = (uiP1 - u) / (uiP1 - ui1)
+
+    # simple fix for division by 0 (not verified that it works in all scenarios)
+    isfinite(coeff1) || (coeff1 = 0.0)
+    isfinite(coeff2) || (coeff2 = 0.0)
+
+    N = coeff1 * bsplineNaive(knotVector, i, degree - 1, u) + coeff2 * bsplineNaive(knotVector, i + 1, degree - 1, u)
 
     return N
 end

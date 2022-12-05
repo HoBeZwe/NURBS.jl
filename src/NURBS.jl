@@ -21,6 +21,7 @@ export surfacePoints, plotSurface
 # -------- included files
 include("bsplines.jl")
 include("bsplineDerivatives.jl")
+include("nurbs.jl")
 include("plotting.jl")
 
 

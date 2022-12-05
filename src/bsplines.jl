@@ -156,7 +156,7 @@ end
 """
     curvePoints(nbasisFun::Int, degree::Int, knotVector, controlPoints, uVector)
 
-Compute a 1D curve: given the 'knotVector', the 'controlPoints', and the 'degree', the curve is evaluated at the points given in 'uVector'.
+Compute a 1D B-spline curve: given the 'knotVector', the 'controlPoints', and the 'degree', the curve is evaluated at the points given in 'uVector'.
 
 Example for the controlPoints:
     
@@ -192,7 +192,7 @@ end
 """
     surfacePoints(uDegree::Int, vDegree::Int, uKnotVector, vKnotVector, controlPoints, uVector, vVector)
 
-Compute surface: given the knotvectors and the degrees in 'u' and 'v' direction, the surface is evaluated at the evaluation points (uVector, vVector).
+Compute B-spline surface: given the knotvectors and the degrees in 'u' and 'v' direction, the surface is evaluated at the evaluation points (uVector, vVector).
 
 Control points ordering P_(xi,yj):
 

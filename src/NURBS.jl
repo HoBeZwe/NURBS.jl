@@ -15,7 +15,7 @@ export Curve, BsplineSurface, NURBSsurface
 # functions
 export bSplineNaive, bSplineNaiveDerivative
 export findSpan, basisFun, derBasisFun, curvePoints
-export surfacePoints, plotSurface
+export surfacePoints
 export readMultipatch
 
 

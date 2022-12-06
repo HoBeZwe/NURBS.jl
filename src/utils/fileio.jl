@@ -10,7 +10,7 @@ PATCH a
 0.0 0.0 ...     -> knot vector in u
 0.0 0.0 ...     -> knot vector in v
 0.1 0.2 ...     |
-0.1 0.2 ...      > xyz components of the control points
+0.1 0.2 ...      > xyz components of the control points (normalized with the weigths -> we remove this weighting when reading in the data)
 0.1 0.2 ...     |
 1.0 1.0 ...     -> weights
 
@@ -67,7 +67,7 @@ function parseSinglePatch(stringVec, lineInd::Int, T)
     weights = reshape(weights, pointDims[1], pointDims[2])
 
     # --- fill structure
-    return NURBSsurface(Bspline(degrees[1], uKnotVec), Bspline(degrees[2], vKnotVec), controlPoints, weights)
+    return NURBSsurface(Bspline(degrees[1], uKnotVec), Bspline(degrees[2], vKnotVec), controlPoints ./ weights, weights)
 end
 
 

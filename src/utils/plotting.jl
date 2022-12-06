@@ -4,7 +4,10 @@ export plotCurve3D, plotCurve
 function __init__()
     @require PlotlyJS = "f0f68f2c-4968-5e81-91da-67840de0976a" begin
 
-        @eval function plotCurve3D(C, controlPoints; ctrlPoints=true)
+        @eval """
+        Plot a 3D curve given the vector C containing an SVector(x, y, z) for each point of the curve.
+        """
+        function plotCurve3D(C; controlPoints=[])
 
             data = PlotlyJS.GenericTrace[]
 
@@ -13,29 +16,22 @@ function __init__()
             z = [C[i][3] for i in eachindex(C)]
 
             t1 = PlotlyJS.scatter3d(; x=x, y=y, z=z, mode="lines", markersize=0.4, legend=:none)
-
             push!(data, t1)
 
             # plot the control points?
-            if ctrlPoints
-
-                xP = [controlPoints[i][1] for i in eachindex(controlPoints)]
-                yP = [controlPoints[i][2] for i in eachindex(controlPoints)]
-                zP = [controlPoints[i][3] for i in eachindex(controlPoints)]
-
-                i = ["P$(i-1)" for i in eachindex(controlPoints)]
-
-                t2 = PlotlyJS.scatter3d(;
-                    x=xP, y=yP, z=zP, mode="lines+markers+text", markersize=0.4, legend=:none, text=i, textposition="top center"
-                )
-
-                push!(data, t2)
+            if !isempty(controlPoints)
+                maxmax, trace = plotControlPoints(controlPoints)
+                push!(data, trace)
             end
 
+            # plot all traces
             PlotlyJS.plot(data)
         end
 
-        @eval function plotCurve(C, controlPoints; ctrlPoints=true)
+        @eval """
+        Plot a 2D curve given the vector C containing an SVector(x, y, z) for each point of the curve.
+        """
+        function plotCurve(C; controlPoints=[])
 
             data = PlotlyJS.GenericTrace[]
 
@@ -47,12 +43,12 @@ function __init__()
             push!(data, t1)
 
             # plot the control points?
-            if ctrlPoints
+            if !isempty(controlPoints)
 
                 xP = [controlPoints[i][1] for i in eachindex(controlPoints)]
                 yP = [controlPoints[i][2] for i in eachindex(controlPoints)]
 
-                i = ["P$(i-1)" for i in eachindex(controlPoints)]
+                i = ["P$(i)" for i in eachindex(controlPoints)]
 
                 t2 = PlotlyJS.scatter(;
                     x=xP, y=yP, mode="lines+markers+text", markersize=0.4, legend=:none, text=i, textposition="top center"
@@ -64,7 +60,10 @@ function __init__()
             PlotlyJS.plot(data)
         end
 
-        @eval function plotSurface(S; controlPoints=[], enforceRatio=true)
+        @eval """
+        Plot a 3D surface given the matrix 'S' containing an SVector(x, y, z) for each point of the surface.
+        """
+        function plotSurface(S; controlPoints=[], enforceRatio=true)
 
             data = PlotlyJS.GenericTrace[]
 
@@ -79,33 +78,22 @@ function __init__()
 
             # plot the control points?
             if !isempty(controlPoints)
+                # along u-dirction
                 for ind in eachindex(controlPoints[:, 1])
-                    aux = controlPoints[:, ind]
-
-                    xP = [aux[i][1] for i in eachindex(aux)]
-                    yP = [aux[i][2] for i in eachindex(aux)]
-                    zP = [aux[i][3] for i in eachindex(aux)]
-
-                    t2 = PlotlyJS.scatter3d(; x=xP, y=yP, z=zP, mode="markers+lines", markersize=0.4, legend=:none, showlegend=false)
+                    maxmax, t2 = plotControlPoints(controlPoints[:, ind])
                     push!(data, t2)
-
-                    maxmax = maximum([maximum(abs.(xP)), maximum(abs.(yP)), maximum(abs.(zP))])
                 end
 
+                # along v-direction
                 for ind in eachindex(controlPoints[1, :])
-                    aux = controlPoints[ind, :]
-
-                    xP = [aux[i][1] for i in eachindex(aux)]
-                    yP = [aux[i][2] for i in eachindex(aux)]
-                    zP = [aux[i][3] for i in eachindex(aux)]
-
-                    t2 = PlotlyJS.scatter3d(; x=xP, y=yP, z=zP, mode="markers+lines", markersize=0.4, legend=:none, showlegend=false)
+                    maxmax2, t2 = plotControlPoints(controlPoints[ind, :])
                     push!(data, t2)
 
-                    maxmax = maximum([maxmax, maximum(abs.(xP)), maximum(abs.(yP)), maximum(abs.(zP))])
+                    maxmax = maximum([maxmax, maxmax2])
                 end
             end
 
+            # ensure all three axes have the same length
             if enforceRatio
                 maxmax = maximum([maxmax, maximum(abs.(x)), maximum(abs.(y)), maximum(abs.(z))])
                 layout = PlotlyJS.Layout(;
@@ -120,6 +108,26 @@ function __init__()
             else
                 PlotlyJS.plot(data)
             end
+        end
+
+        @eval """
+        Plot points in 3D space and connect them with lines. 
+        The plot is not directly generated but the trace is returned.
+        """
+        function plotControlPoints(controlPoints)
+
+            xP = [controlPoints[i][1] for i in eachindex(controlPoints)]
+            yP = [controlPoints[i][2] for i in eachindex(controlPoints)]
+            zP = [controlPoints[i][3] for i in eachindex(controlPoints)]
+
+            i = ["P$(i)" for i in eachindex(controlPoints)]
+
+            maxmax = maximum([maximum(abs.(xP)), maximum(abs.(yP)), maximum(abs.(zP))])
+
+            return maxmax,
+            PlotlyJS.scatter3d(;
+                x=xP, y=yP, z=zP, mode="lines+markers+text", markersize=0.4, legend=:none, text=i, textposition="top center"
+            )
         end
 
 

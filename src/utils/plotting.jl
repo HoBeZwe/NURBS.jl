@@ -64,7 +64,7 @@ function __init__()
             PlotlyJS.plot(data)
         end
 
-        @eval function plotSurface(S, controlPoints; ctrlPoints=true)
+        @eval function plotSurface(S; controlPoints=[], enforceRatio=true)
 
             data = PlotlyJS.GenericTrace[]
 
@@ -73,11 +73,12 @@ function __init__()
             z = [S[i, j][3] for i in eachindex(S[:, 1]), j in eachindex(S[1, :])]
 
             t1 = PlotlyJS.surface(; z=z, x=x, y=y, intensitymode="cell", colorscale="Viridis", opacity=0.75)
-
             push!(data, t1)
 
+            maxmax = 0.0
+
             # plot the control points?
-            if ctrlPoints
+            if !isempty(controlPoints)
                 for ind in eachindex(controlPoints[:, 1])
                     aux = controlPoints[:, ind]
 
@@ -86,8 +87,9 @@ function __init__()
                     zP = [aux[i][3] for i in eachindex(aux)]
 
                     t2 = PlotlyJS.scatter3d(; x=xP, y=yP, z=zP, mode="markers+lines", markersize=0.4, legend=:none, showlegend=false)
-
                     push!(data, t2)
+
+                    maxmax = maximum([maximum(abs.(xP)), maximum(abs.(yP)), maximum(abs.(zP))])
                 end
 
                 for ind in eachindex(controlPoints[1, :])
@@ -98,12 +100,26 @@ function __init__()
                     zP = [aux[i][3] for i in eachindex(aux)]
 
                     t2 = PlotlyJS.scatter3d(; x=xP, y=yP, z=zP, mode="markers+lines", markersize=0.4, legend=:none, showlegend=false)
-
                     push!(data, t2)
+
+                    maxmax = maximum([maxmax, maximum(abs.(xP)), maximum(abs.(yP)), maximum(abs.(zP))])
                 end
             end
 
-            PlotlyJS.plot(data)
+            if enforceRatio
+                maxmax = maximum([maxmax, maximum(abs.(x)), maximum(abs.(y)), maximum(abs.(z))])
+                layout = PlotlyJS.Layout(;
+                    scene=PlotlyJS.attr(;
+                        xaxis=PlotlyJS.attr(; visible=true, legend=:none, range=[-maxmax, maxmax]),
+                        yaxis=PlotlyJS.attr(; visible=true, range=[-maxmax, maxmax]),
+                        zaxis=PlotlyJS.attr(; visible=true, range=[-maxmax, maxmax]),
+                        aspectratio=PlotlyJS.attr(; x=1, y=1, z=1),
+                    ),
+                )
+                PlotlyJS.plot(data, layout)
+            else
+                PlotlyJS.plot(data)
+            end
         end
 
 

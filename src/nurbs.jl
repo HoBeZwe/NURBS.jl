@@ -15,7 +15,7 @@ controlPoints = [P1, P2, P3]
 function curvePoints(degree::Int, knotVector, controlPoints, uVector, weights)
 
     # the number of basis functions is determined by the number of knot vectors and the degree
-    nbasisFun = length(knotVector) - degree - 1 
+    nbasisFun = length(knotVector) - degree - 1
 
     # determine the basis functions evaluated at uVector
     spans = findSpan(nbasisFun, uVector, knotVector)
@@ -43,6 +43,23 @@ function curvePoints(degree::Int, knotVector, controlPoints, uVector, weights)
 
     return curve
 end
+
+
+"""
+    surfacePoints(Patch::NURBSsurface, uEvalpoints, vEvalpoints)
+
+Convenience function to plot a NURBSsurface.
+"""
+surfacePoints(Patch::NURBSsurface, uEvalpoints, vEvalpoints) = surfacePoints(
+    Patch.uBasis.degree,
+    Patch.vBasis.degree,
+    Patch.uBasis.knotVec,
+    Patch.vBasis.knotVec,
+    Patch.controlPoints,
+    uEvalpoints,
+    vEvalpoints,
+    Patch.weights,
+)
 
 
 """

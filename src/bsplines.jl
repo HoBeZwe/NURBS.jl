@@ -38,7 +38,7 @@ end
 """
     bSplineNaive(basis::Bspline, i::Int, evalpoints)
 
-i-th B-spline basis function of degree 'degree' evaluated at all 'evalpoints'.
+i-th B-spline basis function evaluated at all 'evalpoints'.
 """
 function bSplineNaive(basis::Bspline, i::Int, evalpoints)
 

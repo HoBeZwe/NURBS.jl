@@ -1,5 +1,14 @@
 
 """
+    curvePoints(curve::NURBScurve, uVector)
+
+Convenience function to plot a NURBS curve.
+"""
+curvePoints(curve::NURBScurve, uVector) =
+    curvePoints(curve.basis.degree, curve.basis.knotVec, curve.controlPoints, uVector, curve.basis.weights)
+
+
+"""
     curvePoints(nbasisFun::Int, degree::Int, knotVector, controlPoints, uVector, weights)
 
 Compute a 1D NURBS curve: given the 'knotVector', the 'controlPoints', the 'degree', and the 'weights', the curve is evaluated at the points given in 'uVector'.

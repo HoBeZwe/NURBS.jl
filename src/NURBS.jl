@@ -10,13 +10,14 @@ using Requires
 # -------- exportet parts
 # types
 export Bspline, NURB
-export Curve, BsplineSurface, NURBSsurface
+export BsplineCurve, NURBScurve, BsplineSurface, NURBSsurface
 
 # functions
 export bSplineNaive, bSplineNaiveDerivative
-export findSpan, basisFun, derBasisFun, curvePoints
-export surfacePoints
+export bSpline, bSplineDerivatives
+export surfacePoints, curvePoints
 export readMultipatch
+export generateKnotVec, numBasisFunctions
 
 
 

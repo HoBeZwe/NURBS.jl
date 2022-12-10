@@ -1,16 +1,66 @@
 
 """
+    numBasisFunctions(basis::Basis)
+
+The number of basis functions is fixed by the knot vector and the degree.
+
+Assumption: the first and last knot vector entry has mulitplicity degree + 1.
+"""
+numBasisFunctions(basis::Basis) = length(basis.knotVec) - basis.degree - 1
+
+
+"""
+    generateKnotVec(b::Int, degree::Int)
+
+Convenience function to generate a knot vector for 'b' basis functions and a certain 'degree': 
+
+The first and last entry are repeated 'degree'+1 times. Normalized to [0, 1].
+"""
+function generateKnotVec(b::Int, degree::Int)
+
+    mpc = degree + 1     # required mulitplicity of first and last knot
+    m = b + degree + 1   # length of knot vector
+
+    aa = zeros(Int, mpc, 1)
+    bb = ones(Int, mpc, 1) * (m - 2 * mpc + 1)
+
+    kVec = Vector{Float64}(undef, m)
+    kVec[1:mpc] .= aa
+    kVec[(end - mpc + 1):end] .= bb
+    kVec[(mpc + 1):(end - mpc)] .= collect(1:(bb[1] - 1))
+
+    kVec ./= maximum(kVec)
+
+    return kVec
+end
+
+
+"""
+    bSplineNaive(basis::Bspline, i::Int, evalpoints)
+
+i-th B-spline basis function of degree 'degree' evaluated at all 'evalpoints'.
+"""
+function bSplineNaive(basis::Bspline, i::Int, evalpoints)
+
+    # normalize knot vector entries to [0, 1]
+    minimum(basis.knotVec) != 0.0 && error("The knot vector has to start at 0.")
+    if maximum(basis.knotVec) != 1.0
+        knotVector ./= maximum(knotVector)
+        @info "The knot vector is being modified (normalized)."
+    end
+
+    return bSplineNaive(basis.knotVec, i, basis.degree, evalpoints)
+end
+
+
+"""
     bSplineNaive(knotVector, i::Int, degree::Int, evalpoints; normalize=true)
 
 i-th b-spline basis function of degree 'degree' evaluated at all 'evalpoints'.
-"""
-function bSplineNaive(knotVector, i::Int, degree::Int, evalpoints; normalize=false)
 
-    # normalize knot vector entries to [0, 1]
-    if normalize
-        knotVector ./= maximum(knotVector)
-        @info "The knot vector is being modified."
-    end
+The knotvector is assumed to be normalized to [1, 0].
+"""
+function bSplineNaive(knotVector, i::Int, degree::Int, evalpoints)
 
     # array to store the evaluated points in
     N = similar(evalpoints)
@@ -75,12 +125,24 @@ function bSplineNaive(knotVector, i::Int, u::Real)
 end
 
 
+"""
+    bSpline(basis::Bspline, evalpoints)
+
+Evaluate B-spline basis at all evalpoints.
+"""
+function bSpline(basis::Bspline, evalpoints)
+
+    numBasis = numBasisFunctions(basis)
+    knotSpan = findSpan(numBasis, evalpoints, basis.knotVec)
+
+    return basisFun(knotSpan, evalpoints, basis.degree, basis.knotVec)
+end
 
 
 """
     findSpan(n::Int, u, knotVector)
 
-Find the spans of a rational B-spline knot vector at the parametric points 'u', where 'b' is the number of basis functions (control points).
+Find the spans of a B-spline knot vector at the parametric points 'u', where 'b' is the number of basis functions (control points).
 
 Span: the intervall index in which a point lies. E.g., knotVector = [0, 1, 2, 3, 4]. Hence, there are 4 intervalls. u=1.2 lies in the second intervall.
 
@@ -114,9 +176,9 @@ end
 """
     basisFun(knotSpan, uVector, degree::Int, knotVector)
 
-Compute the nonvanishing basis functions of degree 'degree' at the parametric points defined by 'uVector'
+Compute the nonvanishing B-spline basis functions of degree 'degree' at the parametric points defined by 'uVector'
 
-Return the basis functions vector of size length(uVector) * (degree + 1).
+Return the B-spline basis functions vector of size length(uVector) * (degree + 1).
 
 Adapted from Algorithm A2.2 from 'The NURBS Book' p. 70.
 """
@@ -154,6 +216,14 @@ end
 
 
 """
+    curvePoints(curve::BsplineCurve, uVector)
+
+Convenience function to plot a NURBS curve.
+"""
+curvePoints(curve::BsplineCurve, uVector) = curvePoints(curve.basis.degree, curve.basis.knotVec, curve.controlPoints, uVector)
+
+
+"""
     curvePoints(nbasisFun::Int, degree::Int, knotVector, controlPoints, uVector)
 
 Compute a 1D B-spline curve: given the 'knotVector', the 'controlPoints', and the 'degree', the curve is evaluated at the points given in 'uVector'.
@@ -187,6 +257,22 @@ function curvePoints(degree::Int, knotVector, controlPoints, uVector)
 
     return curve
 end
+
+
+"""
+    surfacePoints(Patch::BsplineSurface, uEvalpoints, vEvalpoints)
+
+Convenience function to plot a B-spline surface.
+"""
+surfacePoints(Patch::BsplineSurface, uEvalpoints, vEvalpoints) = surfacePoints(
+    Patch.uBasis.degree,
+    Patch.vBasis.degree,
+    Patch.uBasis.knotVec,
+    Patch.vBasis.knotVec,
+    Patch.controlPoints,
+    uEvalpoints,
+    vEvalpoints,
+)
 
 
 """

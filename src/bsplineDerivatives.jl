@@ -1,19 +1,31 @@
 
 """
+    bSplineNaiveDerivative(basis::Bspline, i::Int, k::Int, evalpoints)
+
+Compute the k-th derivative of i-th b-spline basis function evaluated at all 'evalpoints'.
+"""
+function bSplineNaiveDerivative(basis::Bspline, i::Int, k::Int, evalpoints)
+
+    k < 1 && error("The k-th derivative has to be k ≥ 1!")
+    k > basis.degree && return zeros(size(evalpoints)) # p+1 th derivative of a polynomial of degree p is zero
+
+    # normalize knot vector entries to [0, 1]
+    minimum(basis.knotVec) != 0.0 && error("The knot vector has to start at 0.")
+    if maximum(basis.knotVec) != 1.0
+        knotVector ./= maximum(knotVector)
+        @info "The knot vector is being modified (normalized)."
+    end
+
+    return bSplineNaiveDerivative(basis.knotVec, i, basis.degree, evalpoints, k)
+end
+
+
+"""
     bSplineNaiveDer(knotVector, i::Int, degree::Int, evalpoints, k::Int; normalize=true)
 
 Compute the k-th derivative of i-th b-spline basis function of degree 'degree' evaluated at all 'evalpoints'.
 """
-function bSplineNaiveDerivative(knotVector, i::Int, degree::Int, evalpoints, k::Int; normalize=false)
-
-    k < 1 && error("The k-th derivative has to be k ≥ 1!")
-    k > degree && return zeros(size(evalpoints)) # p+1 th derivative of a polynomial of degree p is zero
-
-    # normalize knot vector entries to [0, 1]
-    if normalize
-        knotVector ./= maximum(knotVector)
-        @info "The knot vector is being modified."
-    end
+function bSplineNaiveDerivative(knotVector, i::Int, degree::Int, evalpoints, k::Int)
 
     # array to store the evaluated points in
     N = similar(evalpoints)
@@ -61,9 +73,25 @@ end
 
 
 """
+    bSplineDerivatives(basis::Bspline, k::Int, evalpoints)
+
+Evaluate k-the derivative of B-spline basis at all evalpoints (all basis functions different from 0 at the evalpoints are evaluated).
+"""
+function bSplineDerivatives(basis::Bspline, k::Int, evalpoints)
+
+    k < 0 && error("The k-th derivative has to be k ≥ 0!")
+
+    numBasis = numBasisFunctions(basis)
+    knotSpan = findSpan(numBasis, evalpoints, basis.knotVec)
+
+    return derBasisFun(knotSpan, basis.degree, evalpoints, basis.knotVec, k)
+end
+
+
+"""
     derBasisFun(knotSpan, degree::Int, evalpoints, knotVector, numberDerivatives::Int)
 
-Compute the nonvanishing basis functions and its derivatives of degree 'degree' at the parametric points defined by 'uVector'.
+Compute the nonvanishing B-spline basis functions and its derivatives of degree 'degree' at the parametric points defined by 'uVector'.
 
 Organization of output:  dersv[n, k, :] contains (k-1)-th derivative at n-th point.
    

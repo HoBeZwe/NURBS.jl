@@ -25,14 +25,27 @@ end
 
 
 
-"""
-    Curve{F}
 
-General curve defined by a basis and the control points.
+abstract type Curve end
+
 """
-struct Curve{F}
-    basis::Basis
-    controlPoints::Matrix{SVector{3,F}}
+    BsplineCurve{F}
+
+B-spline curve defined by the basis and the control points.
+"""
+struct BsplineCurve{F}
+    basis::Bspline{F}
+    controlPoints::Vector{SVector{3,F}}
+end
+
+"""
+    NURBScurve{F}
+
+B-spline curve defined by the basis and the control points.
+"""
+struct NURBScurve{F}
+    basis::NURB{F}
+    controlPoints::Vector{SVector{3,F}}
 end
 
 

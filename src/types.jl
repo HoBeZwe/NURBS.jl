@@ -29,21 +29,21 @@ end
 abstract type Curve end
 
 """
-    BsplineCurve{F}
+    BsplineCurve{F} <: Curve
 
 B-spline curve defined by the basis and the control points.
 """
-struct BsplineCurve{F}
+struct BsplineCurve{F} <: Curve
     basis::Bspline{F}
     controlPoints::Vector{SVector{3,F}}
 end
 
 """
-    NURBScurve{F}
+    NURBScurve{F} <: Curve
 
 B-spline curve defined by the basis and the control points.
 """
-struct NURBScurve{F}
+struct NURBScurve{F} <: Curve
     basis::NURB{F}
     controlPoints::Vector{SVector{3,F}}
 end

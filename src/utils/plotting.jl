@@ -87,7 +87,9 @@ function __init__()
                 col = surfaceColor
             end
 
-            t1 = PlotlyJS.surface(z=z, x=x, y=y, surfacecolor=col, intensitymode="cell", colorscale="Viridis", opacity=0.75, showscale=false)
+            t1 = PlotlyJS.surface(;
+                z=z, x=x, y=y, surfacecolor=col, intensitymode="cell", colorscale="Viridis", opacity=0.75, showscale=false
+            )
             push!(data, t1)
 
             maxmax = 0.0

@@ -15,7 +15,7 @@ export BsplineCurve, NURBScurve, BsplineSurface, NURBSsurface
 # functions
 export bSplineNaive, bSplineNaiveDerivative
 export bSpline, bSplineDerivatives
-export nurbsNaive
+export nurbsNaive, nurbsNaiveDerivative
 
 export surfacePoints, curvePoints
 export readMultipatch
@@ -32,6 +32,7 @@ include("bSplines/curves.jl")
 include("bSplines/surfaces.jl")
 
 include("nurbs/basis.jl")
+include("nurbs/basisDerivatives.jl")
 include("nurbs/curves.jl")
 include("nurbs/surfaces.jl")
 

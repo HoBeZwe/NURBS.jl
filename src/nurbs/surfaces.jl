@@ -2,7 +2,7 @@
 """
     surfacePoints(Patch::NURBSsurface, uEvalpoints, vEvalpoints)
 
-Convenience function to plot a NURBSsurface.
+Convenience function to compute points on a NURBSsurface.
 """
 surfacePoints(Patch::NURBSsurface, uEvalpoints, vEvalpoints) = surfacePoints(
     Patch.uBasis.degree,

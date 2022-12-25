@@ -93,7 +93,7 @@ function __init__()
         @eval """
         Plot a 3D surface given the matrix 'S' containing an SVector(x, y, z) for each point of the surface.
         """
-        function plotSurface(S; controlPoints=[], enforceRatio=true, returnTrace=false, surfaceColor=[])
+        function plotSurface(S; controlPoints=[], enforceRatio=true, returnTrace=false, surfaceColor=[], tangents=[])
 
             data = PlotlyJS.GenericTrace[]
 
@@ -111,6 +111,15 @@ function __init__()
                 z=z, x=x, y=y, surfacecolor=col, intensitymode="cell", colorscale="Viridis", opacity=0.75, showscale=false
             )
             push!(data, t1)
+
+            if !isempty(tangents)
+                u = [tangents[i, j][1] for i in eachindex(tangents[:, 1]), j in eachindex(tangents[1, :])]
+                v = [tangents[i, j][2] for i in eachindex(tangents[:, 1]), j in eachindex(tangents[1, :])]
+                w = [tangents[i, j][3] for i in eachindex(tangents[:, 1]), j in eachindex(tangents[1, :])]
+
+                t3 = PlotlyJS.cone(; x=x[:], y=y[:], z=z[:], u=u[:], v=v[:], w=w[:], showscale=false, sizemode="scaled", sizeref=1.0)
+                push!(data, t3)
+            end
 
             maxmax = 0.0
 

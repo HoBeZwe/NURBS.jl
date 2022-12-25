@@ -17,8 +17,8 @@ export bSplineNaive, bSplineNaiveDerivative
 export bSpline, bSplineDerivatives
 export nurbsNaive, nurbsNaiveDerivative
 
-export surfacePoints, curvePoints
-export curveDerivativesPoints
+export curvePoints, surfacePoints
+export curveDerivativesPoints, surfaceDerivativesPoints
 
 export readMultipatch
 export generateKnotVec, numBasisFunctions

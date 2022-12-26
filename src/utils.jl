@@ -33,3 +33,49 @@ function generateKnotVec(b::Int, degree::Int)
 
     return kVec
 end
+
+
+"""
+    jacobian(Patch::Surface, uEvalpoints, vEvalpoints)
+
+Compute the Jacobian matrix and its (generalized) determinant at the parametric points 'uEvalpoints' and 'vEvalpoints'.
+
+Return
+    - J     2-dimensional vector: first for the derivative w.r.t 'u', second w.r.t 'v'
+                each vector entry contains a matrix of size (uEvalpoints, vEvalpoints)
+                each entry of the matrix is an SVector with the derivatives: SVector(∂x/∂u, ∂y/∂u, ∂y/∂u)
+
+    - dJ    matrix of size (uEvalpoints, vEvalpoints) where each entry is the Jacobi determinant evaluated at the points 'u' and 'v'.
+
+Note: surface points are evaluated but thrown away: maybe change this/make use of it.
+"""
+function jacobian(Patch::Surface, uEvalpoints, vEvalpoints)
+
+    S = surfaceDerivativesPoints(Patch, uEvalpoints, vEvalpoints, 1) # first derivatives
+
+    Ju = S[2, 1] # first derivative along u
+    Jv = S[1, 2] # first derivative along v
+
+    J = [Ju, Jv] # Jacobi matrix
+
+    # --- Jacobi determinant / surface element
+    dJ = Matrix{eltype(Ju[1])}(undef, size(Ju))
+
+    # loop over all points
+    for i in axes(Ju, 1)
+        for j in axes(Ju, 2)
+
+            xu = Ju[i, j][1]
+            yu = Ju[i, j][2] 
+            zu = Ju[i, j][3] 
+
+            xv = Jv[i, j][1] 
+            yv = Jv[i, j][2] 
+            zv = Jv[i, j][3]
+
+            dJ[i, j] = sqrt( (yu * zv - zu * yv)^2 + (zu * xv - xu * zv)^2 + (xu * yv - yu * xv)^2 )
+        end
+    end
+
+    return J, dJ
+end

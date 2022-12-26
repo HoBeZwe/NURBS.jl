@@ -19,6 +19,7 @@ export nurbsNaive, nurbsNaiveDerivative
 
 export curvePoints, surfacePoints
 export curveDerivativesPoints, surfaceDerivativesPoints
+export jacobian
 
 export readMultipatch
 export generateKnotVec, numBasisFunctions

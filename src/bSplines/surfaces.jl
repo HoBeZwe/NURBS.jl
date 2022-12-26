@@ -107,6 +107,8 @@ P_31 ----- P_32 ----- P_33
 |
 x / u direction
 
+Returns a (k x k) matrix where each entry is a matrix of size (uKnotVector x vKnotVector): surfaces[q, p] is the matrix for the (q-1)-th derivative in u-direction and the (p-1)-th derivative in v-direction.
+
 Note: not the most efficient implementation.
 TODO: implement algorithm A.37 and A.38 of 'The Nurbs book'
 """
@@ -128,7 +130,7 @@ function surfaceDerivativesPoints(uDegree::Int, vDegree::Int, uKnotVector, vKnot
     # determine the surface derivative values
     for q in 1:(k + 1)
         for p in 1:(k + 1)
-            surfaces[p, q] = surfaceDerivativesPointsUV(uDegree, vDegree, controlPoints, uVector, vVector, Nu, Nv, q, p, uSpan, vSpan) # derivatives along u and v
+            surfaces[q, p] = surfaceDerivativesPointsUV(uDegree, vDegree, controlPoints, uVector, vVector, Nu, Nv, q, p, uSpan, vSpan) # derivatives along u and v
         end
     end
 

@@ -66,14 +66,14 @@ function jacobian(Patch::Surface, uEvalpoints, vEvalpoints)
         for j in axes(Ju, 2)
 
             xu = Ju[i, j][1]
-            yu = Ju[i, j][2] 
-            zu = Ju[i, j][3] 
+            yu = Ju[i, j][2]
+            zu = Ju[i, j][3]
 
-            xv = Jv[i, j][1] 
-            yv = Jv[i, j][2] 
+            xv = Jv[i, j][1]
+            yv = Jv[i, j][2]
             zv = Jv[i, j][3]
 
-            dJ[i, j] = sqrt( (yu * zv - zu * yv)^2 + (zu * xv - xu * zv)^2 + (xu * yv - yu * xv)^2 )
+            dJ[i, j] = sqrt((yu * zv - zu * yv)^2 + (zu * xv - xu * zv)^2 + (xu * yv - yu * xv)^2)
         end
     end
 

@@ -8,7 +8,7 @@ function __init__()
         @eval """
         Plot a 3D curve given the vector C containing an SVector(x, y, z) for each point of the curve.
         """
-        function plotCurve3D(C; controlPoints=[])
+        function plotCurve3D(C; controlPoints=[], tangents=[], tangentRes=25)
 
             data = PlotlyJS.GenericTrace[]
 
@@ -18,6 +18,27 @@ function __init__()
 
             t1 = PlotlyJS.scatter3d(; x=x, y=y, z=z, mode="lines", markersize=0.4, legend=:none, showlegend=false)
             push!(data, t1)
+
+            # plot tangent vectors?
+            if !isempty(tangents)
+
+                u = [tangents[i][1] for i in eachindex(tangents)]
+                v = [tangents[i][2] for i in eachindex(tangents)]
+                w = [tangents[i][3] for i in eachindex(tangents)]
+
+                t3 = PlotlyJS.cone(;
+                    x=x[1:tangentRes:end],
+                    y=y[1:tangentRes:end],
+                    z=z[1:tangentRes:end],
+                    u=u[1:tangentRes:end],
+                    v=v[1:tangentRes:end],
+                    w=w[1:tangentRes:end],
+                    showscale=false,
+                    sizemode="scaled",
+                    sizeref=1.0,
+                )
+                push!(data, t3)
+            end
 
             # plot the control points?
             if !isempty(controlPoints)
@@ -41,7 +62,6 @@ function __init__()
             y = [C[i][2] for i in eachindex(C)]
 
             t1 = PlotlyJS.scatter(; x=x, y=y, mode="lines", markersize=0.4, legend=:none)
-
             push!(data, t1)
 
             # plot the control points?
@@ -73,7 +93,7 @@ function __init__()
         @eval """
         Plot a 3D surface given the matrix 'S' containing an SVector(x, y, z) for each point of the surface.
         """
-        function plotSurface(S; controlPoints=[], enforceRatio=true, returnTrace=false, surfaceColor=[])
+        function plotSurface(S; controlPoints=[], enforceRatio=true, returnTrace=false, surfaceColor=[], tangents=[])
 
             data = PlotlyJS.GenericTrace[]
 
@@ -91,6 +111,15 @@ function __init__()
                 z=z, x=x, y=y, surfacecolor=col, intensitymode="cell", colorscale="Viridis", opacity=0.75, showscale=false
             )
             push!(data, t1)
+
+            if !isempty(tangents)
+                u = [tangents[i, j][1] for i in eachindex(tangents[:, 1]), j in eachindex(tangents[1, :])]
+                v = [tangents[i, j][2] for i in eachindex(tangents[:, 1]), j in eachindex(tangents[1, :])]
+                w = [tangents[i, j][3] for i in eachindex(tangents[:, 1]), j in eachindex(tangents[1, :])]
+
+                t3 = PlotlyJS.cone(; x=x[:], y=y[:], z=z[:], u=u[:], v=v[:], w=w[:], showscale=false, sizemode="scaled", sizeref=1.0)
+                push!(data, t3)
+            end
 
             maxmax = 0.0
 

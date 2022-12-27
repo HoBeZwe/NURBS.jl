@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Bases · NURBS.jl</title><script data-outdated-warner src="../assets/warner.js"></script><link rel="canonical" href="https://HoBeZwe.github.io/NURBS.jl/basis/"/><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../"><img src="../assets/logo.svg" alt="NURBS.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../">NURBS.jl</a></span></div><form class="docs-search" action="../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../">Introduction</a></li><li><span class="tocitem">Manual</span><ul><li class="is-active"><a class="tocitem" href>Bases</a><ul class="internal"><li><a class="tocitem" href="#Define-Structures"><span>Define Structures</span></a></li><li><a class="tocitem" href="#Naive-Evaluation"><span>Naive Evaluation</span></a></li><li><a class="tocitem" href="#Efficient-Evaluation"><span>Efficient Evaluation</span></a></li></ul></li><li><a class="tocitem" href="../curves/">Curves</a></li><li><a class="tocitem" href="../surfaces/">Surfaces</a></li></ul></li><li><a class="tocitem" href="../utils/">Utils</a></li><li><a class="tocitem" href="../contributing/">Contributing</a></li><li><a class="tocitem" href="../apiref/">API Reference</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Manual</a></li><li class="is-active"><a href>Bases</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Bases</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/HoBeZwe/NURBS.jl/blob/main/docs/src/basis.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="Bases"><a class="docs-heading-anchor" href="#Bases">Bases</a><a id="Bases-1"></a><a class="docs-heading-anchor-permalink" href="#Bases" title="Permalink"></a></h1><p>Two type of basis functions are available:</p><ul><li>B-splines</li><li>NURBS</li></ul><p>Both are defined by initializing corresponding structures. A naive evaluation method is available for both, an efficient evaluation only for B-splines.</p><hr/><h2 id="Define-Structures"><a class="docs-heading-anchor" href="#Define-Structures">Define Structures</a><a id="Define-Structures-1"></a><a class="docs-heading-anchor-permalink" href="#Define-Structures" title="Permalink"></a></h2><p>NURBS and B-spline bases are defined by initializing a <a href="../apiref/#NURBS.Bspline"><code>Bspline</code></a> or a <a href="../apiref/#NURBS.NURB"><code>NURB</code></a> structure, respectively.</p><pre><code class="language-julia hljs"># --- parameters
+b = 6       # number of basis functions
+p = 2       # degree of NURBS
+
+w = ones(b) # weights for NURBS
+w[4] = 1.8
+
+# --- resulting knot vector
+kVec = generateKnotVec(b, p)
+
+# --- structures
+Bspl = Bspline(p, kVec)
+Nrbs = NURB(p, kVec, w)</code></pre><hr/><h2 id="Naive-Evaluation"><a class="docs-heading-anchor" href="#Naive-Evaluation">Naive Evaluation</a><a id="Naive-Evaluation-1"></a><a class="docs-heading-anchor-permalink" href="#Naive-Evaluation" title="Permalink"></a></h2><p>To evaluate the bases at certain points the <a href="../apiref/#NURBS.bSplineNaive-Tuple{Any, Int64, Int64, Any}"><code>bSplineNaive</code></a> and the <a href="../apiref/#NURBS.nurbsNaive-Tuple{Any, Int64, Int64, Any, Any}"><code>nurbsNaive</code></a> functions are provided. For the derivatives the <a href="../apiref/#NURBS.bSplineNaive-Tuple{Any, Int64, Int64, Any}"><code>bSplineNaiveDerivative</code></a> and the <a href="../apiref/#NURBS.bSplineNaive-Tuple{Any, Int64, Int64, Any}"><code>nurbsNaiveDerivative</code></a> functions are provided.</p><div class="admonition is-info"><header class="admonition-header">Note</header><div class="admonition-body"><p>The naive evaluation methods are solely implemented to play around with parameters (to get familiar with NURBS and B-splines). </p></div></div><pre><code class="language- hljs"># --- define points where the bases are evaluated
+evalpoints = collect(0:0.001:1.0)
+
+# --- evaluate bases (4-th basis function)
+bspline = bSplineNaive(Bspl, 4, evalpoints) 
+nurb    = nurbsNaive(Nrbs, 4, evalpoints)
+
+# --- evaluate derivatives (1st derivative of 4-th basis function)
+bsplineD = bSplineNaiveDerivative(Bspl, 4, 1, evalpoints) 
+nurbD    = nurbsNaiveDerivative(Nrbs, 4, 1, evalpoints)
+
+
+using Plots
+plotly()
+
+Plots.plot(evalpoints, bspline, w=2, 
+    label=&quot;B-spline&quot;, 
+    title=&quot;4-th basis function&quot;, 
+    xlabel=&quot;𝑢&quot;, 
+    ylabel=&quot;𝑁₄,₂(𝑢)&quot;)
+Plots.plot!(evalpoints, nurb, w=2, label=&quot;NURB&quot;)
+xlims!(0, 1) # hide
+ylims!(0, 1) # hide
+savefig(&quot;plotBspl.html&quot;); nothing # hide</code></pre><object data="plotBspl.html" type="text/html"  style="width:120%;height:50vh;"> </object><pre><code class="language- hljs">Plots.plot(evalpoints, bsplineD, w=2, 
+    label=&quot;B-spline&quot;, 
+    title=&quot;1st derivative of 4-th basis function&quot;, 
+    xlabel=&quot;𝑢&quot;, 
+    ylabel=&quot;∂ᵤ 𝑁₄,₂(𝑢)&quot;)
+Plots.plot!(evalpoints, nurbD, w=2, label=&quot;NURB&quot;)
+xlims!(0, 1) # hide
+savefig(&quot;plotBsplD.html&quot;); nothing # hide</code></pre><object data="plotBsplD.html" type="text/html"  style="width:120%;height:50vh;"> </object><hr/><h2 id="Efficient-Evaluation"><a class="docs-heading-anchor" href="#Efficient-Evaluation">Efficient Evaluation</a><a id="Efficient-Evaluation-1"></a><a class="docs-heading-anchor-permalink" href="#Efficient-Evaluation" title="Permalink"></a></h2><p>For the B-splines the efficient evaluation of <a href="../#refs">[2]</a> is implemented via <a href="../apiref/#NURBS.bSpline-Tuple{Bspline, Any}"><code>bSpline</code></a> and <a href="../apiref/#NURBS.bSplineDerivatives-Tuple{Bspline, Int64, Any}"><code>bSplineDerivatives</code></a>. That is, only the basis functions different from zero are evaluated:</p><div class="admonition is-info"><header class="admonition-header">Note</header><div class="admonition-body"><p>For the evaluation of NURBS curves and surfaces (and their derivatives) the B-spline evaluation is sufficient.</p></div></div><pre><code class="language- hljs">bspline  = bSpline(Bspl, evalpoints)
+bsplineD = bSplineDerivatives(Bspl, 1, evalpoints)
+
+Plots.plot(evalpoints, bspline, w=2, 
+    leg=false, 
+    title=&quot;all basis functions&quot;, 
+    xlabel=&quot;𝑢&quot;, 
+    ylabel=&quot;𝑁ᵢ,₂(𝑢)&quot;)
+xlims!(0, 1) # hide
+ylims!(0, 1) # hide
+savefig(&quot;plotBspleff.html&quot;); nothing # hide</code></pre><object data="plotBspleff.html" type="text/html"  style="width:120%;height:50vh;"> </object><pre><code class="language- hljs">Plots.plot(evalpoints, bsplineD[:, 2, :], w=2, 
+    leg=false,
+    title=&quot;1st derivative of all basis functions&quot;, 
+    xlabel=&quot;𝑢&quot;, 
+    ylabel=&quot;∂ᵤ 𝑁ᵢ,₂(𝑢)&quot;)
+xlims!(0, 1) # hide
+savefig(&quot;plotBsplDeff.html&quot;); nothing # hide</code></pre><object data="plotBsplDeff.html" type="text/html"  style="width:120%;height:50vh;"> </object></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../">« Introduction</a><a class="docs-footer-nextpage" href="../curves/">Curves »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.23 on <span class="colophon-date" title="Tuesday 27 December 2022 01:31">Tuesday 27 December 2022</span>. Using Julia version 1.8.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

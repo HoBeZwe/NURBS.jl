@@ -1,28 +1,39 @@
-# NURBS
+
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/src/assets/logo_Scat_READMEwhite.svg" height="190">
+  <source media="(prefers-color-scheme: light)" srcset="docs/src/assets/logo_Scat_README.svg" height="190">
+  <img alt="" src="" height="190">
+</picture>
+
 
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://hobezwe.github.io/NURBS.jl/dev/)
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/hobezwe/NURBS.jl/blob/main/LICENSE)
 [![Build Status](https://github.com/hobezwe/NURBS.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/hobezwe/NURBS.jl/actions/workflows/CI.yml?query=branch%3Amain)
 [![codecov](https://codecov.io/gh/HoBeZwe/NURBS.jl/branch/main/graph/badge.svg?token=4F9NUNRC1K)](https://codecov.io/gh/HoBeZwe/NURBS.jl)
+[![DOI](https://zenodo.org/badge/375493054.svg)](https://zenodo.org/badge/latestdoi/375493054)
 
 
 ## Introduction
 
 This package provides B-spline and NURBS basis functions, their derivatives, as well as curves and surfaces based on both considered basis functions.
 
+The following aspects are implemented (✓) and planned (⌛):
 
-## Crucial Assumptions
+##### B-spline & NURBS
+- ✓ Basis & derivatives
+- ✓ Curves & derivatives
+- ✓ Surfaces & derivatives
 
-Open knot vectors are assumed everywhere, if not stated otherwise.
+##### Fundamental operations
+- ✓ File I/O (basic)
+- ⌛ Knot insertion / removal
+- ⌛ Degree elevation / reduction
+- ⌛ Construction of common geometries
 
-The parametric space is assumed to be [0, 1] everywhere.
+## Citation
 
-
-## References
-
-The implementation is based on
-- L. Piegl, *The NURBS Book*, Berlin Heidelberg, Springer-Verlag, 1997.
-- R.N. Simpson, et. al, *A Two-Dimensional Isogeometric Boundary Element Method for Elastostatic Analysis*, Comput. Methods Appl. Mech. Engrg., 2012.
+Please cite this package following the information on [Zenodo](https://zenodo.org/badge/latestdoi/375493054).
 
 
 ## Documentation

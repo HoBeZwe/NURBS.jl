@@ -2,5 +2,5 @@
 # API Reference
 
 ```@autodocs
-Modules = [NURBS]
+Modules = [Nurbs]
 ```

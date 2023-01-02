@@ -1,4 +1,4 @@
-using NURBS
+using Nurbs
 using Test
 
 using JuliaFormatter
@@ -27,7 +27,7 @@ using PlotlyJS
     end
 
     @testset "Test formatting of files" begin
-        pkgpath = pkgdir(NURBS)   # path of this package including name
+        pkgpath = pkgdir(Nurbs)   # path of this package including name
         @test format(pkgpath, overwrite=false)  # check whether files are formatted according to the .JuliaFormatter.toml 
     end
 end

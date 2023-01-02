@@ -9,7 +9,7 @@ The considered B-spline and NURBS basis functions are defined by initializing co
 NURBS and B-spline bases are defined by initializing a [`Bspline`](@ref Bspline) or a [`NURB`](@ref NURB) structure, respectively.
 
 ```@example basis
-using NURBS # hide
+using Nurbs # hide
 # --- parameters
 b = 6       # number of basis functions
 p = 2       # degree of NURBS

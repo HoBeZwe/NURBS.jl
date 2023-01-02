@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="292.78961mm"
+   width="282.75937mm"
    height="136.91493mm"
-   viewBox="0 0 292.78962 136.91491"
+   viewBox="0 0 282.75938 136.91491"
    version="1.1"
    id="svg8"
    sodipodi:docname="logo_Scat_READMEwhite.svg"
@@ -523,8 +523,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.49497476"
-     inkscape:cx="725.28951"
-     inkscape:cy="201.02035"
+     inkscape:cx="686.90371"
+     inkscape:cy="203.04066"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -549,8 +549,8 @@
     <inkscape:grid
        type="xygrid"
        id="grid4618"
-       originx="-7.2486671"
-       originy="36.018534" />
+       originx="-17.278921"
+       originy="36.018532" />
   </sodipodi:namedview>
   <metadata
      id="metadata5">
@@ -567,7 +567,7 @@
      inkscape:label="Ebene 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-11.798898,-186.71163)">
+     transform="translate(-21.829148,-186.71163)">
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.22889px;line-height:125%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.490209px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -578,7 +578,7 @@
          id="tspan1031"
          x="77.414886"
          y="310.32953"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:47.0606px;font-family:Calibri;-inkscape-font-specification:'Calibri, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;stroke-width:0.490209px">NURBS</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:47.0606px;font-family:Calibri;-inkscape-font-specification:'Calibri, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;stroke-width:0.490209px">Nurbs</tspan></text>
     <g
        clip-path="url(#clipPath444)"
        id="g31"

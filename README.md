@@ -38,4 +38,4 @@ Please cite this package following the information on [Zenodo](https://zenodo.or
 
 ## Documentation
 
-Here you can find the [documentation](https://hobezwe.github.io/NURBS.jl/dev/).
+Here you can find the [documentation](https://hobezwe.github.io/Nurbs.jl/dev/).

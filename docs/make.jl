@@ -1,14 +1,14 @@
-using NURBS
+using Nurbs
 using Documenter
 
-DocMeta.setdocmeta!(NURBS, :DocTestSetup, :(using NURBS); recursive=true)
+DocMeta.setdocmeta!(Nurbs, :DocTestSetup, :(using Nurbs); recursive=true)
 
 makedocs(;
     modules=[NURBS],
     authors="Bernd Hofmann <bernd.hofmann@tum.de> and contributors",
-    sitename="NURBS.jl",
+    sitename="Nurbs.jl",
     format=Documenter.HTML(;
-        prettyurls=get(ENV, "CI", "false") == "true", canonical="https://HoBeZwe.github.io/NURBS.jl", edit_link="main", assets=String[]
+        prettyurls=get(ENV, "CI", "false") == "true", canonical="https://HoBeZwe.github.io/Nurbs.jl", edit_link="main", assets=String[]
     ),
     pages=[
         "Introduction" => "index.md",
@@ -20,4 +20,4 @@ makedocs(;
     ],
 )
 
-deploydocs(; repo="github.com/HoBeZwe/NURBS.jl", devbranch="main")
+deploydocs(; repo="github.com/HoBeZwe/Nurbs.jl", devbranch="main")

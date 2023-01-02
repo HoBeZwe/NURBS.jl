@@ -12,7 +12,7 @@ To read multipatch files as defined and provided by the [nurbs Octave implementa
     Also note, that the Octave package so far provides more functionality.
 
 ```@example utils
-using NURBS # hide
+using Nurbs # hide
 Patches = readMultipatch("assets/sphere.dat")
 
 using PlotlyJS

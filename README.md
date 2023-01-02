@@ -16,14 +16,14 @@
 
 ## Introduction
 
-This package provides B-spline and NURBS (non-uniform rational B-spline) basis functions, their derivatives, as well as curves and surfaces based on both considered basis functions.
+This package provides functionality to define and evaluate B-spline and NURBS (non-uniform rational B-spline) basis functions, their derivatives, as well as curves and surfaces based on both considered basis functions.
 
 The following aspects are implemented (✓) and planned (⌛):
 
-##### B-spline & NURBS
-- ✓ Basis & derivatives
-- ✓ Curves & derivatives
-- ✓ Surfaces & derivatives
+##### B-spline & NURBS evaluation
+- ✓ Basis & derivatives 
+- ✓ Curves & derivatives 
+- ✓ Surfaces & derivatives 
 
 ##### Fundamental operations
 - ✓ File I/O (basic)

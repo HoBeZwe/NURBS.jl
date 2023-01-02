@@ -1,7 +1,7 @@
 
 # Bases
 
-Two considered B-spline and NURBS basis functions are based on a knot vector.
+The two considered B-spline and NURBS basis functions are based on a knot vector.
 
 ---
 ## [Knot Vectors](@id kvec)

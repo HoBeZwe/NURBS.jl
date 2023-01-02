@@ -1,11 +1,7 @@
 
 # Bases
 
-Two type of basis functions are available:
-- B-splines
-- NURBS
-
-Both are defined by initializing corresponding structures. A naive evaluation method is available for both, an efficient evaluation only for B-splines.
+The considered B-spline and NURBS basis functions are defined by initializing corresponding structures. A naive evaluation method is available for both, an efficient evaluation only for B-splines.
 
 ---
 ## Define Structures
@@ -34,8 +30,9 @@ nothing # hide
 ---
 ## Naive Evaluation
 
-To evaluate the bases at certain points the [`bSplineNaive`](@ref bSplineNaive) and the [`nurbsNaive`](@ref nurbsNaive) functions are provided.
-For the derivatives the [`bSplineNaiveDerivative`](@ref bSplineNaive) and the [`nurbsNaiveDerivative`](@ref bSplineNaive) functions are provided.
+To evaluate the bases at certain points the [`bSplineNaive`](@ref bSplineNaive) and the [`nurbsNaive`](@ref nurbsNaive) functions are provided. 
+These directly implement the defining equations of the [B-splines](@ref bspl) and [NURBS](@ref nurbs).
+For the derivatives the [`bSplineNaiveDerivative`](@ref bSplineNaive) and the [`nurbsNaiveDerivative`](@ref bSplineNaive) functions are provided derectly implementing the defining equations of the [derivatives](@ref derB).
 
 !!! note
     The naive evaluation methods are solely implemented to play around with parameters (to get familiar with NURBS and B-splines). 
@@ -91,7 +88,7 @@ savefig("plotBsplD.html"); nothing # hide
 ---
 ## Efficient Evaluation
 
-For the B-splines the efficient evaluation of [[2]](@ref refs) is implemented via [`bSpline`](@ref bSpline) and [`bSplineDerivatives`](@ref bSplineDerivatives). That is, only the basis functions different from zero are evaluated:
+For the B-splines the efficient evaluation of [[1]](@ref refs) is implemented via [`bSpline`](@ref bSpline) and [`bSplineDerivatives`](@ref bSplineDerivatives). That is, only the basis functions different from zero are evaluated:
 
 !!! note
     For the evaluation of NURBS curves and surfaces (and their derivatives) the B-spline evaluation is sufficient.

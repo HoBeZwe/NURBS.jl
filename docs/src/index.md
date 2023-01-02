@@ -1,7 +1,7 @@
 
 # NURBS.jl
 
-This package provides B-spline and NURBS basis functions, their derivatives, as well as curves and surfaces based on both considered basis functions.
+This package provides B-spline and NURBS (non-uniform rational B-spline) basis functions, their derivatives, as well as curves and surfaces based on both considered basis functions.
 
 
 ---
@@ -20,13 +20,13 @@ The following aspects are implemented (✓) and planned (⌛):
 - ⌛ Degree elevation / reduction
 - ⌛ Construction of common geometries
 
-Basically, chapters 2-4 of [[2]](@ref refs) are implemented so far.
+Basically, chapters 2-4 of [[1]](@ref refs) are implemented so far (adapted to 1-based indexing).
 
 !!! note
     Open knot vectors are assumed everywhere, if not stated otherwise.
 
 !!! note
-    The parametric space is assumed to be [0, 1] everywhere.
+    The parametric space is assumed to be ``[0, 1]`` or ``{[0,1]}^2``  everywhere.
 
 
 ---

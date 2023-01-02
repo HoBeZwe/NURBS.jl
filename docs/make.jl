@@ -12,6 +12,7 @@ makedocs(;
     ),
     pages=[
         "Introduction" => "index.md",
+        "Definitions" => Any["Bases" => "basis_def.md", "Curves" => "curves_def.md", "Surfaces" => "surfaces_def.md"],
         "Manual" => Any["Bases" => "basis.md", "Curves" => "curves.md", "Surfaces" => "surfaces.md"],
         "Utils" => "utils.md",
         "Contributing" => "contributing.md",

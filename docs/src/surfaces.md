@@ -75,7 +75,7 @@ plotPatches([PatchN], plotControlPoints=true)
 ```
 
 ```@raw html
-<object data="surface3D.html" type="text/html"  style="width:120%;height:50vh;"> </object>
+<object data="../surface3D.html" type="text/html"  style="width:120%;height:50vh;"> </object>
 ```
 
 ---
@@ -102,5 +102,5 @@ savefig(t, "surface3Dder.html"); nothing # hide
 ```
 
 ```@raw html
-<object data="surface3Dder.html" type="text/html"  style="width:120%;height:50vh;"> </object>
+<object data="../surface3Dder.html" type="text/html"  style="width:120%;height:50vh;"> </object>
 ```

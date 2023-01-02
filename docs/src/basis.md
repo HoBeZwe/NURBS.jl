@@ -65,7 +65,7 @@ savefig("plotBspl.html"); nothing # hide
 ```
 
 ```@raw html
-<object data="plotBspl.html" type="text/html"  style="width:120%;height:50vh;"> </object>
+<object data="../plotBspl.html" type="text/html"  style="width:120%;height:50vh;"> </object>
 ```
 
 
@@ -108,7 +108,7 @@ savefig("plotBspleff.html"); nothing # hide
 ```
 
 ```@raw html
-<object data="plotBspleff.html" type="text/html"  style="width:120%;height:50vh;"> </object>
+<object data="../plotBspleff.html" type="text/html"  style="width:120%;height:50vh;"> </object>
 ```
 
 ```@example basis

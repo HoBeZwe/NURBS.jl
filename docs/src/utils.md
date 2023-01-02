@@ -22,7 +22,7 @@ savefig(t, "sphere.html"); nothing # hide
 ```
 
 ```@raw html
-<object data="sphere.html" type="text/html"  style="width:120%;height:50vh;"> </object>
+<object data="../sphere.html" type="text/html"  style="width:120%;height:50vh;"> </object>
 ```
 
 ## Jacobian

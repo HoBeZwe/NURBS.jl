@@ -81,7 +81,7 @@ savefig("plotBsplD.html"); nothing # hide
 ```
 
 ```@raw html
-<object data="plotBsplD.html" type="text/html"  style="width:120%;height:50vh;"> </object>
+<object data="../plotBsplD.html" type="text/html"  style="width:120%;height:50vh;"> </object>
 ```
 
 
@@ -122,5 +122,5 @@ savefig("plotBsplDeff.html"); nothing # hide
 ```
 
 ```@raw html
-<object data="plotBsplDeff.html" type="text/html"  style="width:120%;height:50vh;"> </object>
+<object data="../plotBsplDeff.html" type="text/html"  style="width:120%;height:50vh;"> </object>
 ```

@@ -4,7 +4,7 @@ using Documenter
 DocMeta.setdocmeta!(Nurbs, :DocTestSetup, :(using Nurbs); recursive=true)
 
 makedocs(;
-    modules=[Nurbs],
+    modules=[NURBS],
     authors="Bernd Hofmann <bernd.hofmann@tum.de> and contributors",
     sitename="Nurbs.jl",
     format=Documenter.HTML(;

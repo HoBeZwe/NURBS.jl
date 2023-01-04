@@ -13,7 +13,7 @@ Both are defined by initializing corresponding structures.
 NURBS and B-spline curves are defined by initializing a [`BsplineCurve`](@ref BsplineCurve) or a [`NURBScurve`](@ref NURBScurve) structure, respectively.
 
 ```@example curves
-using Nurbs # hide
+using NURBS # hide
 # --- parameters
 kVec = Float64[0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 6, 6, 6] # knot vector
 kVec ./= maximum(kVec)                                # normalize it

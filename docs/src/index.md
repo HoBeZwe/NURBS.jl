@@ -1,5 +1,5 @@
 
-# Nurbs.jl
+# NURBS.jl
 
 This package provides functionality to define and evaluate B-spline and NURBS (non-uniform rational B-spline) basis functions, their derivatives, as well as curves and surfaces based on both considered basis functions.
 
@@ -32,10 +32,10 @@ Basically, chapters 2-4 of [[1]](@ref refs) are implemented so far (adapted to 1
 ---
 ## Installation
 
-Installing Nurbs is done by entering the package manager (enter `]` at the julia REPL) and issuing:
+Installing NURBS is done by entering the package manager (enter `]` at the julia REPL) and issuing:
 
 ```
-pkg> add Nurbs 
+pkg> add NURBS 
 ```
 
 ---

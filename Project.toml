@@ -1,4 +1,4 @@
-name = "Nurbs"
+name = "NURBS"
 uuid = "dde13934-061e-461b-aa91-2c0fad390a0d"
 authors = ["Bernd Hofmann <bernd.hofmann@tum.de> and contributors"]
 version = "0.3.0"

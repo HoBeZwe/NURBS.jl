@@ -1,4 +1,4 @@
-module Nurbs
+module NURBS
 
 # -------- used packages
 using LinearAlgebra

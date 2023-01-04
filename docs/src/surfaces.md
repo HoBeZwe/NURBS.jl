@@ -13,7 +13,7 @@ Both are defined by initializing corresponding structures.
 NURBS and B-spline surfaces are defined by initializing a [`BsplineSurface`](@ref BsplineSurface) or a [`NURBSsurface`](@ref NURBSsurface) structure, respectively.
 
 ```@example surfaces
-using Nurbs # hide
+using NURBS # hide
 using StaticArrays
 
 # --- parameters

@@ -11,7 +11,7 @@
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/hobezwe/NURBS.jl/blob/main/LICENSE)
 [![Build Status](https://github.com/hobezwe/NURBS.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/hobezwe/NURBS.jl/actions/workflows/CI.yml?query=branch%3Amain)
 [![codecov](https://codecov.io/gh/HoBeZwe/NURBS.jl/branch/main/graph/badge.svg?token=4F9NUNRC1K)](https://codecov.io/gh/HoBeZwe/NURBS.jl)
-[![DOI](https://zenodo.org/badge/375493054.svg)](https://zenodo.org/badge/latestdoi/375493054)
+[![DOI](https://zenodo.org/badge/579998043.svg)](https://zenodo.org/badge/latestdoi/579998043)
 
 
 ## Introduction
@@ -33,7 +33,7 @@ The following aspects are implemented (✓) and planned (⌛):
 
 ## Citation
 
-Please cite this package following the information on [Zenodo](https://zenodo.org/badge/latestdoi/375493054).
+Please cite this package following the information on [Zenodo](https://zenodo.org/badge/latestdoi/579998043).
 
 
 ## Documentation

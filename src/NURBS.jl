@@ -21,6 +21,8 @@ export curvePoints, surfacePoints
 export curveDerivativesPoints, surfaceDerivativesPoints
 export jacobian
 
+export insertKnot!, insertKnot
+
 export readMultipatch
 export generateKnotVec, numBasisFunctions
 
@@ -38,6 +40,8 @@ include("nurbs/basis.jl")
 include("nurbs/basisDerivatives.jl")
 include("nurbs/curves.jl")
 include("nurbs/surfaces.jl")
+
+include("fundamentalOperations/knotInsertion.jl")
 
 include("utils.jl")
 

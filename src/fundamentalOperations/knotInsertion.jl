@@ -4,18 +4,21 @@
 
 Insert a new parametric point with a given mulitplicity (insert the point multiple times) for the polynomial degree 'degree'. Return the resutling knot vector and the new control points.
 
+Adaption of Algorithm A5.1 from 'The NURBS Book' p. 151.
+
 The provided knot vector and control-point vector are NOT modified.
 """
-function insertKnot(knotVecOrig, controlPointsOrig, degree::Int, newParametricPoint::Real, multiplicity::Int)
+function insertKnot(knotVecOrig, controlPointsOrig, degree::Int, newParametricPoint::Real, multiplicity::Int, weights=[])
 
     # --- make copies
     knotVecNew       = deepcopy(knotVecOrig)
     controlPointsNew = deepcopy(controlPointsOrig)
+    weightsNew       = deepcopy(weights)
 
     # --- modify copies
-    insertKnot!(knotVecNew, controlPointsNew, degree, newParametricPoint, multiplicity)
+    insertKnot!(knotVecNew, controlPointsNew, degree, newParametricPoint, multiplicity, weightsNew)
 
-    return knotVecNew, controlPointsNew
+    return knotVecNew, controlPointsNew, weightsNew
 end
 
 
@@ -24,20 +27,23 @@ end
 
 Insert a new parametric point with a given mulitplicity (insert the point multiple times) for the polynomial degree 'degree'. Return the resutling knot vector and the new control points.
 
+Adaption of Algorithm A5.1 from 'The NURBS Book' p. 151.
+
 The provided knot vector and control-point vector are modified.
 """
-function insertKnot!(knotVecOrig, controlPointsOrig, degree::Int, newParametricPoint::Real, multiplicity::Int)
+function insertKnot!(knotVecOrig, controlPointsOrig, degree::Int, newParametricPoint::Real, multiplicity::Int, weights=[])
 
     # --- is provide knot vector a valid one?
     isValidKnotVector!(knotVecOrig)
 
-
     # --- modify knot vector
+    knotVecCopy = deepcopy(knotVecOrig)
     oldMultIndices, oldMult = extendKnotVector!(knotVecOrig, degree, newParametricPoint, multiplicity)
-    
-    
-    # --- modify control points
 
+    # --- modify control points
+    extendControlPoints!(
+        controlPointsOrig, knotVecCopy, degree, oldMultIndices.stop, newParametricPoint, multiplicity, oldMult, weights
+    )
 
     return nothing
 end
@@ -62,4 +68,83 @@ function extendKnotVector!(knotVecOrig, degree::Int, newParametricPoint::Real, m
     splice!(knotVecOrig, oldMultIndices, toInsert)                  # insert the total parametric point in final multiplicity
 
     return oldMultIndices, oldMult
+end
+
+
+"""
+    extendControlPoints!(controlPoints, knotVecOrig, degree::Int, pos::Int, uNew::Real, multiplicity::Int, oldMult::Int, weights)
+
+Insert the new control points (and optionally the weights) corresponding to the new parametric points.
+
+Adaption of Algorithm A5.1 from 'The NURBS Book' p. 151.
+"""
+function extendControlPoints!(controlPoints, knotVecOrig, degree::Int, pos::Int, uNew::Real, multiplicity::Int, oldMult::Int, weights)
+
+    T = eltype(controlPoints[1])
+
+    # --- computation including weights
+    if !isempty(weights)
+
+        newControlPoints = [SVector{3,T}(0.0, 0.0, 0.0) for i in 1:(degree - oldMult + multiplicity - 1)]
+        newWeights = [T(0.0) for i in 1:(degree - oldMult + multiplicity - 1)]
+
+        auxC = controlPoints[(pos - degree):(pos - oldMult)]
+        auxW = weights[(pos - degree):(pos - oldMult)]
+
+        for r in 1:multiplicity
+            for i in 1:(degree - oldMult - r + 1)
+
+                L = pos - degree + i + r - 1
+
+                αᵢ = (uNew - knotVecOrig[L]) / (knotVecOrig[pos + i] - knotVecOrig[L])
+                auxC[i] = αᵢ * auxW[i + 1] * auxC[i + 1] + (1.0 - αᵢ) * auxW[i] * auxC[i]
+                auxW[i] = αᵢ * auxW[i + 1] + (1.0 - αᵢ) * auxW[i]
+            end
+
+            newControlPoints[r] = auxC[1] / auxW[1]
+            newControlPoints[end - r + 1] = auxC[end - r] / auxW[end - r]
+
+            newWeights[r] = auxW[1]
+            newWeights[end - r + 1] = auxW[end - r]
+        end
+
+        # load remaining controlpoints
+        for i in (multiplicity + oldMult + 1):(degree - oldMult - 1)
+            newControlPoints[i] = auxC[i] / auxW[i]
+            newWeights[i] = auxW[i]
+        end
+
+        # splice new computed points into array (replacing the correct amount)
+        splice!(controlPoints, (pos - degree + 1):(pos - oldMult - 1), newControlPoints)
+        splice!(weights, (pos - degree + 1):(pos - oldMult - 1), newWeights)
+
+        return nothing
+    end
+
+    # --- computation when there are no weights
+    newControlPoints = [SVector{3,T}(0.0, 0.0, 0.0) for i in 1:(degree - oldMult + multiplicity - 1)]
+
+    aux = controlPoints[(pos - degree):(pos - oldMult)]
+    for r in 1:multiplicity
+        for i in 1:(degree - oldMult - r + 1)
+
+            L = pos - degree + i + r - 1
+
+            αᵢ = (uNew - knotVecOrig[L]) / (knotVecOrig[pos + i] - knotVecOrig[L])
+            aux[i] = αᵢ * aux[i + 1] + (1.0 - αᵢ) * aux[i]
+        end
+
+        newControlPoints[r] = aux[1]
+        newControlPoints[end - r + 1] = aux[end - r]
+    end
+
+    # load remaining controlpoints
+    for i in (multiplicity + oldMult + 1):(degree - oldMult - 1)
+        newControlPoints[i] = aux[i]
+    end
+
+    # splice new computed points into array (replacing the correct amount)
+    splice!(controlPoints, (pos - degree + 1):(pos - oldMult - 1), newControlPoints)
+
+    return nothing
 end

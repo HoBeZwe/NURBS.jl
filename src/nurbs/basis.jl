@@ -6,13 +6,6 @@ i-th NURB basis function evaluated at all 'evalpoints'.
 """
 function nurbsNaive(basis::NURB, i::Int, evalpoints)
 
-    # normalize knot vector entries to [0, 1]
-    minimum(basis.knotVec) != 0.0 && error("The knot vector has to start at 0.")
-    if maximum(basis.knotVec) != 1.0
-        basis.knotVec ./= maximum(basis.knotVec)
-        @info "The knot vector is being modified (normalized)."
-    end
-
     return nurbsNaive(basis.knotVec, i, basis.degree, evalpoints, basis.weights)
 end
 

@@ -9,13 +9,6 @@ function bSplineNaiveDerivative(basis::Bspline, i::Int, k::Int, evalpoints)
     k < 1 && error("The k-th derivative has to be k ≥ 1!")
     k > basis.degree && return zeros(size(evalpoints)) # p+1 th derivative of a polynomial of degree p is zero
 
-    # normalize knot vector entries to [0, 1]
-    minimum(basis.knotVec) != 0.0 && error("The knot vector has to start at 0.")
-    if maximum(basis.knotVec) != 1.0
-        basis.knotVec ./= maximum(basis.knotVec)
-        @info "The knot vector is being modified (normalized)."
-    end
-
     return bSplineNaiveDerivative(basis.knotVec, i, basis.degree, evalpoints, k)
 end
 

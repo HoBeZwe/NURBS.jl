@@ -10,6 +10,31 @@ numBasisFunctions(basis::Basis) = length(basis.knotVec) - basis.degree - 1
 
 
 """
+    isValidKnotVector!(kVec)
+
+Check whether the knot vector has only entries in [0, 1] and is in ascending order.
+
+If not the knot vector is modified.
+"""
+function isValidKnotVector!(kVec)
+
+    # is the vector sorted?
+    issorted(kVec) || error("The knot vector is not in ascending order.")
+
+    # is the first element 0?
+    kVec[1] == 0.0 || error("The knot vector has to start at 0.")
+
+    # normalize knot vector entries to [0, 1]
+    if kVec[end] != 1.0
+        kVec ./= maximum(kVec)
+        @info "The knot vector is being modified (normalized)."
+    end
+
+    return nothing
+end
+
+
+"""
     generateKnotVec(b::Int, degree::Int)
 
 Convenience function to generate a knot vector for 'b' basis functions and a certain 'degree': 

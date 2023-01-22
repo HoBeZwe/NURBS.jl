@@ -9,6 +9,12 @@ B-spline basis.
 struct Bspline{F} <: Basis
     degree::Int
     knotVec::Vector{F}
+
+    # inner constructor: check whether provided knot vector a valid one
+    function Bspline(degree::Int, knotVec::Vector{F}) where {F}
+        isValidKnotVector!(knotVec)
+        new{F}(degree, knotVec)
+    end
 end
 
 
@@ -21,6 +27,16 @@ struct NURB{F} <: Basis
     degree::Int
     knotVec::Vector{F}
     weights::Vector{F}
+
+    # inner constructor: perform some checks
+    function NURB(degree::Int, knotVec::Vector{F}, weights::Vector{F}) where {F}
+        isValidKnotVector!(knotVec)      # is provided knot vector a valid one?
+
+        B = length(knotVec) - degree - 1 # number of basis functions
+        length(weights) == B || error("The length of the weights vector has to match the number of basis functions ($B).")
+
+        new{F}(degree, knotVec, weights)
+    end
 end
 
 

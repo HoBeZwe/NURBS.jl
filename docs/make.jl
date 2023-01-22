@@ -13,7 +13,18 @@ makedocs(;
     pages=[
         "Introduction" => "index.md",
         "Definitions" => Any["Bases" => "basis_def.md", "Curves" => "curves_def.md", "Surfaces" => "surfaces_def.md"],
-        "Manual" => Any["Bases" => "basis.md", "Curves" => "curves.md", "Surfaces" => "surfaces.md"],
+        "Fundamental Operations" => Any[
+            "Knot Insertion" => "knotInsertion.md",
+            "Knot Removal" => "knotRemoval.md",
+            "Degree Elevation" => "degreeElevation.md",
+            "Degree Reduction" => "degreeReduction.md",
+        ],
+        "Manual" => Any[
+            "Bases" => "basis.md",
+            "Curves" => "curves.md",
+            "Surfaces" => "surfaces.md",
+            "Fundamental Operations" => "fundOperations.md",
+        ],
         "Utils" => "utils.md",
         "Contributing" => "contributing.md",
         "API Reference" => "apiref.md",

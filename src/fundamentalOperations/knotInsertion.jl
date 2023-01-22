@@ -2,7 +2,7 @@
 """
     insertKnot(knotVecOrig, controlPointsOrig, p::Int, newParametricPoint::Real, multiplicity::Int)
 
-Insert a new parametric point with a given mulitplicity (insert the point multiple times) for the polynomial degree 'degree'. Return the resutling knot vector and the new control points.
+Insert a new value with a given mulitplicity (insert the value multiple times) into a knot vector for the polynomial degree 'degree'. Return the resutling knot vector and the new control points.
 
 Adaption of Algorithm A5.1 from 'The NURBS Book' p. 151.
 
@@ -25,7 +25,7 @@ end
 """
     insertKnot!(knotVecOrig, controlPointsOrig, p::Int, newParametricPoint::Real, multiplicity::Int)
 
-Insert a new parametric point with a given mulitplicity (insert the point multiple times) for the polynomial degree 'degree'. Return the resutling knot vector and the new control points.
+Insert a new value with a given mulitplicity (insert the value multiple times) into a knot vector for the polynomial degree 'degree'. Return the resutling knot vector and the new control points.
 
 Adaption of Algorithm A5.1 from 'The NURBS Book' p. 151.
 
@@ -52,7 +52,7 @@ end
 """
     extendKnotVector!(knotVecOrig, newParametricPoint::Real, multiplicity::Int)
 
-Insert the new parametric point with a given mulitplicity (insert the point multiple times).
+Insert the new value with a given mulitplicity (insert the point multiple times).
 """
 function extendKnotVector!(knotVecOrig, degree::Int, newParametricPoint::Real, multiplicity::Int)
 
@@ -74,7 +74,7 @@ end
 """
     extendControlPoints!(controlPoints, knotVecOrig, degree::Int, pos::Int, uNew::Real, multiplicity::Int, oldMult::Int, weights)
 
-Insert the new control points (and optionally the weights) corresponding to the new parametric points.
+Insert the new control points (and optionally the weights) corresponding to the new values in the knot vector.
 
 Adaption of Algorithm A5.1 from 'The NURBS Book' p. 151.
 """

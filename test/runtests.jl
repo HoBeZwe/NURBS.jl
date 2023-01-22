@@ -22,6 +22,10 @@ using PlotlyJS
         include("surfaces_nurbs.jl")
     end
 
+    @testset "Fundamental Operations" begin
+        include("knotInsertion.jl")
+    end
+
     @testset "Utils" begin
         include("utils.jl")
     end

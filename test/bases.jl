@@ -149,7 +149,7 @@ end
         kVec = Float64[0, 0, 0, 0, 1, 2, 3, 4, 5, 5, 5]
         #kVec ./= maximum(kVec)
 
-        w = ones(10)
+        w = ones(8)
 
         evalpoints = [2.5 / 5]
 

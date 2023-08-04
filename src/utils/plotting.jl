@@ -127,13 +127,13 @@ function __init__()
             if !isempty(controlPoints)
                 # along u-dirction
                 for ind in eachindex(controlPoints[:, 1])
-                    maxmax, t2 = plotControlPoints(controlPoints[:, ind])
+                    maxmax, t2 = plotControlPoints(controlPoints[ind, :])
                     push!(data, t2)
                 end
 
                 # along v-direction
                 for ind in eachindex(controlPoints[1, :])
-                    maxmax2, t2 = plotControlPoints(controlPoints[ind, :])
+                    maxmax2, t2 = plotControlPoints(controlPoints[:, ind])
                     push!(data, t2)
 
                     maxmax = maximum([maxmax, maxmax2])

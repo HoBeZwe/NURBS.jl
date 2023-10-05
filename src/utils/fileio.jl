@@ -19,7 +19,7 @@ PATCH b
 """
 function readMultipatch(filename::String, T=Float64)
 
-    Patches = []
+    Patches = NURBSsurface{T}[]
 
     # read the file into a vector of strings (one string per line)
     stringVec = readlines(filename)

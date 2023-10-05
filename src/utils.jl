@@ -61,7 +61,7 @@ end
 
 
 """
-    jacobian(Patch::Surface, uEvalpoints, vEvalpoints)
+    Jacobian(Patch::Surface, uEvalpoints, vEvalpoints)
 
 Compute the Jacobian matrix and its (generalized) determinant at the parametric points 'uEvalpoints' and 'vEvalpoints'.
 
@@ -74,7 +74,7 @@ Return
 
 Note: surface points are evaluated but thrown away: maybe change this/make use of it.
 """
-function jacobian(Patch::Surface, uEvalpoints, vEvalpoints)
+function Jacobian(Patch::Surface, uEvalpoints, vEvalpoints)
 
     S = surfaceDerivativesPoints(Patch, uEvalpoints, vEvalpoints, 1) # first derivatives
 
@@ -103,4 +103,54 @@ function jacobian(Patch::Surface, uEvalpoints, vEvalpoints)
     end
 
     return J, dJ
+end
+
+
+"""
+    spanRanges(Bspl::Bspline, points)
+
+Determine the ranges of the points which lie in each span of the B-spline (assuming normalized open knot vectors).
+
+Return a vector of ranges (one entry per span).
+"""
+function spanRanges(Bspl::Bspline, points; emptyRanges=false)
+
+    numBasis = numBasisFunctions(Bspl)
+    knotSpan = NURBS.findSpan(numBasis, points, Bspl.knotVec) # find for each point the span index
+    p = Bspl.degree
+
+    # open knot vector: set first p ranges to 0:-1 (empty range)
+    if emptyRanges
+        ranges = [0:-1]
+        for i in 1:(p - 1)
+            push!(ranges, 0:-1)
+        end
+    else
+        ranges = []
+    end
+
+    # remaining ranges
+    en = 0
+    for i in (p + 1):numBasis
+
+        SS = sum(knotSpan .== i) # number of points in span i
+
+        # case: no point lies in the span
+        if SS == 0
+            push!(ranges, 0:-1) # insert empty range
+            continue
+        end
+
+        st = en
+        en = st + SS
+
+        push!(ranges, (st + 1):en)
+    end
+
+    # open knot vector: append p empty ranges
+    for i in 1:p
+        emptyRanges && push!(ranges, 0:-1)
+    end
+
+    return ranges
 end

@@ -1,12 +1,12 @@
 
-abstract type Basis end
+abstract type Basis{F} end
 
 """
-    Bspline{F} <: Basis
+    Bspline{F} <: Basis{F}
 
 B-spline basis.
 """
-struct Bspline{F} <: Basis
+struct Bspline{F} <: Basis{F}
     degree::Int
     knotVec::Vector{F}
 
@@ -19,11 +19,11 @@ end
 
 
 """
-    NURB{F} <: Basis
+    NURB{F} <: Basis{F}
 
 NURBS basis.
 """
-struct NURB{F} <: Basis
+struct NURB{F} <: Basis{F}
     degree::Int
     knotVec::Vector{F}
     weights::Vector{F}
@@ -42,24 +42,24 @@ end
 
 
 
-abstract type Curve end
+abstract type Curve{F} end
 
 """
-    BsplineCurve{F} <: Curve
+    BsplineCurve{F} <: Curve{F}
 
 B-spline curve defined by the basis and the control points.
 """
-struct BsplineCurve{F} <: Curve
+struct BsplineCurve{F} <: Curve{F}
     basis::Bspline{F}
     controlPoints::Vector{SVector{3,F}}
 end
 
 """
-    NURBScurve{F} <: Curve
+    NURBScurve{F} <: Curve{F}
 
 B-spline curve defined by the basis and the control points.
 """
-struct NURBScurve{F} <: Curve
+struct NURBScurve{F} <: Curve{F}
     basis::NURB{F}
     controlPoints::Vector{SVector{3,F}}
 end
@@ -67,14 +67,14 @@ end
 
 
 
-abstract type Surface end
+abstract type Surface{F} end
 
 """
-    BsplineSurface{F} <: Surface
+    BsplineSurface{F} <: Surface{F}
 
 Surface defined by a B-spline basis and the control points.
 """
-struct BsplineSurface{F} <: Surface
+struct BsplineSurface{F} <: Surface{F}
     uBasis::Bspline{F}
     vBasis::Bspline{F}
     controlPoints::Matrix{SVector{3,F}}     # control points in (u, v)- direction
@@ -82,11 +82,11 @@ end
 
 
 """
-    NURBSsurface{F} <: Surface
+    NURBSsurface{F} <: Surface{F}
 
 Surface defined by a B-spline basis, the control points, and the weights.
 """
-struct NURBSsurface{F} <: Surface
+struct NURBSsurface{F} <: Surface{F}
     uBasis::Bspline{F}
     vBasis::Bspline{F}
     controlPoints::Matrix{SVector{3,F}}     # control points in (u, v)- direction

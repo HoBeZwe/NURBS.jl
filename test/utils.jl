@@ -1,4 +1,27 @@
 
+@testset "Ranges" begin
+
+    b = 9
+    p = 3
+    kVec = generateKnotVec(b, p)
+
+    # example with points in every span
+    evalpoints = 0:0.1:1
+    Ranges = spanRanges(Bspline(p, kVec), evalpoints)
+
+    R = [0:-1, 0:-1, 0:-1, 1:2, 3:4, 5:5, 6:7, 8:9, 10:11, 0:-1, 0:-1, 0:-1]
+
+    @test Ranges == R
+
+    # example with spans without points
+    evalpoints = [0.52]
+    Ranges = spanRanges(Bspline(p, kVec), evalpoints)
+
+    R = [0:-1, 0:-1, 0:-1, 0:-1, 0:-1, 0:-1, 1:1, 0:-1, 0:-1, 0:-1, 0:-1, 0:-1]
+
+    @test Ranges == R
+end
+
 @testset "File IO" begin
 
     @test_nowarn Patches = readMultipatch("assets/sphere.dat")

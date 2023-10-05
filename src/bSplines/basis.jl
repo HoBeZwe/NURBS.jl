@@ -118,7 +118,7 @@ function findSpan(b::Int, u, knotVector)
     for (j, uEval) in enumerate(u)
 
         # special case: uEval == to last knot vector entry
-        if uEval == knotVector[b + 2]
+        if uEval == knotVector[end]
             spanVec[j] = b
             continue
         end

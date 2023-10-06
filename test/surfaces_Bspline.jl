@@ -66,7 +66,7 @@
 
 
         Patch = BsplineSurface(Bu, Bv, Ps)
-        S = surfacePoints(Patch, uEvalpoints, vEvalpoints)
+        S = Patch(uEvalpoints, vEvalpoints)
 
         a = evalNaive(Bu, 1, uEvalpoints)[1]
         b = evalNaive(Bu, 2, uEvalpoints)[1]
@@ -151,7 +151,7 @@
 
 
         Patch = BsplineSurface(Bu, Bv, Ps)
-        S = surfaceDerivativesPoints(Patch, uEvalpoints, vEvalpoints, 1)
+        S = Patch(uEvalpoints, vEvalpoints, 1)
 
         a = evalNaive(Bu, 1, uEvalpoints)[1]
         b = evalNaive(Bu, 2, uEvalpoints)[1]

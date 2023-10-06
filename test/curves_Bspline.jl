@@ -29,7 +29,7 @@
         controlPoints = [P1, P2, P3, P4, P5, P6, P7, P8]
 
         N = BsplineCurve(Bspl, controlPoints)
-        C = curvePoints(N, evalpoints)
+        C = N(evalpoints)
 
         # actual analytical value
         Cref = 1 / 8 * P3 + 6 / 8 * P4 + 1 / 8 * P5
@@ -66,7 +66,7 @@
         controlPoints = [P1, P2, P3, P4, P5, P6, P7, P8]
 
         N = BsplineCurve(Bspl, controlPoints)
-        C = curveDerivativesPoints(N, evalpoints, 1)
+        C = N(evalpoints, 1)
 
         # actual analytical value
         Cref = -5 / 2 * P3 + 5 / 2 * P5

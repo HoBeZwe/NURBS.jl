@@ -47,14 +47,14 @@ nothing # hide
 ---
 ## Evaluate Points on the Surface
 
-To evaluate the surfaces at parametric points the [`surfacePoints`](@ref surfacePoints) function is provided. 
+To evaluate the surfaces at parametric points hand over the latter. 
 
 ```@example surfaces
 uEvalpoints = collect(0:0.01:1.0)
 vEvalpoints = collect(0:0.01:1.0)
 
-SBspline = surfacePoints(PatchB, uEvalpoints, vEvalpoints)
-SNurbs   = surfacePoints(PatchN, uEvalpoints, vEvalpoints)
+SBspline = PatchB(uEvalpoints, vEvalpoints)
+SNurbs   = PatchN(vEvalpoints, vEvalpoints)
 nothing # hide
 ```
 
@@ -81,13 +81,13 @@ plotPatches([PatchN], plotControlPoints=true)
 ---
 ## Evaluate Derivatives of the Surface
 
-To evaluate derivatives of surfaces at parametric points the [`surfaceDerivativesPoints`](@ref surfaceDerivativesPoints) function is provided.
+To evaluate derivatives of surfaces at parametric points hand over hte latter and the maximum derivative to be evaluated.
 
 ```@example surfaces
 uEvalpoints = collect(0:0.01:1.0)
 vEvalpoints = collect(0:0.01:1.0)
 
-S = surfaceDerivativesPoints(PatchN, uEvalpoints, vEvalpoints, 2) # 0-th, 1st, and 2nd derivatives
+S = PatchN(uEvalpoints, vEvalpoints, 2) # 0-th, 1st, and 2nd derivatives
 nothing # hide
 ```
 

@@ -88,15 +88,14 @@ savefig("plotBsplD.html"); nothing # hide
 ---
 ## Efficient Evaluation
 
-For the B-splines the efficient evaluation of [[1]](@ref refs) is implemented by handing evaluation points to the [`Bspline`](@ref Bspline) structure and [`derivatives`](@ref derivatives) or [`∂`](@ref ∂). That is, only the basis functions different from zero are evaluated:
+For the B-splines the efficient evaluation of [[1]](@ref refs) is implemented by handing evaluation points to the [`Bspline`](@ref Bspline) structure and optionally as second argument the maximum derivative that shall be computed. That is, only the basis functions different from zero are evaluated:
 
 !!! note
     For the evaluation of NURBS curves and surfaces (and their derivatives) the B-spline evaluation is sufficient.
 
 ```@example basis
 bspline  = Bspl(evalpoints)
-bsplineD = derivatives(Bspl, 2)(evalpoints) # 0th, 1st, and 2nd derivative
-bsplineD = ∂(Bspl)(evalpoints) # 0th and 1st derivative
+bsplineD = Bspl(evalpoints, 2) # 0th, 1st, and 2nd derivative
 
 
 Plots.plot(evalpoints, bspline, w=2, 

@@ -1,10 +1,10 @@
 
 """
-    surfacePoints(Patch::BsplineSurface, uEvalpoints, vEvalpoints)
+    (Patch::BsplineSurface)(uEvalpoints, vEvalpoints)
 
 Convenience function to compute points on a B-spline surface.
 """
-surfacePoints(Patch::BsplineSurface, uEvalpoints, vEvalpoints) = surfacePoints(
+(Patch::BsplineSurface)(uEvalpoints, vEvalpoints) = surfacePoints(
     Patch.uBasis.degree,
     Patch.vBasis.degree,
     Patch.uBasis.knotVec,
@@ -74,11 +74,11 @@ end
 
 
 """
-    surfaceDerivativesPoints(Patch::BsplineSurface, uEvalpoints, vEvalpoints, k::Int)
+    (Patch::BsplineSurface)(uEvalpoints, vEvalpoints, k::Int)
 
-Convenience function to compute points of the k-th derivatives of a B-spline surface.
+Convenience function to compute points on all k derivatives of a B-spline surface.
 """
-surfaceDerivativesPoints(Patch::BsplineSurface, uEvalpoints, vEvalpoints, k::Int) = surfaceDerivativesPoints(
+(Patch::BsplineSurface)(uEvalpoints, vEvalpoints, k::Int) = surfaceDerivativesPoints(
     Patch.uBasis.degree,
     Patch.vBasis.degree,
     Patch.uBasis.knotVec,

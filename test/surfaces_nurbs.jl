@@ -49,7 +49,7 @@
         ]
 
         Patch = NURBSsurface(Bu, Bv, Ps, w)
-        S = surfacePoints(Patch, uEvalpoints, vEvalpoints)
+        S = Patch(uEvalpoints, vEvalpoints)
 
         Sref = SVector(2.0, 98 / 27, 68 / 27)
 
@@ -105,7 +105,7 @@
         ]
 
         Patch = NURBSsurface(Bu, Bv, Ps, w)
-        S = surfaceDerivativesPoints(Patch, uEvalpoints, vEvalpoints, 1)
+        S = Patch(uEvalpoints, vEvalpoints, 1)
 
         Sref = SVector(2.0, 98 / 27, 68 / 27) # actual analytical value
 

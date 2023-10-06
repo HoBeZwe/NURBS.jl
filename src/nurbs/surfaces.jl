@@ -1,10 +1,10 @@
 
 """
-    surfacePoints(Patch::NURBSsurface, uEvalpoints, vEvalpoints)
+    (Patch::NURBSsurface)(uEvalpoints, vEvalpoints)
 
 Convenience function to compute points on a NURBSsurface.
 """
-surfacePoints(Patch::NURBSsurface, uEvalpoints, vEvalpoints) = surfacePoints(
+(Patch::NURBSsurface)(uEvalpoints, vEvalpoints) = surfacePoints(
     Patch.uBasis.degree,
     Patch.vBasis.degree,
     Patch.uBasis.knotVec,
@@ -85,11 +85,11 @@ end
 
 
 """
-    surfaceDerivativesPoints(Patch::NURBSsurface, uEvalpoints, vEvalpoints, k::Int)
+    (Patch::NURBSsurface)(uEvalpoints, vEvalpoints, k::Int)
 
-Convenience function to compute points on a NURBSsurface.
+Convenience function to compute points on all k derivatives of a NURBSsurface.
 """
-surfaceDerivativesPoints(Patch::NURBSsurface, uEvalpoints, vEvalpoints, k::Int) = surfaceDerivativesPoints(
+(Patch::NURBSsurface)(uEvalpoints, vEvalpoints, k::Int) = surfaceDerivativesPoints(
     Patch.uBasis.degree,
     Patch.vBasis.degree,
     Patch.uBasis.knotVec,

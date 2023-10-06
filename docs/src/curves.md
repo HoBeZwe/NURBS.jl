@@ -44,13 +44,13 @@ nothing # hide
 ---
 ## Evaluate Points on the Curve
 
-To evaluate the curves at parametric points the [`curvePoints`](@ref curvePoints) function is provided. 
+To evaluate the curves at parametric points simply hand over the latter. 
 
 ```@example curves
 evalpoints = collect(0:0.0005:1.0)
 
-CBspline = curvePoints(NBspline, evalpoints)
-CNurbs   = curvePoints(NNurbs,   evalpoints)
+CBspline = NBspline(evalpoints)
+CNurbs   = NNurbs(evalpoints)
 nothing # hide
 ```
 
@@ -74,12 +74,12 @@ savefig(t, "cruve3D.html"); nothing # hide
 ---
 ## Evaluate Derivatives of the Curve
 
-To evaluate derivatives of curves at parametric points the [`curveDerivativesPoints`](@ref curveDerivativesPoints) function is provided.
+To evaluate derivatives of curves at parametric points hand over the latter and the maximum derivative to be evaluated.
 
 ```@example curves
 evalpoints = collect(0:0.0005:1.0)
 
-C = curveDerivativesPoints(NNurbs, evalpoints, 2) # 0-th, 1st, and 2nd derivatives
+C = NNurbs(evalpoints, 2) # 0-th, 1st, and 2nd derivatives
 nothing # hide
 ```
 

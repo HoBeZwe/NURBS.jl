@@ -66,18 +66,18 @@ end
 
 
 """
-    bSplineDerivatives(basis::Bspline, k::Int, evalpoints)
+    (basis::Bspline)(evalpoints, k::Int)
 
 Evaluate k-the derivative of B-spline basis at all evalpoints (all basis functions different from 0 at the evalpoints are evaluated).
 """
-function (basis::BsplineDerivatives)(evalpoints)
+function (basis::Bspline)(evalpoints, k::Int)
 
     #basis.divMax < 0 && error("The k-th derivative has to be k ≥ 0!")
 
     numBasis = numBasisFunctions(basis)
     knotSpan = findSpan(numBasis, evalpoints, basis.knotVec)
 
-    return derBasisFun(knotSpan, basis.degree, evalpoints, basis.knotVec, basis.divMax)
+    return derBasisFun(knotSpan, basis.degree, evalpoints, basis.knotVec, k)
 end
 
 

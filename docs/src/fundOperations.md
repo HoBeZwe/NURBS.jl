@@ -37,7 +37,7 @@ w             = [1.0, 0.1, 1.0, 1.0, 1.0, 1.0, 3.0, 1.0]
 evalpoints = collect(0:0.005:1.0)
 
 N  = BsplineCurve(Bspline(p, kVec), controlPoints)
-C1 = curvePoints(N, evalpoints)
+C1 = N(evalpoints)
 
 # --- plot the curve
 using PlotlyJS
@@ -60,7 +60,7 @@ kVecNew, ctrlPointsNew, wNew = insertKnot(kVec, controlPoints, p, uNew, 2, w)
 
 # --- evaluate curve with inserted point
 N = BsplineCurve(Bspline(p, kVecNew), ctrlPointsNew)
-C2 = curvePoints(N, evalpoints)
+C2 = N(evalpoints)
 
 # --- plot the curve
 plotCurve3D(C2, controlPoints=ctrlPointsNew)

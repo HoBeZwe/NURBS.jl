@@ -62,12 +62,12 @@ end
         w             = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
 
         N = NURBScurve(NURB(p, kVec, w), controlPoints)
-        C = curvePoints(N, evalpoints)
+        C = N(evalpoints)
 
         @test_nowarn plotCurve3D(C, controlPoints=controlPoints)
         @test_nowarn plotCurve(C, controlPoints=controlPoints)
 
-        C = curveDerivativesPoints(N, evalpoints, 1)
+        C = N(evalpoints, 1)
         @test_nowarn plotCurve3D(C[1], controlPoints=controlPoints, tangents=C[2])
     end
 
@@ -154,7 +154,7 @@ end
         Patch = BsplineSurface(Bspline(p, kVec), Bspline(p, kVec), controlPoints)
 
         # plot derivatives
-        S = surfaceDerivativesPoints(Patch, uEvalpoints, vEvalpoints, 1)
+        S = Patch(uEvalpoints, vEvalpoints, 1)
 
         @test_nowarn plotSurface(S[1, 1], tangents=S[2, 1])
         @test_nowarn plotSurface(S[1, 1], tangents=S[2, 1], controlPoints=Patch.controlPoints, enforceRatio=false)

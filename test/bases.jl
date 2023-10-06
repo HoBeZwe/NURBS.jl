@@ -77,12 +77,9 @@
         @test B[1] ≈ 25.0
 
         # --- smart eval 
-        Bsmart = derivatives(Bspl, 2)(evalpoints)
+        Bsmart = Bspl(evalpoints, 2)
         @test Bsmart[2] ≈ -2.5
         @test Bsmart[3] ≈ 25.0
-
-        Bsmart1 = ∂(Bspl)(evalpoints) # 1st derivative
-        @test Bsmart1[2] ≈ -2.5
     end
 end
 

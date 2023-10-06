@@ -27,7 +27,7 @@
 
         # evaluate original curve
         N  = BsplineCurve(Bspline(p, kVec), controlPoints)
-        C1 = curvePoints(N, evalpoints)
+        C1 = N(evalpoints)
 
         @testset "Existing point once" begin
 
@@ -37,7 +37,7 @@
 
             # evaluate curve with inserted point
             N = BsplineCurve(Bspline(p, kVecNew), ctrlPointsNew)
-            C2 = curvePoints(N, evalpoints)
+            C2 = N(evalpoints)
 
             # verify
             @test minimum(C1 .≈ C2)
@@ -51,7 +51,7 @@
 
             # evaluate curve with inserted point
             N = BsplineCurve(Bspline(p, kVecNew), ctrlPointsNew)
-            C2 = curvePoints(N, evalpoints)
+            C2 = N(evalpoints)
 
             # verify
             @test minimum(C1 .≈ C2)
@@ -65,7 +65,7 @@
 
             # evaluate curve with inserted point
             N = BsplineCurve(Bspline(p, kVecNew), ctrlPointsNew)
-            C2 = curvePoints(N, evalpoints)
+            C2 = N(evalpoints)
 
             # verify
             @test minimum(C1 .≈ C2)
@@ -77,7 +77,7 @@
 
         # evaluate original curve
         N  = NURBScurve(NURB(p, kVec, w), controlPoints)
-        C1 = curvePoints(N, evalpoints)
+        C1 = N(evalpoints)
 
         @testset "Existing point once" begin
 
@@ -87,7 +87,7 @@
 
             # evaluate curve with inserted point
             N = NURBScurve(NURB(p, kVecNew, wNew), ctrlPointsNew)
-            C2 = curvePoints(N, evalpoints)
+            C2 = N(evalpoints)
 
             # verify
             @test minimum(C1 .≈ C2)
@@ -101,7 +101,7 @@
 
             # evaluate curve with inserted point
             N = NURBScurve(NURB(p, kVecNew, wNew), ctrlPointsNew)
-            C2 = curvePoints(N, evalpoints)
+            C2 = N(evalpoints)
 
             # verify
             @test minimum(C1 .≈ C2)
@@ -115,7 +115,7 @@
 
             # evaluate curve with inserted point
             N = NURBScurve(NURB(p, kVecNew, wNew), ctrlPointsNew)
-            C2 = curvePoints(N, evalpoints)
+            C2 = N(evalpoints)
 
             # verify
             @test minimum(C1 .≈ C2)

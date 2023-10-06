@@ -177,7 +177,7 @@ function __init__()
 
             for (ind, patch) in enumerate(Patches)
 
-                S = surfacePoints(patch, uEvalpoints, vEvalpoints)
+                S = patch(uEvalpoints, vEvalpoints)
 
                 if plotControlPoints
                     maxi, trace = plotSurface(S; controlPoints=patch.controlPoints, returnTrace=true)

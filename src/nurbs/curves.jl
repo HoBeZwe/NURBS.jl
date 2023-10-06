@@ -1,11 +1,10 @@
 
 """
-    curvePoints(curve::NURBScurve, uVector)
+    (curve::NURBScurve)(uVector)
 
 Convenience function to compute points on a NURBS curve.
 """
-curvePoints(curve::NURBScurve, uVector) =
-    curvePoints(curve.basis.degree, curve.basis.knotVec, curve.controlPoints, uVector, curve.basis.weights)
+(curve::NURBScurve)(uVector) = curvePoints(curve.basis.degree, curve.basis.knotVec, curve.controlPoints, uVector, curve.basis.weights)
 
 
 """
@@ -57,11 +56,11 @@ end
 
 
 """
-    curveDerivativesPoints(curve::NURBScurve, uVector, k::Int)
+    (curve::NURBScurve)(uVector, k::Int)
 
-Convenience function to compute points on a NURBS curve.
+Convenience function to compute points on all k derivatives of a NURBS curve.
 """
-curveDerivativesPoints(curve::NURBScurve, uVector, k::Int) =
+(curve::NURBScurve)(uVector, k::Int) =
     curveDerivativesPoints(curve.basis.degree, curve.basis.knotVec, curve.controlPoints, uVector, curve.basis.weights, k)
 
 

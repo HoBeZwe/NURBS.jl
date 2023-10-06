@@ -27,7 +27,7 @@
         controlPoints = [P1, P2, P3, P4, P5]
 
         N = NURBScurve(Nrb, controlPoints)
-        C = curvePoints(N, evalpoints)
+        C = N(evalpoints)
 
         # actual analytical value
         Cref = SVector(7 / 5, 6 / 5, 0.0)
@@ -60,7 +60,7 @@
         controlPoints = [P1, P2, P3]
 
         N = NURBScurve(Nrb, controlPoints)
-        C = curveDerivativesPoints(N, evalpoints, 1)
+        C = N(evalpoints, 1)
 
         # actual analytical value
         Cref1 = SVector(0.0, 2.0, 0.0)

@@ -49,7 +49,7 @@
         ]
 
         Patch = NURBSsurface(Bu, Bv, Ps, w)
-        S = surfacePoints(Patch, uEvalpoints, vEvalpoints)
+        S = Patch(uEvalpoints, vEvalpoints)
 
         Sref = SVector(2.0, 98 / 27, 68 / 27)
 
@@ -105,7 +105,7 @@
         ]
 
         Patch = NURBSsurface(Bu, Bv, Ps, w)
-        S = surfaceDerivativesPoints(Patch, uEvalpoints, vEvalpoints, 1)
+        S = Patch(uEvalpoints, vEvalpoints, 1)
 
         Sref = SVector(2.0, 98 / 27, 68 / 27) # actual analytical value
 
@@ -116,6 +116,6 @@
         @test S[2, 1][1, 1] ≈ SVector(4.4444444444, 0.0, 0.0)
         @test S[2, 2][1, 1] ≈ SVector(-3.950617283, 0.0, 0.0)
 
-        @test_nowarn jacobian(Patch, uEvalpoints, vEvalpoints)
+        @test_nowarn Jacobian(Patch, uEvalpoints, vEvalpoints)
     end
 end

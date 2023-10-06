@@ -30,9 +30,9 @@ nothing # hide
 ---
 ## Naive Evaluation
 
-To evaluate the bases at certain points the [`bSplineNaive`](@ref bSplineNaive) and the [`nurbsNaive`](@ref nurbsNaive) functions are provided. 
-These directly implement the defining equations of the [B-splines](@ref bspl) and [NURBS](@ref nurbs).
-For the derivatives the [`bSplineNaiveDerivative`](@ref bSplineNaive) and the [`nurbsNaiveDerivative`](@ref bSplineNaive) functions are provided derectly implementing the defining equations of the [derivatives](@ref derB).
+To evaluate the bases at certain points the [`evalNaive`](@ref evalNaive) function is provided. 
+It directly implemens the defining equations of the [B-splines](@ref bspl) and [NURBS](@ref nurbs).
+For the derivatives the [`evalNaiveDerivative`](@ref evalNaiveDerivative) function is provided derectly implementing the defining equations of the [derivatives](@ref derB).
 
 !!! note
     The naive evaluation methods are solely implemented to play around with parameters (to get familiar with NURBS and B-splines). 
@@ -42,12 +42,12 @@ For the derivatives the [`bSplineNaiveDerivative`](@ref bSplineNaive) and the [`
 evalpoints = collect(0:0.001:1.0)
 
 # --- evaluate bases (4-th basis function)
-bspline = bSplineNaive(Bspl, 4, evalpoints) 
-nurb    = nurbsNaive(Nrbs, 4, evalpoints)
+bspline = evalNaive(Bspl, 4, evalpoints) 
+nurb    = evalNaive(Nrbs, 4, evalpoints)
 
 # --- evaluate derivatives (1st derivative of 4-th basis function)
-bsplineD = bSplineNaiveDerivative(Bspl, 4, 1, evalpoints) 
-nurbD    = nurbsNaiveDerivative(Nrbs, 4, 1, evalpoints)
+bsplineD = evalNaiveDerivative(Bspl, 4, 1, evalpoints) 
+nurbD    = evalNaiveDerivative(Nrbs, 4, 1, evalpoints)
 
 
 using Plots
@@ -88,14 +88,15 @@ savefig("plotBsplD.html"); nothing # hide
 ---
 ## Efficient Evaluation
 
-For the B-splines the efficient evaluation of [[1]](@ref refs) is implemented via [`bSpline`](@ref bSpline) and [`bSplineDerivatives`](@ref bSplineDerivatives). That is, only the basis functions different from zero are evaluated:
+For the B-splines the efficient evaluation of [[1]](@ref refs) is implemented by handing evaluation points to the [`Bspline`](@ref Bspline) structure and optionally as second argument the maximum derivative that shall be computed. That is, only the basis functions different from zero are evaluated:
 
 !!! note
     For the evaluation of NURBS curves and surfaces (and their derivatives) the B-spline evaluation is sufficient.
 
 ```@example basis
-bspline  = bSpline(Bspl, evalpoints)
-bsplineD = bSplineDerivatives(Bspl, 1, evalpoints)
+bspline  = Bspl(evalpoints)
+bsplineD = Bspl(evalpoints, 2) # 0th, 1st, and 2nd derivative
+
 
 Plots.plot(evalpoints, bspline, w=2, 
     leg=false, 

@@ -76,7 +76,7 @@ Note: surface points are evaluated but thrown away: maybe change this/make use o
 """
 function Jacobian(Patch::Surface, uEvalpoints, vEvalpoints)
 
-    S = surfaceDerivativesPoints(Patch, uEvalpoints, vEvalpoints, 1) # first derivatives
+    S = Patch(uEvalpoints, vEvalpoints, 1) # first derivatives
 
     Ju = S[2, 1] # first derivative along u
     Jv = S[1, 2] # first derivative along v
@@ -116,7 +116,7 @@ Return a vector of ranges (one entry per span).
 function spanRanges(Bspl::Bspline, points; emptyRanges=false)
 
     numBasis = numBasisFunctions(Bspl)
-    knotSpan = NURBS.findSpan(numBasis, points, Bspl.knotVec) # find for each point the span index
+    knotSpan = findSpan(numBasis, points, Bspl.knotVec) # find for each point the span index
     p = Bspl.degree
 
     # open knot vector: set first p ranges to 0:-1 (empty range)

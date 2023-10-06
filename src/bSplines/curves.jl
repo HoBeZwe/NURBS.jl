@@ -1,10 +1,10 @@
 
 """
-    curvePoints(curve::BsplineCurve, uVector)
+    (curve::BsplineCurve)(uVector)
 
 Convenience function to compute points on a B-spline curve.
 """
-curvePoints(curve::BsplineCurve, uVector) = curvePoints(curve.basis.degree, curve.basis.knotVec, curve.controlPoints, uVector)
+(curve::BsplineCurve)(uVector) = curvePoints(curve.basis.degree, curve.basis.knotVec, curve.controlPoints, uVector)
 
 
 """
@@ -44,11 +44,11 @@ end
 
 
 """
-    curveDerivativePoints(curve::BsplineCurve, uVector)
+    (curve::BsplineCurve)(uVector, k::Int)
 
-Convenience function to compute points on the k-th derivative of a B-spline curve.
+Convenience function to compute points on all k derivatives of a B-spline curve.
 """
-curveDerivativesPoints(curve::BsplineCurve, uVector, k::Int) =
+(curve::BsplineCurve)(uVector, k::Int) =
     curveDerivativesPoints(curve.basis.degree, curve.basis.knotVec, curve.controlPoints, uVector, k)
 
 

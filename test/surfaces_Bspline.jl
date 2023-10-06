@@ -66,15 +66,15 @@
 
 
         Patch = BsplineSurface(Bu, Bv, Ps)
-        S = surfacePoints(Patch, uEvalpoints, vEvalpoints)
+        S = Patch(uEvalpoints, vEvalpoints)
 
-        a = bSplineNaive(Bu, 1, uEvalpoints)[1]
-        b = bSplineNaive(Bu, 2, uEvalpoints)[1]
-        c = bSplineNaive(Bu, 3, uEvalpoints)[1]
+        a = evalNaive(Bu, 1, uEvalpoints)[1]
+        b = evalNaive(Bu, 2, uEvalpoints)[1]
+        c = evalNaive(Bu, 3, uEvalpoints)[1]
 
-        d = bSplineNaive(Bv, 3, vEvalpoints)[1]
-        e = bSplineNaive(Bv, 4, vEvalpoints)[1]
-        f = bSplineNaive(Bv, 5, vEvalpoints)[1]
+        d = evalNaive(Bv, 3, vEvalpoints)[1]
+        e = evalNaive(Bv, 4, vEvalpoints)[1]
+        f = evalNaive(Bv, 5, vEvalpoints)[1]
 
         # actual analytical value
         Sref =
@@ -151,15 +151,15 @@
 
 
         Patch = BsplineSurface(Bu, Bv, Ps)
-        S = surfaceDerivativesPoints(Patch, uEvalpoints, vEvalpoints, 1)
+        S = Patch(uEvalpoints, vEvalpoints, 1)
 
-        a = bSplineNaive(Bu, 1, uEvalpoints)[1]
-        b = bSplineNaive(Bu, 2, uEvalpoints)[1]
-        c = bSplineNaive(Bu, 3, uEvalpoints)[1]
+        a = evalNaive(Bu, 1, uEvalpoints)[1]
+        b = evalNaive(Bu, 2, uEvalpoints)[1]
+        c = evalNaive(Bu, 3, uEvalpoints)[1]
 
-        d = bSplineNaive(Bv, 3, vEvalpoints)[1]
-        e = bSplineNaive(Bv, 4, vEvalpoints)[1]
-        f = bSplineNaive(Bv, 5, vEvalpoints)[1]
+        d = evalNaive(Bv, 3, vEvalpoints)[1]
+        e = evalNaive(Bv, 4, vEvalpoints)[1]
+        f = evalNaive(Bv, 5, vEvalpoints)[1]
 
         # actual analytical value
         Sref =

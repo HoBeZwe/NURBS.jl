@@ -7,7 +7,7 @@
 
     # example with points in every span
     evalpoints = 0:0.1:1
-    Ranges = spanRanges(Bspline(p, kVec), evalpoints)
+    Ranges = spanRanges(Bspline(p, kVec), evalpoints; emptyRanges=true)
 
     R = [0:-1, 0:-1, 0:-1, 1:2, 3:4, 5:5, 6:7, 8:9, 10:11, 0:-1, 0:-1, 0:-1]
 
@@ -15,7 +15,7 @@
 
     # example with spans without points
     evalpoints = [0.52]
-    Ranges = spanRanges(Bspline(p, kVec), evalpoints)
+    Ranges = spanRanges(Bspline(p, kVec), evalpoints; emptyRanges=true)
 
     R = [0:-1, 0:-1, 0:-1, 0:-1, 0:-1, 0:-1, 1:1, 0:-1, 0:-1, 0:-1, 0:-1, 0:-1]
 
@@ -62,12 +62,12 @@ end
         w             = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
 
         N = NURBScurve(NURB(p, kVec, w), controlPoints)
-        C = curvePoints(N, evalpoints)
+        C = N(evalpoints)
 
         @test_nowarn plotCurve3D(C, controlPoints=controlPoints)
         @test_nowarn plotCurve(C, controlPoints=controlPoints)
 
-        C = curveDerivativesPoints(N, evalpoints, 1)
+        C = N(evalpoints, 1)
         @test_nowarn plotCurve3D(C[1], controlPoints=controlPoints, tangents=C[2])
     end
 
@@ -154,7 +154,7 @@ end
         Patch = BsplineSurface(Bspline(p, kVec), Bspline(p, kVec), controlPoints)
 
         # plot derivatives
-        S = surfaceDerivativesPoints(Patch, uEvalpoints, vEvalpoints, 1)
+        S = Patch(uEvalpoints, vEvalpoints, 1)
 
         @test_nowarn plotSurface(S[1, 1], tangents=S[2, 1])
         @test_nowarn plotSurface(S[1, 1], tangents=S[2, 1], controlPoints=Patch.controlPoints, enforceRatio=false)

@@ -10,15 +10,11 @@ using Requires
 # -------- exportet parts
 # types
 export Bspline, NURB
-export BsplineCurve, NURBScurve, BsplineSurface, NURBSsurface, Surface
+export BsplineCurve, NURBScurve
+export BsplineSurface, NURBSsurface, Surface
 
 # functions
-export bSplineNaive, bSplineNaiveDerivative
-export bSpline, bSplineDerivatives
-export nurbsNaive, nurbsNaiveDerivative
-
-export curvePoints, surfacePoints
-export curveDerivativesPoints, surfaceDerivativesPoints
+export evalNaive, evalNaiveDerivative
 export Jacobian
 
 export insertKnot!, insertKnot

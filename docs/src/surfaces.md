@@ -61,7 +61,8 @@ nothing # hide
 To plot the surfaces the `plotSurface` or the `plotPatches` functions are provided, where the latter evaluates the surface points itself.
 
 !!! note
-    The [PlotlyJS.jl](https://github.com/JuliaPlots/PlotlyJS.jl) package has to be loaded in order to make the functions available. Reason is the employed [Requires.jl](https://github.com/JuliaPackaging/Requires.jl) framework.
+    The [PlotlyJS.jl](https://github.com/JuliaPlots/PlotlyJS.jl) package has to be loaded in order to make the functions available.
+    (It is a [weak dependency](https://pkgdocs.julialang.org/v1/creating-packages/#Conditional-loading-of-code-in-packages-(Extensions)).)
 
 ```@example surfaces
 using PlotlyJS
@@ -71,7 +72,7 @@ t = plotSurface(SNurbs, controlPoints=controlPoints, enforceRatio=false) # hide
 savefig(t, "surface3D.html"); nothing # hide
 
 # alternatively
-plotPatches([PatchN], plotControlPoints=true)
+#plotPatches([PatchN], plotControlPoints=true)
 ```
 
 ```@raw html
@@ -81,7 +82,7 @@ plotPatches([PatchN], plotControlPoints=true)
 ---
 ## Evaluate Derivatives of the Surface
 
-To evaluate derivatives of surfaces at parametric points hand over hte latter and the maximum derivative to be evaluated.
+To evaluate derivatives of surfaces at parametric points hand over the latter and the maximum derivative to be evaluated.
 
 ```@example surfaces
 uEvalpoints = collect(0:0.01:1.0)

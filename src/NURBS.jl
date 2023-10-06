@@ -3,7 +3,6 @@ module NURBS
 # -------- used packages
 using LinearAlgebra
 using StaticArrays
-using Requires
 
 
 
@@ -24,6 +23,16 @@ export generateKnotVec, numBasisFunctions, spanRanges
 
 
 
+# -------- extensions
+function plotCurve3D end
+function plotCurve end
+function plotSurface end
+function plotPatches end
+
+export plotCurve3D, plotCurve, plotSurface, plotPatches
+
+
+
 # -------- included files
 include("types.jl")
 
@@ -40,9 +49,11 @@ include("nurbs/surfaces.jl")
 include("fundamentalOperations/knotInsertion.jl")
 
 include("utils.jl")
-
 include("utils/fileio.jl")
-include("utils/plotting.jl")
+
+if !isdefined(Base, :get_extension)
+    include("../ext/plotting.jl") # for backwards compatibility with julia versions below 1.9
+end
 
 
 end

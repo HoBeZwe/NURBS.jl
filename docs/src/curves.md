@@ -57,7 +57,8 @@ nothing # hide
 To plot the curves the `plotCurve3D` and the `plotCurve` functions are provided, where the latter ignores any 'z'-components.
 
 !!! note
-    The [PlotlyJS.jl](https://github.com/JuliaPlots/PlotlyJS.jl) package has to be loaded in order to make the functions available. Reason is the employed [Requires.jl](https://github.com/JuliaPackaging/Requires.jl) framework.
+    The [PlotlyJS.jl](https://github.com/JuliaPlots/PlotlyJS.jl) package has to be loaded in order to make the functions available.
+    (It is a [weak dependency](https://pkgdocs.julialang.org/v1/creating-packages/#Conditional-loading-of-code-in-packages-(Extensions)).)
 
 ```@example curves
 using PlotlyJS

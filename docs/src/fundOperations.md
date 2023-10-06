@@ -48,7 +48,7 @@ savefig(t, "curveBeforeInsert.html"); nothing # hide
 ```
 
 ```@raw html
-<object data="../curveBeforeInsert.html" type="text/html"  style="width:120%;height:50vh;"> </object>
+<object data="../curveBeforeInsert.html" type="text/html"  style="width:100%;height:50vh;"> </object>
 ```
 
 
@@ -69,7 +69,7 @@ savefig(t, "curveAfterInsert.html"); nothing # hide
 ```
 
 ```@raw html
-<object data="../curveAfterInsert.html" type="text/html"  style="width:120%;height:50vh;"> </object>
+<object data="../curveAfterInsert.html" type="text/html"  style="width:100%;height:50vh;"> </object>
 ```
 
 ---

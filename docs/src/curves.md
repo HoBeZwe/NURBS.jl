@@ -69,7 +69,7 @@ savefig(t, "cruve3D.html"); nothing # hide
 ```
 
 ```@raw html
-<object data="../cruve3D.html" type="text/html"  style="width:120%;height:50vh;"> </object>
+<object data="../cruve3D.html" type="text/html"  style="width:100%;height:50vh;"> </object>
 ```
 
 ---
@@ -95,5 +95,5 @@ savefig(t, "cruve3Dder.html"); nothing # hide
 ```
 
 ```@raw html
-<object data="../cruve3Dder.html" type="text/html"  style="width:120%;height:50vh;"> </object>
+<object data="../cruve3Dder.html" type="text/html"  style="width:100%;height:50vh;"> </object>
 ```

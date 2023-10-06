@@ -52,7 +52,7 @@ include("utils.jl")
 include("utils/fileio.jl")
 
 if !isdefined(Base, :get_extension)
-    include("../ext/plotting.jl") # for backwards compatibility with julia versions below 1.9
+    include("../ext/NURBSext.jl") # for backwards compatibility with julia versions below 1.9
 end
 
 

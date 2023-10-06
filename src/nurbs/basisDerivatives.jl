@@ -1,10 +1,10 @@
 
 """
-    nurbsNaiveDerivative(basis::NURB, i::Int, k::Int, evalpoints)
+    evalNaiveDerivative(basis::NURB, i::Int, k::Int, evalpoints)
 
 Compute the k-th derivative of i-th NURBS basis function evaluated at all 'evalpoints'.
 """
-function nurbsNaiveDerivative(basis::NURB, i::Int, k::Int, evalpoints)
+function evalNaiveDerivative(basis::NURB, i::Int, k::Int, evalpoints)
 
     k < 1 && error("The k-th derivative has to be k ≥ 1!")
     k > basis.degree && return zeros(size(evalpoints)) # p+1 th derivative is zero

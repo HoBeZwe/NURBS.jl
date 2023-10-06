@@ -1,10 +1,10 @@
 
 """
-    bSplineNaive(basis::Bspline, i::Int, evalpoints)
+    evalNaive(basis::Bspline, i::Int, evalpoints)
 
 i-th B-spline basis function evaluated at all 'evalpoints'.
 """
-function bSplineNaive(basis::Bspline, i::Int, evalpoints)
+function evalNaive(basis::Bspline, i::Int, evalpoints)
 
     return bSplineNaive(basis.knotVec, i, basis.degree, evalpoints)
 end
@@ -83,11 +83,11 @@ end
 
 
 """
-    bSpline(basis::Bspline, evalpoints)
+    (basis::Bspline)(evalpoints)
 
 Evaluate B-spline basis at all evalpoints.
 """
-function bSpline(basis::Bspline, evalpoints)
+function (basis::Bspline)(evalpoints)
 
     numBasis = numBasisFunctions(basis)
     knotSpan = findSpan(numBasis, evalpoints, basis.knotVec)

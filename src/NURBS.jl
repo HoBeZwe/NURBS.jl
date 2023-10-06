@@ -13,13 +13,13 @@ export Bspline, NURB
 export BsplineCurve, NURBScurve, BsplineSurface, NURBSsurface, Surface
 
 # functions
-export bSplineNaive, bSplineNaiveDerivative
-export bSpline, bSplineDerivatives
-export nurbsNaive, nurbsNaiveDerivative
+export evalNaive, evalNaiveDerivative
+#export bSpline, bSplineDerivatives
+#export nurbsNaive, nurbsNaiveDerivative
 
 export curvePoints, surfacePoints
 export curveDerivativesPoints, surfaceDerivativesPoints
-export Jacobian
+export ∂, derivatives, Jacobian
 
 export insertKnot!, insertKnot
 

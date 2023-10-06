@@ -27,13 +27,13 @@ savefig(t, "sphere.html"); nothing # hide
 
 ## Jacobian
 
-To compute the [Jacobian matrix](@ref jac) and its generalized determinant a function [`jacobian`](@ref jacobian) is provided.
+To compute the [Jacobian matrix](@ref jac) and its generalized determinant a function [`Jacobian`](@ref Jacobian) is provided.
 
 ```@example utils
 uEvalpoints = collect(0:0.01:1.0)
 vEvalpoints = collect(0:0.01:1.0)
 
-J, dJ = jacobian(Patches[1], uEvalpoints, vEvalpoints)
+J, dJ = Jacobian(Patches[1], uEvalpoints, vEvalpoints)
 nothing # hide
 ```
 

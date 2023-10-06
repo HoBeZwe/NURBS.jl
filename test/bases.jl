@@ -17,7 +17,7 @@
         Bspl = Bspline(p, kVec)
 
         # --- smart eval 
-        Bsmart = bSpline(Bspl, evalpoints)
+        Bsmart = Bspl(evalpoints)
 
         # --- B-spline basis sums to 1 in each point
         @test minimum(sum(Bsmart; dims=2) .≈ 1.0)
@@ -42,12 +42,12 @@
 
 
         # --- naive eval
-        B = bSplineNaive(Bspl, 4, evalpoints)
+        B = evalNaive(Bspl, 4, evalpoints)
         @test B[1] ≈ 1 / 8
         @test Bspl.knotVec[end] == 1.0 # automatic normalization
 
         # --- smart eval 
-        Bsmart = bSpline(Bspl, evalpoints)
+        Bsmart = Bspl(evalpoints)
         @test Bsmart[1] ≈ 1 / 8
     end
 
@@ -69,17 +69,20 @@
 
 
         # --- naive eval
-        B = bSplineNaiveDerivative(Bspl, 4, 1, evalpoints)
+        B = evalNaiveDerivative(Bspl, 4, 1, evalpoints)
         @test B[1] ≈ -2.5
         @test Bspl.knotVec[end] == 1.0 # automatic normalization
 
-        B = bSplineNaiveDerivative(Bspl, 4, 2, evalpoints)
+        B = evalNaiveDerivative(Bspl, 4, 2, evalpoints)
         @test B[1] ≈ 25.0
 
         # --- smart eval 
-        Bsmart = bSplineDerivatives(Bspl, 2, evalpoints)
+        Bsmart = derivatives(Bspl, 2)(evalpoints)
         @test Bsmart[2] ≈ -2.5
         @test Bsmart[3] ≈ 25.0
+
+        Bsmart1 = ∂(Bspl)(evalpoints) # 1st derivative
+        @test Bsmart1[2] ≈ -2.5
     end
 end
 
@@ -105,9 +108,9 @@ end
         Nrb = NURB(p, kVec, w)
 
         # --- eval
-        N = nurbsNaive(Nrb, 1, evalpoints) .* 0.0
+        N = evalNaive(Nrb, 1, evalpoints) .* 0.0
         for i in 1:6
-            N .+= nurbsNaive(Nrb, i, evalpoints)
+            N .+= evalNaive(Nrb, i, evalpoints)
         end
 
         # --- B-spline basis sums to 1 in each point
@@ -135,7 +138,7 @@ end
 
 
         # --- naive eval
-        N = nurbsNaive(Nrb, 4, evalpoints)
+        N = evalNaive(Nrb, 4, evalpoints)
         @test N[1] ≈ 1 / 8
         @test Nrb.knotVec[end] == 1.0 # automatic normalization
     end
@@ -159,11 +162,11 @@ end
 
 
         # --- naive eval
-        B = nurbsNaiveDerivative(N, 4, 1, evalpoints)
+        B = evalNaiveDerivative(N, 4, 1, evalpoints)
         @test B[1] ≈ -2.5
         @test N.knotVec[end] == 1.0 # automatic normalization
 
-        B = nurbsNaiveDerivative(N, 4, 2, evalpoints)
+        B = evalNaiveDerivative(N, 4, 2, evalpoints)
         @test B[1] ≈ 25.0
     end
 

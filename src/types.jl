@@ -19,6 +19,21 @@ end
 
 
 """
+    BsplineDerivatives{F} <: Basis{F}
+
+B-spline basis including all derivatives up to divMax.
+"""
+struct BsplineDerivatives{F} <: Basis{F}
+    degree::Int
+    knotVec::Vector{F}
+    divMax::Int
+end
+
+derivatives(B::Bspline, k::Int) = BsplineDerivatives(B.degree, B.knotVec, k)
+∂(B::Bspline) = BsplineDerivatives(B.degree, B.knotVec, 1) # first derivative
+
+
+"""
     NURB{F} <: Basis{F}
 
 NURBS basis.

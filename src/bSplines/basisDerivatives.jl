@@ -1,10 +1,10 @@
 
 """
-    bSplineNaiveDerivative(basis::Bspline, i::Int, k::Int, evalpoints)
+    evalNaiveDerivative(basis::Bspline, i::Int, k::Int, evalpoints)
 
 Compute the k-th derivative of i-th b-spline basis function evaluated at all 'evalpoints'.
 """
-function bSplineNaiveDerivative(basis::Bspline, i::Int, k::Int, evalpoints)
+function evalNaiveDerivative(basis::Bspline, i::Int, k::Int, evalpoints)
 
     k < 1 && error("The k-th derivative has to be k ≥ 1!")
     k > basis.degree && return zeros(size(evalpoints)) # p+1 th derivative of a polynomial of degree p is zero
@@ -70,14 +70,14 @@ end
 
 Evaluate k-the derivative of B-spline basis at all evalpoints (all basis functions different from 0 at the evalpoints are evaluated).
 """
-function bSplineDerivatives(basis::Bspline, k::Int, evalpoints)
+function (basis::BsplineDerivatives)(evalpoints)
 
-    k < 0 && error("The k-th derivative has to be k ≥ 0!")
+    #basis.divMax < 0 && error("The k-th derivative has to be k ≥ 0!")
 
     numBasis = numBasisFunctions(basis)
     knotSpan = findSpan(numBasis, evalpoints, basis.knotVec)
 
-    return derBasisFun(knotSpan, basis.degree, evalpoints, basis.knotVec, k)
+    return derBasisFun(knotSpan, basis.degree, evalpoints, basis.knotVec, basis.divMax)
 end
 
 

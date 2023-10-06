@@ -116,6 +116,6 @@
         @test S[2, 1][1, 1] ≈ SVector(4.4444444444, 0.0, 0.0)
         @test S[2, 2][1, 1] ≈ SVector(-3.950617283, 0.0, 0.0)
 
-        @test_nowarn jacobian(Patch, uEvalpoints, vEvalpoints)
+        @test_nowarn Jacobian(Patch, uEvalpoints, vEvalpoints)
     end
 end

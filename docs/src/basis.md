@@ -125,3 +125,20 @@ savefig("plotBsplDeff.html"); nothing # hide
 ```@raw html
 <object data="../plotBsplDeff.html" type="text/html"  style="width:120%;height:50vh;"> </object>
 ```
+
+
+### Memory Preallocation
+
+In case B-splines shall be evaluated repeatedly memory can be preallocated and reused in subsequent calls:
+
+!!! tip
+    This is useful especially if single points are evaluated many times on demand.
+
+```@example basis
+pM = NURBS.preAlloc(p, evalpoints)
+pD = NURBS.preAllocDer(p, evalpoints, 2)
+
+bspline  = Bspl(evalpoints, pM)
+bsplineD = Bspl(evalpoints, 2, pD) # 0th, 1st, and 2nd derivative
+nothing # hide
+```

@@ -102,8 +102,67 @@ Convenience function to compute points on all k derivatives of a NURBSsurface.
 )
 
 
+struct pAllocNURBSsuface{T<:Real,L}
+    preallocU::pAllocDer{T,L}
+    preallocV::pAllocDer{T,L}
+    surfaces::Matrix{Matrix{SVector{3,T}}}
+    w::Matrix{Matrix{T}}
+end
+
+
+"""
+    (Patch::NURBSsurface)(uEvalpoints, vEvalpoints, k::Int, prealloc)
+
+Convenience function to compute points on all k derivatives of a NURBSsurface, for preallocated memory.
+"""
+(Patch::NURBSsurface)(uEvalpoints, vEvalpoints, k::Int, prealloc::pAllocNURBSsuface) = surfaceDerivativesPoints!(
+    prealloc,
+    Patch.uBasis.degree,
+    Patch.vBasis.degree,
+    Patch.uBasis.knotVec,
+    Patch.vBasis.knotVec,
+    Patch.controlPoints,
+    uEvalpoints,
+    vEvalpoints,
+    Patch.weights,
+    k,
+)
+
+
 """
     surfaceDerivativesPoints(uDegree::Int, vDegree::Int, uKnotVector, vKnotVector, controlPoints, uVector, vVector, weights, k::Int)
+
+Allocate memory and call surfaceDerivativesPoints!
+"""
+function surfaceDerivativesPoints(
+    uDegree::Int, vDegree::Int, uKnotVector, vKnotVector, controlPoints, uVector, vVector, weights, k::Int
+)
+    prealloc = preAllocNURBSsurface(uDegree, vDegree, uVector, vVector, k)
+
+    return surfaceDerivativesPoints!(prealloc, uDegree, vDegree, uKnotVector, vKnotVector, controlPoints, uVector, vVector, weights, k)
+end
+
+
+"""
+    preAllocNURBSsurface(uDegree::Int, vDegree::Int, uVector, vVector, k::Int)
+
+Allocate all memory for surfaceDerivativesPoints!
+"""
+function preAllocNURBSsurface(uDegree::Int, vDegree::Int, uVector, vVector, k::Int)
+
+    preallocU = preAllocDer(uDegree, uVector, k)
+    preallocV = preAllocDer(vDegree, vVector, k)
+
+    surfaces = [[SVector(0.0, 0.0, 0.0) for i in eachindex(uVector), j in eachindex(vVector)] for q in 1:(k + 1), p in (1:(k + 1))]
+    w = [[0.0 for i in eachindex(uVector), j in eachindex(vVector)] for q in 1:(k + 1), p in 1:(k + 1)]
+
+    return pAllocNURBSsuface(preallocU, preallocV, surfaces, w)
+end
+
+
+
+"""
+    surfaceDerivativesPoints!(prealloc, uDegree::Int, vDegree::Int, uKnotVector, vKnotVector, controlPoints, uVector, vVector, weights, k::Int)
 
 Compute NURBS surface: given the knotvectors and the degrees in 'u' and 'v' direction, the surface is evaluated at the evaluation points (uVector, vVector).
 
@@ -125,24 +184,37 @@ Returns a (k x k) matrix where each entry is a matrix of size (uKnotVector x vKn
 
 Note: the efficient evaluation via the B-spline basis is employed (no use of the naive evaluation of the NURBS basis).
 """
-function surfaceDerivativesPoints(
-    uDegree::Int, vDegree::Int, uKnotVector, vKnotVector, controlPoints, uVector, vVector, weights, k::Int
+function surfaceDerivativesPoints!(
+    prealloc::pAllocNURBSsuface, uDegree::Int, vDegree::Int, uKnotVector, vKnotVector, controlPoints, uVector, vVector, weights, k::Int
 )
+
+    preallocU = prealloc.preallocU
+    preallocV = prealloc.preallocV
+    surfaces = prealloc.surfaces
+    w = prealloc.w
 
     # u-direction: determine the basis functions evaluated at uVector 
     nbasisFun = length(uKnotVector) - uDegree - 1
     uSpan = findSpan(nbasisFun, uVector, uKnotVector)
-    Nu = derBasisFun(uSpan, uDegree, uVector, uKnotVector, k)
+    Nu = derBasisFun!(preallocU, uSpan, uDegree, uVector, uKnotVector, k)
 
     # v-direction: determine the basis functions evaluated at vVector
     nbasisFun = length(vKnotVector) - vDegree - 1
     vSpan = findSpan(nbasisFun, vVector, vKnotVector)
-    Nv = derBasisFun(vSpan, vDegree, vVector, vKnotVector, k)
+    Nv = derBasisFun!(preallocV, vSpan, vDegree, vVector, vKnotVector, k)
 
-    # intialize
-    surfaces = [[SVector(0.0, 0.0, 0.0) for i in eachindex(uVector), j in eachindex(vVector)] for q in 1:(k + 1), p in (1:(k + 1))]
-    w = [[0.0 for i in eachindex(uVector), j in eachindex(vVector)] for q in 1:(k + 1), p in 1:(k + 1)]
+    # initialize
+    for i in eachindex(w)
+        for j in eachindex(w[1])
+            w[i][j] = 0.0
+        end
+    end
 
+    for i in eachindex(surfaces)
+        for j in eachindex(surfaces[1])
+            surfaces[i][j] = SVector(0.0, 0.0, 0.0)
+        end
+    end
 
     # --- q-th derivative in u and p-th derivative in v
     for q in 0:k

@@ -117,5 +117,20 @@
         @test S[2, 2][1, 1] ≈ SVector(-3.950617283, 0.0, 0.0)
 
         @test_nowarn Jacobian(Patch, uEvalpoints, vEvalpoints)
+
+
+
+
+        # ---- with memory preallocation
+        pM = NURBS.preAllocNURBSsurface(p, q, uEvalpoints, vEvalpoints, 1)
+
+        S = Patch(uEvalpoints, vEvalpoints, 1, pM)
+
+        @test Sref ≈ S[1, 1][1, 1] # no derivative
+
+        # the following three values are assumed to be correct in the current implementation
+        @test S[1, 2][1, 1] ≈ SVector(0.0, 2.403292181, -4.6090534979)
+        @test S[2, 1][1, 1] ≈ SVector(4.4444444444, 0.0, 0.0)
+        @test S[2, 2][1, 1] ≈ SVector(-3.950617283, 0.0, 0.0)
     end
 end

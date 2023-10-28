@@ -92,6 +92,16 @@ S = PatchN(uEvalpoints, vEvalpoints, 2) # 0-th, 1st, and 2nd derivatives
 nothing # hide
 ```
 
+In case points (e.g., single points) shall be evaluated many times on demand, memory can be preallocated and reused in subsequent calls:
+
+```@example surfaces
+pM = NURBS.preAllocNURBSsurface(p, p, vEvalpoints, vEvalpoints, 2)
+
+S = PatchN(vEvalpoints, vEvalpoints, 2, pM)
+nothing # hide
+```
+
+
 The `plotSurface` function has an optional argument `tangents` to plot vectors at the points of the curve.
 
 ```@example surfaces

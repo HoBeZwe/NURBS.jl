@@ -96,6 +96,45 @@ function (basis::Bspline)(evalpoints)
 end
 
 
+struct pAlloc{T<:Real}
+    B::Matrix{T}
+    N::Vector{T}
+    left::Vector{T}
+    right::Vector{T}
+end
+
+
+"""
+    (basis::Bspline)(evalpoints)
+
+Evaluate B-spline basis at all evalpoints.
+"""
+function (basis::Bspline)(evalpoints, prealloc::pAlloc)
+
+    numBasis = numBasisFunctions(basis)
+    knotSpan = findSpan(numBasis, evalpoints, basis.knotVec)
+
+    return basisFun!(prealloc, knotSpan, evalpoints, basis.degree, basis.knotVec)
+end
+
+
+"""
+    preAlloc(degree::Int, uVector::Vector{T})
+
+Allocate memory for basisFun.
+"""
+function preAlloc(degree::Int, uVector::Vector{T}) where {T}
+
+    B = zeros(T, length(uVector), degree + 1)
+    N = zeros(T, degree + 1)
+
+    left  = zeros(T, degree + 1)
+    right = zeros(T, degree + 1)
+
+    return pAlloc(B, N, left, right)
+end
+
+
 """
     findSpan(n::Int, u, knotVector)
 
@@ -110,7 +149,7 @@ Assumption that the knotVector is open! (the first and last knot are repeated de
 function findSpan(b::Int, u, knotVector)
 
     # check input
-    (minimum(u) < knotVector[1]) && (maximum(u) > knotVector[end]) && error("Some value is outside the knot span")
+    #(minimum(u) < knotVector[1]) && (maximum(u) > knotVector[end]) && error("Some value is outside the knot span")
 
     # initialize the vector containing the indices 
     spanVec = similar(u, eltype(b))
@@ -133,24 +172,37 @@ end
 """
     basisFun(knotSpan, uVector, degree::Int, knotVector)
 
+Allocate memory and call basisFun!    
+"""
+function basisFun(knotSpan, uVector, degree::Int, knotVector)
+
+    prealloc = preAlloc(degree, uVector)
+
+    return basisFun!(prealloc, knotSpan, uVector, degree, knotVector)
+end
+
+
+"""
+    basisFun!(prealloc::pAlloc, knotSpan, uVector, degree::Int, knotVector)
+
 Compute the nonvanishing B-spline basis functions of degree 'degree' at the parametric points defined by 'uVector'
 
 Return the B-spline basis functions vector of size length(uVector) * (degree + 1).
 
 Adapted from Algorithm A2.2 from 'The NURBS Book' p. 70.
 """
-function basisFun(knotSpan, uVector, degree::Int, knotVector)
+function basisFun!(prealloc::pAlloc, knotSpan, uVector, degree::Int, knotVector)
 
-    B = zeros(length(uVector), degree + 1)
-    N = zeros(degree + 1)
+    B = prealloc.B
+    N = prealloc.N
+
+    left  = prealloc.left
+    right = prealloc.right
 
     for (jj, u) in enumerate(uVector)
 
         i = knotSpan[jj] #+ 1 #findspan uses 0-based numbering
-
-        left  = zeros(degree + 1)
-        right = zeros(degree + 1)
-        N[1]  = 1
+        N[1] = 1
 
         for j in 1:degree
             left[j + 1]  = u - knotVector[i + 1 - j]

@@ -49,6 +49,12 @@
         # --- smart eval 
         Bsmart = Bspl(evalpoints)
         @test Bsmart[1] ≈ 1 / 8
+
+        # --- smart eval + preallocate memory
+        pM = NURBS.preAlloc(p, evalpoints)
+
+        Bsmart = Bspl(evalpoints, pM)
+        @test Bsmart[1] ≈ 1 / 8
     end
 
 
@@ -78,6 +84,13 @@
 
         # --- smart eval 
         Bsmart = Bspl(evalpoints, 2)
+        @test Bsmart[2] ≈ -2.5
+        @test Bsmart[3] ≈ 25.0
+
+        # --- smart eval + preallocate memory
+        pM = NURBS.preAllocDer(p, evalpoints, 2)
+
+        Bsmart = Bspl(evalpoints, 2, pM)
         @test Bsmart[2] ≈ -2.5
         @test Bsmart[3] ≈ 25.0
     end

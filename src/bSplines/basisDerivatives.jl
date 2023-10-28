@@ -81,8 +81,66 @@ function (basis::Bspline)(evalpoints, k::Int)
 end
 
 
+struct pAllocDer{T<:Real,L}
+    dersv::Array{T,L}
+    ders::Matrix{T}
+    ndu::Matrix{T}
+    left::Vector{T}
+    right::Vector{T}
+    a::Matrix{T}
+end
+
+
 """
-    derBasisFun(knotSpan, degree::Int, evalpoints, knotVector, numberDerivatives::Int)
+    (basis::Bspline)(evalpoints, k::Int, prealloc)
+
+Evaluate k-the derivative of B-spline basis at all evalpoints (all basis functions different from 0 at the evalpoints are evaluated).
+"""
+function (basis::Bspline)(evalpoints::Vector{T}, k::Int, prealloc::pAllocDer) where {T}
+
+    #basis.divMax < 0 && error("The k-th derivative has to be k ≥ 0!")
+
+    numBasis = numBasisFunctions(basis)
+    knotSpan = findSpan(numBasis, evalpoints, basis.knotVec)
+
+    return derBasisFun!(prealloc, knotSpan, basis.degree, evalpoints, basis.knotVec, k)
+end
+
+
+"""
+    preAlloc(degree::Int, evalpoints, numberDerivatives::Int)
+
+Allocate memory for derBasisFun.
+"""
+function preAllocDer(degree::Int, evalpoints::Vector{T}, numberDerivatives::Int) where {T}
+
+    dersv = zeros(T, length(evalpoints), numberDerivatives + 1, degree + 1)
+
+    ders  = zeros(T, numberDerivatives + 1, degree + 1)
+    ndu   = zeros(T, degree + 1, degree + 1)
+    left  = zeros(T, degree + 1)
+    right = zeros(T, degree + 1)
+    a     = zeros(T, 2, degree + 1)
+
+    return pAllocDer(dersv, ders, ndu, left, right, a)
+end
+
+
+"""
+    derBasisFun(degree::Int, evalpoints, knotVector, numberDerivatives::Int)
+
+Same as derBasisFun! but with memory allocation.
+"""
+function derBasisFun(knotSpan, degree::Int, evalpoints::Vector{T}, knotVector, numberDerivatives::Int) where {T}
+
+    prealloc = preAllocDer(degree, evalpoints, numberDerivatives)
+
+    return derBasisFun!(prealloc, knotSpan, degree::Int, evalpoints, knotVector, numberDerivatives::Int)
+end
+
+
+"""
+    derBasisFun!(knotSpan, degree::Int, evalpoints, knotVector, numberDerivatives::Int)
 
 Compute the nonvanishing B-spline basis functions and its derivatives of degree 'degree' at the parametric points defined by 'uVector'.
 
@@ -90,20 +148,19 @@ Organization of output:  dersv[n, k, :] contains (k-1)-th derivative at n-th poi
    
 Adapted from Algorithm A2.3 from 'The NURBS BOOK' p. 72.
 """
-function derBasisFun(knotSpan, degree::Int, evalpoints, knotVector, numberDerivatives::Int)
+function derBasisFun!(prealloc::pAllocDer, knotSpan, degree::Int, evalpoints, knotVector, numberDerivatives::Int)
 
-    dersv = zeros(length(evalpoints), numberDerivatives + 1, degree + 1)
+    dersv = prealloc.dersv
+    ders = prealloc.ders
+    ndu = prealloc.ndu
+    left = prealloc.left
+    right = prealloc.right
+    a = prealloc.a
 
     for jj in eachindex(evalpoints)
 
         i = knotSpan[jj] #+ 1 # convert to base-1 numbering of knot spans
         u = evalpoints[jj]
-
-        ders  = zeros(numberDerivatives + 1, degree + 1)
-        ndu   = zeros(degree + 1, degree + 1)
-        left  = zeros(degree + 1)
-        right = zeros(degree + 1)
-        a     = zeros(2, degree + 1)
 
         ndu[1, 1] = 1
 

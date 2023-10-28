@@ -2,6 +2,7 @@ module NURBS
 
 # -------- used packages
 using LinearAlgebra
+using Statistics
 using StaticArrays
 
 
@@ -14,12 +15,13 @@ export BsplineSurface, NURBSsurface, Surface
 
 # functions
 export evalNaive, evalNaiveDerivative
-export Jacobian
+export Jacobian, JacobiDet
 
 export insertKnot!, insertKnot
 
 export readMultipatch
 export generateKnotVec, numBasisFunctions, spanRanges
+export greville, anchors
 
 
 

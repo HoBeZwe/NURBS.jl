@@ -22,6 +22,21 @@
     @test Ranges == R
 end
 
+@testset "Greville + Anchors" begin
+
+    b = 7
+    p = 2
+    kVec = generateKnotVec(b, p)
+
+    Bspl = Bspline(p, kVec)
+
+    gs = greville(Bspl)
+    ac = anchors(Bspl)
+
+    @test gs ≈ [0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0] # computed by hand accrding to definitions
+    @test ac ≈ [0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0] # computed by hand accrding to definitions
+end
+
 @testset "File IO" begin
 
     @test_nowarn Patches = readMultipatch("assets/sphere.dat")

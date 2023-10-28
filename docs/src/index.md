@@ -44,3 +44,5 @@ pkg> add NURBS
 The implementation is based on
 - [1] L. Piegl, *The NURBS Book*, Berlin Heidelberg, Springer-Verlag, 1997.
 - [2] R.N. Simpson, et. al, *A Two-Dimensional Isogeometric Boundary Element Method for Elastostatic Analysis*, Comput. Methods Appl. Mech. Engrg., 2012.
+- [3] C. de Boor, *A Practical Guide to Splines*, revised ed., Appl. Math. Sci., vol. 27, Springer-Verlag, New York, 2001.
+- [4] L. Beirão da Veiga, A. Buffa, G. Sangalli, R. Vázquez, *Analysis-suitable T-splines of arbitrary degree: Definition, linear independence and approximation properties*, Math. Models Methods Appl. Sci. 23, 2013.

@@ -84,6 +84,20 @@ function Jacobian(Patch::Surface, uEvalpoints, vEvalpoints)
     J = [Ju, Jv] # Jacobi matrix
 
     # --- Jacobi determinant / surface element
+    dJ = JacobiDet(Ju, Jv)
+
+    return J, dJ
+end
+
+
+"""
+    JacobiDet(Ju, Jv)
+
+Compute Jacobi determinant from the Jacobi matrix
+"""
+function JacobiDet(Ju, Jv)
+
+    # --- Jacobi determinant / surface element
     dJ = Matrix{eltype(Ju[1])}(undef, size(Ju))
 
     # loop over all points
@@ -102,7 +116,7 @@ function Jacobian(Patch::Surface, uEvalpoints, vEvalpoints)
         end
     end
 
-    return J, dJ
+    return dJ
 end
 
 
@@ -126,7 +140,7 @@ function spanRanges(Bspl::Bspline, points; emptyRanges=false)
             push!(ranges, 0:-1)
         end
     else
-        ranges = []
+        ranges = UnitRange{eltype(numBasis)}[]
     end
 
     # remaining ranges
@@ -154,3 +168,43 @@ function spanRanges(Bspl::Bspline, points; emptyRanges=false)
 
     return ranges
 end
+
+
+"""
+    greville(kVec, degree::Int)
+
+Return the Greville sites (as defined in [3]) corresponding to the given knotvector and the polynomial degree.
+"""
+function greville(kVec, degree::Int)
+
+    N = length(kVec) - degree - 1 # number of B-splines
+    gSites = zeros(N)
+
+    for i in 1:N
+        gSites[i] = sum(kVec[(i + 1):(i + degree)]) / degree
+    end
+
+    return gSites
+end
+
+greville(Bspl::Bspline) = greville(Bspl.knotVec, Bspl.degree)
+
+
+"""
+    anchors(kVec, degree::Int)
+
+Return the anchors (as defined in [4]) corresponding to the given knotvector and the polynomial degree.
+"""
+function anchors(kVec, degree::Int)
+
+    N = length(kVec) - degree - 1 # number of B-splines
+    aSites = zeros(N)
+
+    for i in 1:N
+        aSites[i] = median(kVec[i:(i + degree + 1)])
+    end
+
+    return aSites
+end
+
+anchors(Bspl::Bspline) = anchors(Bspl.knotVec, Bspl.degree)

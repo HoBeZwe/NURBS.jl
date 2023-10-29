@@ -1,17 +1,17 @@
 
-
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/src/assets/logo_Scat_READMEwhite.svg" height="190">
   <source media="(prefers-color-scheme: light)" srcset="docs/src/assets/logo_Scat_README.svg" height="190">
   <img alt="" src="" height="190">
 </picture>
 
-
+[![Docs-stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://hobezwe.github.io/NURBS.jl/stable/)
 [![Docs-dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://hobezwe.github.io/NURBS.jl/dev/)
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/hobezwe/NURBS.jl/blob/main/LICENSE)
 [![Build Status](https://github.com/hobezwe/NURBS.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/hobezwe/NURBS.jl/actions/workflows/CI.yml?query=branch%3Amain)
 [![codecov](https://codecov.io/gh/HoBeZwe/NURBS.jl/branch/main/graph/badge.svg?token=4F9NUNRC1K)](https://codecov.io/gh/HoBeZwe/NURBS.jl)
 [![DOI](https://zenodo.org/badge/579998043.svg)](https://zenodo.org/badge/latestdoi/579998043)
+
 
 
 ## Introduction
@@ -31,11 +31,15 @@ The following aspects are implemented (✓) and planned (⌛):
 - ⌛ Degree elevation / reduction
 - ⌛ Construction of common geometries
 
+
+
 ## Citation
 
 Please cite this package following the information on [Zenodo](https://zenodo.org/badge/latestdoi/579998043).
 
 
+
 ## Documentation
 
-Here you can find the [documentation](https://hobezwe.github.io/NURBS.jl/dev/).
+- Documentation for the [latest stable version](https://hobezwe.github.io/NURBS.jl/stable/).
+- Documentation for the [development version](https://hobezwe.github.io/NURBS.jl/dev/).

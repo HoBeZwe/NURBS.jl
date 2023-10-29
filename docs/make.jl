@@ -31,4 +31,4 @@ makedocs(;
     ],
 )
 
-deploydocs(; repo="github.com/HoBeZwe/NURBS.jl", devbranch="main")
+deploydocs(; repo="github.com/HoBeZwe/NURBS.jl")

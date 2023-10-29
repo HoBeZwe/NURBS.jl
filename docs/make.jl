@@ -32,7 +32,7 @@ makedocs(;
 deploydocs(;
     repo="github.com/HoBeZwe/NURBS.jl",
     target="build",
-    devbranch = "main",
+    devbranch="main",
     push_preview=true,
     forcepush=true,
     versions=["stable" => "v^", "v#.#", "v0.5.1", "v0.5.0", "v0.4.1", "v0.4.0", "v0.3.0", "dev" => "dev"],

@@ -1,8 +1,6 @@
 using NURBS
 using Documenter
 
-DocMeta.setdocmeta!(NURBS, :DocTestSetup, :(using NURBS); recursive=true)
-
 makedocs(;
     modules=[NURBS],
     authors="Bernd Hofmann <bernd.hofmann@tum.de> and contributors",

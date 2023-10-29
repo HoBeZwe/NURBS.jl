@@ -18,6 +18,7 @@ NURBSext = "PlotlyJS"
 [compat]
 PlotlyJS = "0.18"
 StaticArrays = "1"
+Statistics = "1"
 julia = "1"
 
 [extras]

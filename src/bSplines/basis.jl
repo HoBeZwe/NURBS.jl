@@ -120,11 +120,12 @@ function (basis::Union{Bspline,CurrySchoenberg})(evalpoints)
 end
 
 
-struct pAlloc{T<:Real}
+struct pAlloc{T<:Real,F<:Int}
     B::Matrix{T}
     N::Vector{T}
     left::Vector{T}
     right::Vector{T}
+    spanVec::Vector{F}
 end
 
 
@@ -136,7 +137,7 @@ Evaluate B-spline basis at all evalpoints.
 function (basis::Union{Bspline,CurrySchoenberg})(evalpoints, prealloc::pAlloc)
 
     numBasis = numBasisFunctions(basis)
-    knotSpan = findSpan(numBasis, evalpoints, basis.knotVec, basis.degree)
+    knotSpan = findSpan!(prealloc.spanVec, numBasis, evalpoints, basis.knotVec, basis.degree)
 
     return basisFun!(prealloc, knotSpan, evalpoints, basis)
 end
@@ -155,12 +156,27 @@ function preAlloc(degree::Int, uVector::Vector{T}) where {T}
     left  = zeros(T, degree + 1)
     right = zeros(T, degree + 1)
 
-    return pAlloc(B, N, left, right)
+    spanVec = similar(uVector, eltype(degree))
+
+    return pAlloc(B, N, left, right, spanVec)
 end
 
 
 """
-    findSpan(n::Int, u, knotVector)
+    findSpan(b::T, uVec, kVec, p::T)
+
+Allocate memory and call findSpan!    
+"""
+function findSpan(b::T, uVec, kVec, p::T) where {T<:Int}
+
+    spanVec = similar(uVec, eltype(b))
+
+    return findSpan!(spanVec, b, uVec, kVec, p)
+end
+
+
+"""
+    findSpan!(spanVec, b::T, uVec, kVec, p::T)
 
 Find the spans of a B-spline knot vector at the parametric points 'u', where 'b' is the number of basis functions (control points).
 
@@ -170,23 +186,34 @@ Modification of Algorithm A2.1 from 'The NURBS Book' p. 68.
 
 Assumption that the knotVector is open! (the first and last knot are repeated degree + 1 times)
 """
-function findSpan(b::Int, u, knotVector, p)
+function findSpan!(spanVec, b::T, uVec, kVec, p::T) where {T<:Int}
 
-    # check input
-    #(minimum(u) < knotVector[1]) && (maximum(u) > knotVector[end]) && error("Some value is outside the knot span")
+    for (j, u) in enumerate(uVec)
 
-    # initialize the vector containing the indices 
-    spanVec = similar(u, eltype(b))
-
-    for (j, uEval) in enumerate(u)
-
-        # special case: uEval == to last knot vector entry
-        if uEval == knotVector[end]
+        # --- Special case 
+        if u == kVec[end]
             spanVec[j] = b
             continue
         end
 
-        spanVec[j] = findlast(knotVector .≤ uEval)
+        # --- Do binary search 
+        low  = p + 1
+        high = b + 1
+
+        mid = Base.midpoint(low, high)
+
+        while u < kVec[mid] || u >= kVec[mid + 1] # is u in interval [ kVec[mid]...kVec[mid+1] ) ?
+
+            if u < kVec[mid]
+                high = mid
+            else
+                low = mid
+            end
+
+            mid = Base.midpoint(low, high)
+        end
+
+        spanVec[j] = mid
     end
 
     return spanVec

@@ -81,13 +81,14 @@ function (basis::Bspline)(evalpoints, k::Int)
 end
 
 
-struct pAllocDer{T<:Real,L}
+struct pAllocDer{T<:Real,F<:Int,L}
     dersv::Array{T,L}
     ders::Matrix{T}
     ndu::Matrix{T}
     left::Vector{T}
     right::Vector{T}
     a::Matrix{T}
+    spanVec::Vector{F}
 end
 
 
@@ -101,7 +102,7 @@ function (basis::Bspline)(evalpoints::Vector{T}, k::Int, prealloc::pAllocDer) wh
     #basis.divMax < 0 && error("The k-th derivative has to be k ≥ 0!")
 
     numBasis = numBasisFunctions(basis)
-    knotSpan = findSpan(numBasis, evalpoints, basis.knotVec, basis.degree)
+    knotSpan = findSpan!(prealloc.spanVec, numBasis, evalpoints, basis.knotVec, basis.degree)
 
     return derBasisFun!(prealloc, knotSpan, basis.degree, evalpoints, basis.knotVec, k)
 end
@@ -122,7 +123,9 @@ function preAllocDer(degree::Int, evalpoints::Vector{T}, numberDerivatives::Int)
     right = zeros(T, degree + 1)
     a     = zeros(T, 2, degree + 1)
 
-    return pAllocDer(dersv, ders, ndu, left, right, a)
+    spanVec = similar(evalpoints, eltype(degree))
+
+    return pAllocDer(dersv, ders, ndu, left, right, a, spanVec)
 end
 
 

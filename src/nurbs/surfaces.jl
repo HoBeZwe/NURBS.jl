@@ -94,9 +94,9 @@ Convenience function to compute points on all k derivatives of a NURBSsurface.
 )
 
 
-struct pAllocNURBSsuface{T<:Real,L}
-    preallocU::pAllocDer{T,L}
-    preallocV::pAllocDer{T,L}
+struct pAllocNURBSsuface{T<:Real,F<:Int,L}
+    preallocU::pAllocDer{T,F,L}
+    preallocV::pAllocDer{T,F,L}
     surfaces::Matrix{Matrix{SVector{3,T}}}
     w::Matrix{Matrix{T}}
 end
@@ -187,12 +187,12 @@ function surfaceDerivativesPoints!(
 
     # u-direction: determine the basis functions evaluated at uVector 
     nbasisFun = length(uKnotVector) - uDegree - 1
-    uSpan = findSpan(nbasisFun, uVector, uKnotVector, uDegree)
+    uSpan = findSpan!(preallocU.spanVec, nbasisFun, uVector, uKnotVector, uDegree)
     Nu = derBasisFun!(preallocU, uSpan, uDegree, uVector, uKnotVector, k)
 
     # v-direction: determine the basis functions evaluated at vVector
     nbasisFun = length(vKnotVector) - vDegree - 1
-    vSpan = findSpan(nbasisFun, vVector, vKnotVector, vDegree)
+    vSpan = findSpan!(preallocV.spanVec, nbasisFun, vVector, vKnotVector, vDegree)
     Nv = derBasisFun!(preallocV, vSpan, vDegree, vVector, vKnotVector, k)
 
     # initialize

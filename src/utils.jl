@@ -130,7 +130,7 @@ Return a vector of ranges (one entry per span).
 function spanRanges(Bspl::Bspline, points; emptyRanges=false)
 
     numBasis = numBasisFunctions(Bspl)
-    knotSpan = findSpan(numBasis, points, Bspl.knotVec) # find for each point the span index
+    knotSpan = findSpan(numBasis, points, Bspl.knotVec, Bspl.degree) # find for each point the span index
     p = Bspl.degree
 
     # open knot vector: set first p ranges to 0:-1 (empty range)

@@ -4,20 +4,12 @@
 
 Convenience function to compute points on a NURBSsurface.
 """
-(Patch::NURBSsurface)(uEvalpoints, vEvalpoints) = surfacePoints(
-    Patch.uBasis.degree,
-    Patch.vBasis.degree,
-    Patch.uBasis.knotVec,
-    Patch.vBasis.knotVec,
-    Patch.controlPoints,
-    uEvalpoints,
-    vEvalpoints,
-    Patch.weights,
-)
+(Patch::NURBSsurface)(uEvalpoints, vEvalpoints) =
+    surfacePoints(Patch.uBasis, Patch.vBasis, Patch.controlPoints, uEvalpoints, vEvalpoints, Patch.weights)
 
 
 """
-    surfacePoints(uDegree::Int, vDegree::Int, uKnotVector, vKnotVector, controlPoints, uVector, vVector, weights)
+    surfacePoints(uBasis::Basis, vBasis::Basis, controlPoints, uVector, vVector, weights)
 
 Compute NURBS surface: given the knotvectors and the degrees in 'u' and 'v' direction, the surface is evaluated at the evaluation points (uVector, vVector).
 
@@ -35,17 +27,17 @@ x / u direction
 
 Note: the efficient evaluation via the B-spline basis is employed (no use of the naive evaluation of the NURBS basis).
 """
-function surfacePoints(uDegree::Int, vDegree::Int, uKnotVector, vKnotVector, controlPoints, uVector, vVector, weights)
+function surfacePoints(uBasis::Basis, vBasis::Basis, controlPoints, uVector, vVector, weights)
 
     # u-direction: determine the basis functions evaluated at uVector 
-    nbasisFun = length(uKnotVector) - uDegree - 1
-    uSpan = findSpan(nbasisFun, uVector, uKnotVector)
-    Nu = basisFun(uSpan, uVector, uDegree, uKnotVector)
+    nbasisFun = numBasisFunctions(uBasis)
+    uSpan = findSpan(nbasisFun, uVector, uBasis.knotVec, uBasis.degree)
+    Nu = basisFun(uSpan, uVector, uBasis)
 
     # v-direction: determine the basis functions evaluated at vVector
-    nbasisFun = length(vKnotVector) - vDegree - 1
-    vSpan = findSpan(nbasisFun, vVector, vKnotVector)
-    Nv = basisFun(vSpan, vVector, vDegree, vKnotVector)
+    nbasisFun = numBasisFunctions(vBasis)
+    vSpan = findSpan(nbasisFun, vVector, vBasis.knotVec, vBasis.degree)
+    Nv = basisFun(vSpan, vVector, vBasis)
 
     # intialize
     surface   = [SVector(0.0, 0.0, 0.0) for i in eachindex(uVector), j in eachindex(vVector)]
@@ -54,17 +46,17 @@ function surfacePoints(uDegree::Int, vDegree::Int, uKnotVector, vKnotVector, con
     # determine the surface values
     for uPointInd in eachindex(uVector)
 
-        uind = uSpan[uPointInd] - uDegree - 1
+        uind = uSpan[uPointInd] - uBasis.degree - 1
 
         for vPointInd in eachindex(vVector)
 
-            for i in 1:(vDegree + 1)
+            for i in 1:(vBasis.degree + 1)
 
                 temp = SVector(0.0, 0.0, 0.0)
                 normTemp = 0.0
 
-                vind = vSpan[vPointInd] - vDegree + i - 1
-                for k in 1:(uDegree + 1)
+                vind = vSpan[vPointInd] - vBasis.degree + i - 1
+                for k in 1:(uBasis.degree + 1)
 
                     aux = Nu[uPointInd, k] * weights[uind + k, vind]
 
@@ -195,12 +187,12 @@ function surfaceDerivativesPoints!(
 
     # u-direction: determine the basis functions evaluated at uVector 
     nbasisFun = length(uKnotVector) - uDegree - 1
-    uSpan = findSpan(nbasisFun, uVector, uKnotVector)
+    uSpan = findSpan(nbasisFun, uVector, uKnotVector, uDegree)
     Nu = derBasisFun!(preallocU, uSpan, uDegree, uVector, uKnotVector, k)
 
     # v-direction: determine the basis functions evaluated at vVector
     nbasisFun = length(vKnotVector) - vDegree - 1
-    vSpan = findSpan(nbasisFun, vVector, vKnotVector)
+    vSpan = findSpan(nbasisFun, vVector, vKnotVector, vDegree)
     Nv = derBasisFun!(preallocV, vSpan, vDegree, vVector, vKnotVector, k)
 
     # initialize

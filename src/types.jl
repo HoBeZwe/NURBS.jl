@@ -19,6 +19,23 @@ end
 
 
 """
+    CurrySchoenberg{F} <: Basis{F}
+
+Normalized B-spline basis.
+"""
+struct CurrySchoenberg{F} <: Basis{F}
+    degree::Int
+    knotVec::Vector{F}
+
+    # inner constructor: check whether provided knot vector a valid one
+    function CurrySchoenberg(degree::Int, knotVec::Vector{F}) where {F}
+        isValidKnotVector!(knotVec)
+        new{F}(degree, knotVec)
+    end
+end
+
+
+"""
     NURB{F} <: Basis{F}
 
 NURBS basis.

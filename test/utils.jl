@@ -20,6 +20,14 @@
     R = [0:-1, 0:-1, 0:-1, 0:-1, 0:-1, 0:-1, 1:1, 0:-1, 0:-1, 0:-1, 0:-1, 0:-1]
 
     @test Ranges == R
+
+    # example without empty ranges
+    evalpoints = [0.52]
+    Ranges = spanRanges(Bspline(p, kVec), evalpoints; emptyRanges=false)
+
+    R = [0:-1, 0:-1, 0:-1, 1:1, 0:-1, 0:-1]
+
+    @test Ranges == R
 end
 
 @testset "Greville + Anchors" begin

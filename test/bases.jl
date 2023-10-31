@@ -1,5 +1,5 @@
 
-@testset "B-splines" begin
+@testset "B-splines + Curry-Scheonberg" begin
 
     @testset "Basis Evaluation" begin
 
@@ -55,6 +55,32 @@
 
         Bsmart = Bspl(evalpoints, pM)
         @test Bsmart[1] ≈ 1 / 8
+
+
+
+        # ------------------------------------------------ Curry-Schoenberg (example above + normalization)
+        Cspl = CurrySchoenberg(p, kVec)
+
+        # --- naive eval
+        C = evalNaive(Cspl, 4, evalpoints)
+        C[1] ≈ 3 / 4 # compare to analytical value
+
+        C = evalNaive(Cspl, 5, evalpoints)
+        C[1] ≈ 9 / 2 # compare to analytical value
+
+        # --- smart eval 
+        Csmart = Cspl(evalpoints)
+
+        @test Csmart[1] ≈ 3 / 4 # compare to analytical values
+        @test Csmart[2] ≈ 9 / 2
+        @test Csmart[3] ≈ 3 / 4
+
+        # --- smart eval + preallocated memory
+        Csmart = Cspl(evalpoints, pM)
+
+        @test Csmart[1] ≈ 3 / 4 # compare to analytical values
+        @test Csmart[2] ≈ 9 / 2
+        @test Csmart[3] ≈ 3 / 4
     end
 
 

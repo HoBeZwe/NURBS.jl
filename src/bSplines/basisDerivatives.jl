@@ -75,7 +75,7 @@ function (basis::Bspline)(evalpoints, k::Int)
     #basis.divMax < 0 && error("The k-th derivative has to be k ≥ 0!")
 
     numBasis = numBasisFunctions(basis)
-    knotSpan = findSpan(numBasis, evalpoints, basis.knotVec)
+    knotSpan = findSpan(numBasis, evalpoints, basis.knotVec, basis.degree)
 
     return derBasisFun(knotSpan, basis.degree, evalpoints, basis.knotVec, k)
 end
@@ -101,7 +101,7 @@ function (basis::Bspline)(evalpoints::Vector{T}, k::Int, prealloc::pAllocDer) wh
     #basis.divMax < 0 && error("The k-th derivative has to be k ≥ 0!")
 
     numBasis = numBasisFunctions(basis)
-    knotSpan = findSpan(numBasis, evalpoints, basis.knotVec)
+    knotSpan = findSpan(numBasis, evalpoints, basis.knotVec, basis.degree)
 
     return derBasisFun!(prealloc, knotSpan, basis.degree, evalpoints, basis.knotVec, k)
 end

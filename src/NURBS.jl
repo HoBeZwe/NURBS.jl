@@ -9,7 +9,7 @@ using StaticArrays
 
 # -------- exportet parts
 # types
-export Bspline, NURB
+export Bspline, NURB, CurrySchoenberg
 export BsplineCurve, NURBScurve
 export BsplineSurface, NURBSsurface, Surface
 

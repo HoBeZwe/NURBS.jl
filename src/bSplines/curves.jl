@@ -4,11 +4,11 @@
 
 Convenience function to compute points on a B-spline curve.
 """
-(curve::BsplineCurve)(uVector) = curvePoints(curve.basis.degree, curve.basis.knotVec, curve.controlPoints, uVector)
+(curve::BsplineCurve)(uVector) = curvePoints(curve.basis, curve.controlPoints, uVector)
 
 
 """
-    curvePoints(nbasisFun::Int, degree::Int, knotVector, controlPoints, uVector)
+    curvePoints(basis::Basis, controlPoints, uVector)
 
 Compute a 1D B-spline curve: given the 'knotVector', the 'controlPoints', and the 'degree', the curve is evaluated at the points given in 'uVector'.
 
@@ -20,22 +20,22 @@ P3 = SVector(0.25, 0.3, 0.0)
 
 controlPoints = [P1, P2, P3]
 """
-function curvePoints(degree::Int, knotVector, controlPoints, uVector)
+function curvePoints(basis::Basis, controlPoints, uVector)
 
     # the number of basis functions is determined by the number of knot vectors and the degree
-    nbasisFun = length(knotVector) - degree - 1
+    nbasisFun = numBasisFunctions(basis)
 
     # determine the basis functions evaluated at uVector
-    spans = findSpan(nbasisFun, uVector, knotVector)
-    N = basisFun(spans, uVector, degree, knotVector)
+    spans = findSpan(nbasisFun, uVector, basis.knotVec, basis.degree)
+    N = basisFun(spans, uVector, basis)
 
     # determine the curve values
     curve = [SVector(0.0, 0.0, 0.0) for i in eachindex(uVector)] # initialize
 
     for (j, span) in enumerate(spans)
-        for ind in 1:(degree + 1)
+        for ind in 1:(basis.degree + 1)
 
-            curve[j] += N[j, ind] * controlPoints[span - degree + ind - 1]
+            curve[j] += N[j, ind] * controlPoints[span - basis.degree + ind - 1]
         end
     end
 
@@ -71,7 +71,7 @@ function curveDerivativesPoints(degree::Int, knotVector, controlPoints, uVector,
     nbasisFun = length(knotVector) - degree - 1
 
     # determine the basis functions evaluated at uVector
-    spans = findSpan(nbasisFun, uVector, knotVector)
+    spans = findSpan(nbasisFun, uVector, knotVector, degree)
     N = derBasisFun(spans, degree, uVector, knotVector, k)
 
     # determine the curve values

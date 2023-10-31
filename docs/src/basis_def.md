@@ -43,6 +43,15 @@ Whenever one of the contained quotients exhibits a division by 0, the quotient i
     B = M - p - 1 \,.
     ```
 
+### [Curry-Schoenberg Splines](@id csspl)
+
+The Curry-Schoenberg spline basis functions [[3, p. 88]](@ref refs)
+```math
+n_{i,p}(u) = \cfrac{p+1}{u_{i+p+1} - u_i} N_{i,p}(u)
+```
+are defined as a normalized version of the B-splines. 
+
+
 
 ### [NURBS](@id nurbs)
 
@@ -62,6 +71,14 @@ The ``k``-th derivative of the B-splines ``N_{i, p}`` can be computed as [[1, p.
 ```math
 N_{i,p}^{(k)}(u) = p \left( \cfrac{N_{i,p-1}^{(k-1)}}{u_{i+p} - u_i} - \cfrac{N_{i+1,p-1}^{(k-1)}}{u_{i+p+1} - u_{i+1}} \right) \,.
 ```
+
+!!! note
+    The [Curry-Schoenberg](@ref csspl) splines are related to the derivatives of the B-splines as
+    ```math
+    N_{i,p}^{(1)}(u) = n_{i,p-1}(u) - n_{i+1,p-1}(u) \,.
+    ``` 
+    As this is their common use, derivatives of the Curry-Schoenberg splines are not used/implemented in this package.
+
 
 ### NURBS
 

@@ -19,7 +19,7 @@ export Jacobian, JacobiDet
 
 export insertKnot!, insertKnot
 
-export readMultipatch
+export readMultipatch, readStep
 export generateKnotVec, numBasisFunctions, spanRanges
 export greville, anchors
 
@@ -51,7 +51,8 @@ include("nurbs/surfaces.jl")
 include("fundamentalOperations/knotInsertion.jl")
 
 include("utils.jl")
-include("utils/fileio.jl")
+include("fileIO/multipatch.jl")
+include("fileIO/step.jl")
 
 if !isdefined(Base, :get_extension)
     include("../ext/NURBSext.jl") # for backwards compatibility with julia versions below 1.9

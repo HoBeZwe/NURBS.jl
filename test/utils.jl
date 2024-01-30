@@ -47,9 +47,24 @@ end
 
 @testset "File IO" begin
 
+    # --- multipatch files
     @test_nowarn Patches = readMultipatch("assets/sphere.dat")
 
     Patches = readMultipatch("assets/sphere.dat")
+    @test length(Patches) == 6
+
+
+    # --- .step files
+    # B-spline
+    @test_nowarn Patches = readStep("assets/torus.stp")
+
+    Patches = readStep("assets/torus.stp")
+    @test length(Patches) == 30
+
+    # NURBS
+    @test_nowarn Patches = readStep("assets/sphere.stp")
+
+    Patches = readStep("assets/sphere.stp")
     @test length(Patches) == 6
 end
 

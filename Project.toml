@@ -1,7 +1,7 @@
 name = "NURBS"
 uuid = "dde13934-061e-461b-aa91-2c0fad390a0d"
 authors = ["Bernd Hofmann <bernd.hofmann@tum.de> and contributors"]
-version = "0.5.1"
+version = "0.5.2"
 
 [deps]
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
@@ -20,7 +20,7 @@ LinearAlgebra = "1"
 PlotlyJS = "0.18"
 StaticArrays = "1"
 Statistics = "1"
-julia = "1"
+julia = "1.8"
 
 [extras]
 JuliaFormatter = "98e50ef6-434e-11e9-1051-2b60c6c9e899"

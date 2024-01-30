@@ -26,7 +26,7 @@ The following aspects are implemented (✓) and planned (⌛):
 - ✓ Surfaces & derivatives 
 
 ##### Fundamental operations
-- ✓ File I/O (basic)
+- ✓ File I/O (.step)
 - ⌛ Knot insertion / removal
 - ⌛ Degree elevation / reduction
 - ⌛ Construction of common geometries

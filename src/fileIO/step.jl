@@ -25,18 +25,18 @@ function readStep(filename::String, T=Float64)
     while lineInd ≤ length(stringVec)
 
         # --- handle NURBS surfaces
-        if startswith(stringVec[lineInd], "B_SPLINE_SURFACE") 
+        if startswith(stringVec[lineInd], "B_SPLINE_SURFACE")
 
             lineCtlPts, lineInd = getCompleteStringTill(stringVec, lineInd, "B_SPLINE_SURFACE_WITH_KNOTS")
             lineKnVecs, lineInd = getCompleteStringTill(stringVec, lineInd, "GEOMETRIC_REPRESENTATION_ITEM")
-            lineWeight, lineInd = getCompleteStringTill(stringVec, lineInd+1, "REPRESENTATION_ITEM")
+            lineWeight, lineInd = getCompleteStringTill(stringVec, lineInd + 1, "REPRESENTATION_ITEM")
 
             Patch = parse_NURBS_step(lineCtlPts, lineKnVecs, lineWeight, points, offset, T)
             push!(Patches, Patch)
         end
 
         # --- handle B-spline surfaces 
-        if contains(stringVec[lineInd], "B_SPLINE_SURFACE_WITH_KNOTS") 
+        if contains(stringVec[lineInd], "B_SPLINE_SURFACE_WITH_KNOTS")
 
             line, lineInd = getCompleteString(stringVec, lineInd) # extract everything till ';' and return the reached line index
             Patch = parse_B_SPLINE_SURFACE_WITH_KNOTS(line, points, offset, T) # promoted to NURBS surface (weights are set to 1)
@@ -84,7 +84,7 @@ function parse_NURBS_step(lineCtlPts::String, lineKnVecs::String, lineWeights::S
     controlPoints, pStopInd = extractCtrlPoints(lineCtlPts, firstBracketInd, points, offset, T)
 
     # --- extract knot vectors
-    uKnotVec, vKnotVec = extractKnotVecs(lineKnVecs, 29, T) 
+    uKnotVec, vKnotVec = extractKnotVecs(lineKnVecs, 29, T)
 
     # --- extract weigths
     pStartInd = findnext("(((", lineWeights, 25)[end]
@@ -99,7 +99,7 @@ function parse_NURBS_step(lineCtlPts::String, lineKnVecs::String, lineWeights::S
         n = 1
         for entry in eachsplit(list, ',')
 
-            weights[m,n] = parse(T, entry)
+            weights[m, n] = parse(T, entry)
             n += 1
         end
         m += 1
@@ -139,7 +139,7 @@ function parse_B_SPLINE_SURFACE_WITH_KNOTS(line::String, points, offset::Int, T=
         nextInd = findnext(',', line, nextInd) + 1
     end
 
-    uKnotVec, vKnotVec = extractKnotVecs(line, nextInd, T)    
+    uKnotVec, vKnotVec = extractKnotVecs(line, nextInd, T)
 
     #return BsplineSurface(Bspline(uDegree, uKnotVec), Bspline(vDegree, vKnotVec), controlPoints) 
     return NURBSsurface(Bspline(uDegree, uKnotVec), Bspline(vDegree, vKnotVec), controlPoints, ones(size(controlPoints)))

@@ -9,15 +9,15 @@ Two means are provided to read data from files.
 
 ### Step files
 
-To read [.step files](https://en.wikipedia.org/wiki/ISO_10303-21) containing B-spline surfaces and/or NURBS surfaces a function [`readStep`](@ref readStep) is provided.
+To read [.step and .stp files](https://en.wikipedia.org/wiki/ISO_10303-21) containing B-spline surfaces and/or NURBS surfaces a function [`readStep`](@ref readStep) is provided.
 
 !!! note
-    So far only reading B-spline surfaces (called B_SPLINE_SURFACE_WITH_KNOTS in .step) and NURBS surfaces (as a BOUNDED_SURFACE() in .step) is supported. 
+    So far only reading B-spline surfaces (called `B_SPLINE_SURFACE_WITH_KNOTS` in .step and .stp) and NURBS surfaces (as a `BOUNDED_SURFACE()` in .step and .stp) is supported. 
     Howver, reading curves should not be too dificult to implement.
 
 ```@example utils
 using NURBS # hide
-Patches = readStep("assets/torus.step")
+Patches = readStep("assets/torus.stp")
 
 using PlotlyJS
 plotPatches(Patches, plotControlPoints=false, resolution=0.25)

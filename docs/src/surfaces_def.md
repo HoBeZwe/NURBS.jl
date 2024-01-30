@@ -73,5 +73,5 @@ The Jacobian matrix ``\bm{J}(u,v)`` for the surface is given as
 ```
 and the magnitude of its determinant as
 ```math
-\left|\det\left(\bm{J}(u,v)\right)\right| = \sqrt{ {\left( \cfrac{\partial y}{\partial u}\cfrac{\partial z}{\partial v} - \cfrac{\partial z}{\partial u} \cfrac{\partial y}{\partial v} \right)}^2 + {\left( \cfrac{\partial z}{\partial u}\cfrac{\partial x}{\partial v} - \cfrac{\partial x}{\partial u} \cfrac{\partial v}{\partial v} \right)}^2 + {\left( \cfrac{\partial x}{\partial u}\cfrac{\partial y}{\partial v} - \cfrac{\partial y}{\partial u} \cfrac{\partial x}{\partial v} \right)}^2 } \,.
+\left|\det\left(\bm{J}(u,v)\right)\right| = \sqrt{ {\left( \cfrac{\partial y}{\partial u}\cfrac{\partial z}{\partial v} - \cfrac{\partial z}{\partial u} \cfrac{\partial y}{\partial v} \right)}^2 + {\left( \cfrac{\partial z}{\partial u}\cfrac{\partial x}{\partial v} - \cfrac{\partial x}{\partial u} \cfrac{\partial z}{\partial v} \right)}^2 + {\left( \cfrac{\partial x}{\partial u}\cfrac{\partial y}{\partial v} - \cfrac{\partial y}{\partial u} \cfrac{\partial x}{\partial v} \right)}^2 } \,.
 ```

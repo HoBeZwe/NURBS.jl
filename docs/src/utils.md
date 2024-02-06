@@ -13,7 +13,7 @@ To read [.step and .stp files](https://en.wikipedia.org/wiki/ISO_10303-21) conta
 
 !!! note
     So far only reading B-spline surfaces (called `B_SPLINE_SURFACE_WITH_KNOTS` in .step and .stp) and NURBS surfaces (as a `BOUNDED_SURFACE()` in .step and .stp) is supported. 
-    Howver, reading curves should not be too dificult to implement.
+    However, reading curves should not be too dificult to implement.
 
 ```@example utils
 using NURBS # hide

@@ -49,6 +49,7 @@ include("nurbs/curves.jl")
 include("nurbs/surfaces.jl")
 
 include("fundamentalOperations/knotInsertion.jl")
+include("fundamentalOperations/splitting.jl")
 
 include("utils.jl")
 include("fileIO/multipatch.jl")

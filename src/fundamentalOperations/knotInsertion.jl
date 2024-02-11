@@ -38,11 +38,11 @@ function insertKnot!(knotVecOrig, controlPointsOrig, degree::Int, newParametricP
 
     # --- modify knot vector
     knotVecCopy = deepcopy(knotVecOrig)
-    oldMultIndices, oldMult = extendKnotVector!(knotVecOrig, degree, newParametricPoint, multiplicity)
+    oldMultIndices, oldMult, limitedMult = extendKnotVector!(knotVecOrig, degree, newParametricPoint, multiplicity)
 
     # --- modify control points
     extendControlPoints!(
-        controlPointsOrig, knotVecCopy, degree, oldMultIndices.stop, newParametricPoint, multiplicity, oldMult, weights
+        controlPointsOrig, knotVecCopy, degree, oldMultIndices.stop, newParametricPoint, limitedMult, oldMult, weights
     )
 
     return nothing
@@ -61,13 +61,17 @@ function extendKnotVector!(knotVecOrig, degree::Int, newParametricPoint::Real, m
     oldMult = length(oldMultIndices)                                # number of existing entries with same value
 
     # --- check whether resulting mulitplicity makes sense
-    multiplicity + oldMult ≤ degree || error("The resulting multiplicity is larger than the polynomial degree.")
+    newMult = multiplicity + oldMult
+    if newMult > degree
+        @info "The multiplicity of the inserted knot is limited to $(degree)."
+        newMult = degree
+    end
 
     # --- generate new knot vector
-    toInsert = repeat([newParametricPoint], multiplicity + oldMult) # repeat the parametric point to the final multiplicity (old + new)
+    toInsert = repeat([newParametricPoint], newMult) # repeat the parametric point to the final multiplicity (old + new)
     splice!(knotVecOrig, oldMultIndices, toInsert)                  # insert the total parametric point in final multiplicity
 
-    return oldMultIndices, oldMult
+    return oldMultIndices, oldMult, newMult - oldMult
 end
 
 
@@ -90,6 +94,7 @@ function extendControlPoints!(controlPoints, knotVecOrig, degree::Int, pos::Int,
 
         auxC = controlPoints[(pos - degree):(pos - oldMult)]
         auxW = weights[(pos - degree):(pos - oldMult)]
+        auxC .*= auxW
 
         for r in 1:multiplicity
             for i in 1:(degree - oldMult - r + 1)
@@ -97,7 +102,7 @@ function extendControlPoints!(controlPoints, knotVecOrig, degree::Int, pos::Int,
                 L = pos - degree + i + r - 1
 
                 αᵢ = (uNew - knotVecOrig[L]) / (knotVecOrig[pos + i] - knotVecOrig[L])
-                auxC[i] = αᵢ * auxW[i + 1] * auxC[i + 1] + (1.0 - αᵢ) * auxW[i] * auxC[i]
+                auxC[i] = αᵢ * auxC[i + 1] + (1.0 - αᵢ) * auxC[i]
                 auxW[i] = αᵢ * auxW[i + 1] + (1.0 - αᵢ) * auxW[i]
             end
 
@@ -109,9 +114,9 @@ function extendControlPoints!(controlPoints, knotVecOrig, degree::Int, pos::Int,
         end
 
         # load remaining controlpoints
-        for i in (multiplicity + oldMult + 1):(degree - oldMult - 1)
-            newControlPoints[i] = auxC[i] / auxW[i]
-            newWeights[i] = auxW[i]
+        for i in 1:(degree - oldMult - 1)
+            newControlPoints[i + multiplicity - 1] = auxC[i] / auxW[i]
+            newWeights[i + multiplicity - 1] = auxW[i]
         end
 
         # splice new computed points into array (replacing the correct amount)
@@ -139,8 +144,8 @@ function extendControlPoints!(controlPoints, knotVecOrig, degree::Int, pos::Int,
     end
 
     # load remaining controlpoints
-    for i in (multiplicity + oldMult + 1):(degree - oldMult - 1)
-        newControlPoints[i] = aux[i]
+    for i in 1:(degree - oldMult - 1)
+        newControlPoints[i + multiplicity - 1] = aux[i]
     end
 
     # splice new computed points into array (replacing the correct amount)

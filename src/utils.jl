@@ -10,6 +10,22 @@ numBasisFunctions(basis::Basis) = length(basis.knotVec) - basis.degree - 1
 
 
 """
+    weights(basis::NURB)
+
+Return the weights for a NURBS basis
+"""
+weights(basis::NURB) = basis.weights
+
+
+"""
+    weights(basis::Basis)
+
+Except for a NURBS basis all other bases have no weights.
+"""
+weights(basis::Basis) = Float64[]
+
+
+"""
     isValidKnotVector!(kVec)
 
 Check whether the knot vector has only entries in [0, 1] and is in ascending order.
@@ -21,10 +37,13 @@ function isValidKnotVector!(kVec)
     # is the vector sorted?
     issorted(kVec) || error("The knot vector is not in ascending order.")
 
-    # is the first element 0?
-    kVec[1] == 0.0 || error("The knot vector has to start at 0.")
+    # normalize knot vector entries to [0, 1]: enforce start at 0
+    if kVec[1] != 0.0
+        kVec .-= kVec[1]
+        @info "The knot vector is being modified (normalized)."
+    end
 
-    # normalize knot vector entries to [0, 1]
+    # normalize knot vector entries to [0, 1]: enforce stop at 1
     if kVec[end] != 1.0
         kVec ./= maximum(kVec)
         @info "The knot vector is being modified (normalized)."

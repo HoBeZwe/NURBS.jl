@@ -4,7 +4,7 @@
 
 Plot a 3D curve given the vector C containing an SVector(x, y, z) for each point of the curve.
 """
-function NURBS.plotCurve3D(C; controlPoints=[], tangents=[], tangentRes=25)
+function NURBS.plotCurve3D(C; controlPoints=[], tangents=[], tangentRes=25, returnTrace=false)
 
     data = PlotlyJS.GenericTrace[]
 
@@ -41,6 +41,8 @@ function NURBS.plotCurve3D(C; controlPoints=[], tangents=[], tangentRes=25)
         maxmax, trace = plotControlPoints(controlPoints)
         push!(data, trace)
     end
+
+    returnTrace && return data
 
     # plot all traces
     PlotlyJS.plot(data)

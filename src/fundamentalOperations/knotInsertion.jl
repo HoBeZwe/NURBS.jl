@@ -1,5 +1,18 @@
 
 """
+    checkRange(point<:Real)
+
+Check whether points is greater 0 and smaller 1.
+"""
+function checkRange(point::Real)
+
+    (point > 0.0 && point < 1.0) || error("A parametric point is outside ]0,1[.")
+
+    return nothing
+end
+
+
+"""
     refine(C::Curve, newParametricPoints::Vector)
 
 Convenience function to refine a curve.
@@ -30,10 +43,32 @@ function refine(kVec::Vector, controlPts::Vector, degree::Int, newParametricPoin
 
     # --- modify copies
     for (i, newPoint) in enumerate(newParametricPoints)
+        checkRange(newPoint)
         insertKnot!(knotVecNew, controlPointsNew, degree, newPoint, 1, weightsNew)
     end
 
     return knotVecNew, controlPointsNew, weightsNew
+end
+
+
+"""
+    refine(S::Surface; U=[], V=[])
+
+NOTE: There are more efficient ways to do this.
+"""
+function refine(S::Surface; U=[], V=[])
+
+    for u in U
+        checkRange(u)
+        S = insertKnotU(S, u)
+    end
+
+    for v in V
+        checkRange(v)
+        S = insertKnotV(S, v)
+    end
+
+    return S
 end
 
 
@@ -49,6 +84,86 @@ function insertKnot(C::Curve, newParametricPoint::Real, multiplicity::Int=1)
     )
 
     return similarCurve(C, C.basis.degree, knotVecNew, controlPointsNew, weightsNew)
+end
+
+
+"""
+    insertKnotU(S::Surface, newParametricPoint::Real, multiplicity::Int=1)
+
+Insert a knot in u-direction with the given multiplicity.
+
+TODO: the computation of the alphas is redundant.
+"""
+function insertKnotU(S::Surface, newParametricPoint::Real, multiplicity::Int=1)
+
+    degree = S.uBasis.degree
+    knotVecOrig = S.uBasis.knotVec
+
+    # --- modify knot vector
+    knotVecMod = deepcopy(knotVecOrig)
+    oldMultIndices, oldMult, limitedMult = extendKnotVector!(knotVecMod, degree, newParametricPoint, multiplicity)
+
+    # --- modify control points
+    N = numBasisFunctions(knotVecMod, degree)
+    M = size(S.controlPoints, 2)
+
+    wMatNew = similar(weights(S), N, M)
+    cPtsNew = similar(S.controlPoints, N, M)
+
+    for i in eachindex(S.controlPoints[1, :])
+
+        ctrlPtsMody = deepcopy(S.controlPoints[:, i])
+        weightsMody = deepcopy(weights(S, :, i))
+
+        extendControlPoints!(
+            ctrlPtsMody, knotVecOrig, degree, oldMultIndices.stop, newParametricPoint, limitedMult, oldMult, weightsMody
+        )
+
+        isempty(weightsMody) || (wMatNew[:, i] = weightsMody)
+        cPtsNew[:, i] = ctrlPtsMody
+    end
+
+    return similarSurface(S, degree, knotVecMod, S.vBasis.knotVec, cPtsNew, wMatNew)
+end
+
+
+"""
+    insertKnotV(S::Surface, newParametricPoint::Real, multiplicity::Int=1)
+
+Insert a knot in v-direction with the given multiplicity.
+
+TODO: the computation of the alphas is redundant.
+"""
+function insertKnotV(S::Surface, newParametricPoint::Real, multiplicity::Int=1)
+
+    degree = S.vBasis.degree
+    knotVecOrig = S.vBasis.knotVec
+
+    # --- modify knot vector
+    knotVecMod = deepcopy(knotVecOrig)
+    oldMultIndices, oldMult, limitedMult = extendKnotVector!(knotVecMod, degree, newParametricPoint, multiplicity)
+
+    # --- modify control points
+    N = numBasisFunctions(knotVecMod, degree)
+    M = size(S.controlPoints, 1)
+
+    wMatNew = similar(weights(S), M, N)
+    cPtsNew = similar(S.controlPoints, M, N)
+
+    for i in eachindex(S.controlPoints[:, 1])
+
+        ctrlPtsMody = deepcopy(S.controlPoints[i, :])
+        weightsMody = deepcopy(weights(S, i, :))
+
+        extendControlPoints!(
+            ctrlPtsMody, knotVecOrig, degree, oldMultIndices.stop, newParametricPoint, limitedMult, oldMult, weightsMody
+        )
+
+        isempty(weightsMody) || (wMatNew[i, :] = weightsMody)
+        cPtsNew[i, :] = ctrlPtsMody
+    end
+
+    return similarSurface(S, degree, S.uBasis.knotVec, knotVecMod, cPtsNew, wMatNew)
 end
 
 
@@ -106,6 +221,8 @@ end
     extendKnotVector!(knotVecOrig, newParametricPoint::Real, multiplicity::Int)
 
 Insert the new value with a given mulitplicity (insert the point multiple times).
+
+Modifies knotVecOrig.
 """
 function extendKnotVector!(knotVecOrig, degree::Int, newParametricPoint::Real, multiplicity::Int)
 
@@ -134,6 +251,8 @@ end
 Insert the new control points (and optionally the weights) corresponding to the new values in the knot vector.
 
 Adaption of Algorithm A5.1 from 'The NURBS Book' p. 151.
+
+Modifies controlPoints and weights.
 """
 function extendControlPoints!(controlPoints, knotVecOrig, degree::Int, pos::Int, uNew::Real, multiplicity::Int, oldMult::Int, weights)
 

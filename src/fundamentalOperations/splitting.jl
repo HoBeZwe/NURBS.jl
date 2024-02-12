@@ -35,7 +35,7 @@ function Base.split(C::CurveT, splits::Vector) where {CurveT<:Curve}
 
     for (i, splitPoint) in enumerate(splits)
 
-        (splitPoint > 0.0 && splitPoint < 1.0) || error("A parametric split point is outside ]0,1[.")
+        checkRange(splitPoint)
 
         kVec1, kVec, w1, w, cPts1, cPts = splitData(p, w, kVec, cPts, splitPoint)
 
@@ -55,7 +55,7 @@ Split a curve at a single parametric point in the range ]0,1[ by inserting a sin
 """
 function Base.split(C::Curve, splitPoint=0.5)
 
-    (splitPoint > 0.0 && splitPoint < 1.0) || error("The parametric split point is outside ]0,1[.")
+    checkRange(splitPoint)
 
     p = C.basis.degree
     w = weights(C.basis)
@@ -119,26 +119,4 @@ function splitWeights(weights::Vector{T}, Ind::Int) where {T}
     w2 = weights[(Ind - 1):end]
 
     return w1, w2
-end
-
-
-"""
-    similarCurve(curve::BsplineCurve, p::Int, kVec, cPts, w)
-
-Construct B-spline curve from underlying data: ignore empty weights.
-"""
-function similarCurve(curve::BsplineCurve, p::Int, kVec, cPts, w)
-
-    return BsplineCurve(Bspline(p, kVec), cPts)
-end
-
-
-"""
-    similarCurve(curve::NURBScurve, p::Int, kVec, cPts, w)
-
-Construct NURBS curve from underlying data.
-"""
-function similarCurve(curve::NURBScurve, p::Int, kVec, cPts, w)
-
-    return NURBScurve(NURB(p, kVec, w), cPts)
 end

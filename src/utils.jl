@@ -7,12 +7,13 @@ The number of basis functions is fixed by the knot vector and the degree.
 Assumption: the first and last knot vector entry has mulitplicity degree + 1.
 """
 numBasisFunctions(basis::Basis) = length(basis.knotVec) - basis.degree - 1
+numBasisFunctions(knotVec, degree) = length(knotVec) - degree - 1
 
 
 """
     weights(basis::NURB)
 
-Return the weights for a NURBS basis
+Return the weights of a NURBS basis.
 """
 weights(basis::NURB) = basis.weights
 
@@ -22,7 +23,23 @@ weights(basis::NURB) = basis.weights
 
 Except for a NURBS basis all other bases have no weights.
 """
-weights(basis::Basis) = Float64[]
+weights(basis::Basis{T}) where {T} = T[]
+
+
+"""
+    weights(srfc::NURBSsurface)
+
+Return the weights of a NURBS surface.
+"""
+weights(srfc::NURBSsurface, i=:, j=:) = srfc.weights[i, j]
+
+
+"""
+    weights(srfc::Surface{T}, i=0, j=0) where {T}
+
+Except for a NURBS surfaces all other surfaces have no weights.
+"""
+weights(srfc::Surface{T}, i=0, j=0) where {T} = T[]
 
 
 """

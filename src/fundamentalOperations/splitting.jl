@@ -39,10 +39,10 @@ function Base.split(C::CurveT, splits::Vector) where {CurveT<:Curve}
 
         kVec1, kVec, w1, w, cPts1, cPts = splitData(p, w, kVec, cPts, splitPoint)
 
-        push!(cVec, splittedCurve(C, p, kVec1, cPts1, w1))
+        push!(cVec, similarCurve(C, p, kVec1, cPts1, w1))
     end
 
-    push!(cVec, splittedCurve(C, p, kVec, cPts, w))
+    push!(cVec, similarCurve(C, p, kVec, cPts, w))
 
     return cVec
 end
@@ -64,8 +64,8 @@ function Base.split(C::Curve, splitPoint=0.5)
 
     kVec1, kVec2, w1, w2, cPts1, cPts2 = splitData(p, w, kVec, cPts, splitPoint)
 
-    C1 = splittedCurve(C, C.basis.degree, kVec1, cPts1, w1)
-    C2 = splittedCurve(C, C.basis.degree, kVec2, cPts2, w2)
+    C1 = similarCurve(C, C.basis.degree, kVec1, cPts1, w1)
+    C2 = similarCurve(C, C.basis.degree, kVec2, cPts2, w2)
 
     return C1, C2
 end
@@ -123,22 +123,22 @@ end
 
 
 """
-    splittedCurve(curve::BsplineCurve, p::Int, kVec, cPts, w)
+    similarCurve(curve::BsplineCurve, p::Int, kVec, cPts, w)
 
 Construct B-spline curve from underlying data: ignore empty weights.
 """
-function splittedCurve(curve::BsplineCurve, p::Int, kVec, cPts, w)
+function similarCurve(curve::BsplineCurve, p::Int, kVec, cPts, w)
 
     return BsplineCurve(Bspline(p, kVec), cPts)
 end
 
 
 """
-    splittedCurve(curve::NURBScurve, p::Int, kVec, cPts, w)
+    similarCurve(curve::NURBScurve, p::Int, kVec, cPts, w)
 
 Construct NURBS curve from underlying data.
 """
-function splittedCurve(curve::NURBScurve, p::Int, kVec, cPts, w)
+function similarCurve(curve::NURBScurve, p::Int, kVec, cPts, w)
 
     return NURBScurve(NURB(p, kVec, w), cPts)
 end

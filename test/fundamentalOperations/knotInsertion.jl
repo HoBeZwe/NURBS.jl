@@ -33,11 +33,9 @@
 
             # insert already existing parametric point twice
             uNew = 3 / 5
-            kVecNew, ctrlPointsNew, wNew = insertKnot(kVec, controlPoints, p, uNew, 1)
+            N2 = insertKnot(N, uNew, 1)
 
-            # evaluate curve with inserted point
-            N = BsplineCurve(Bspline(p, kVecNew), ctrlPointsNew)
-            C2 = N(evalpoints)
+            C2 = N2(evalpoints)
 
             # verify
             @test minimum(C1 .≈ C2)
@@ -47,11 +45,9 @@
 
             # insert already existing parametric point twice
             uNew = 3 / 5
-            kVecNew, ctrlPointsNew, wNew = insertKnot(kVec, controlPoints, p, uNew, 2)
+            N2 = insertKnot(N, uNew, 2)
 
-            # evaluate curve with inserted point
-            N = BsplineCurve(Bspline(p, kVecNew), ctrlPointsNew)
-            C2 = N(evalpoints)
+            C2 = N2(evalpoints)
 
             # verify
             @test minimum(C1 .≈ C2)
@@ -59,13 +55,21 @@
 
         @testset "New point once" begin
 
-            # insert already existing parametric point twice
+            # insert new parametric point once
             uNew = 3.5 / 5
-            kVecNew, ctrlPointsNew, wNew = insertKnot(kVec, controlPoints, p, uNew, 1)
+            N2 = insertKnot(N, uNew, 1)
 
-            # evaluate curve with inserted point
-            N = BsplineCurve(Bspline(p, kVecNew), ctrlPointsNew)
-            C2 = N(evalpoints)
+            C2 = N2(evalpoints)
+
+            # verify
+            @test minimum(C1 .≈ C2)
+        end
+
+        @testset "Refine" begin
+
+            # insert a list of parametric points
+            N2 = refine(N, [0.1, 0.2, 0.3, 0.8221])
+            C2 = N2(evalpoints)
 
             # verify
             @test minimum(C1 .≈ C2)
@@ -83,11 +87,9 @@
 
             # insert parametric point
             uNew = 3 / 5
-            kVecNew, ctrlPointsNew, wNew = insertKnot(kVec, controlPoints, p, uNew, 1, w)
+            N2 = insertKnot(N, uNew, 1)
 
-            # evaluate curve with inserted point
-            N = NURBScurve(NURB(p, kVecNew, wNew), ctrlPointsNew)
-            C2 = N(evalpoints)
+            C2 = N2(evalpoints)
 
             # verify
             @test minimum(C1 .≈ C2)
@@ -97,11 +99,9 @@
 
             # insert parametric point
             uNew = 3 / 5
-            kVecNew, ctrlPointsNew, wNew = insertKnot(kVec, controlPoints, p, uNew, 2, w)
+            N2 = insertKnot(N, uNew, 2)
 
-            # evaluate curve with inserted point
-            N = NURBScurve(NURB(p, kVecNew, wNew), ctrlPointsNew)
-            C2 = N(evalpoints)
+            C2 = N2(evalpoints)
 
             # verify
             @test minimum(C1 .≈ C2)
@@ -111,11 +111,9 @@
 
             # insert parametric point
             uNew = 3.5 / 5
-            kVecNew, ctrlPointsNew, wNew = insertKnot(kVec, controlPoints, p, uNew, 1, w)
+            N2 = insertKnot(N, uNew, 1)
 
-            # evaluate curve with inserted point
-            N = NURBScurve(NURB(p, kVecNew, wNew), ctrlPointsNew)
-            C2 = N(evalpoints)
+            C2 = N2(evalpoints)
 
             # verify
             @test minimum(C1 .≈ C2)
@@ -125,15 +123,22 @@
 
             # insert parametric point
             uNew = 4.2 / 5
-            kVecNew, ctrlPointsNew, wNew = insertKnot(kVec, controlPoints, p, uNew, p + 1, w)
+            N2 = insertKnot(N, uNew, p + 1)
 
-            # evaluate curve with inserted point
-            N = NURBScurve(NURB(p, kVecNew, wNew), ctrlPointsNew)
-            C2 = N(evalpoints)
+            C2 = N2(evalpoints)
+
+            # verify
+            @test minimum(C1 .≈ C2)
+        end
+
+        @testset "Refine" begin
+
+            # insert parametric point
+            N2 = refine(N, [0.1, 0.2, 0.3, 0.8221])
+            C2 = N2(evalpoints)
 
             # verify
             @test minimum(C1 .≈ C2)
         end
     end
-
 end

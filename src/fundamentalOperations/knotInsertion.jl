@@ -1,5 +1,58 @@
 
 """
+    refine(C::Curve, newParametricPoints::Vector)
+
+Convenience function to refine a curve.
+"""
+function refine(C::Curve, newParametricPoints::Vector)
+
+    knotVecNew, controlPointsNew, weightsNew = refine(
+        C.basis.knotVec, C.controlPoints, C.basis.degree, newParametricPoints, weights(C.basis)
+    )
+
+    return similarCurve(C, C.basis.degree, knotVecNew, controlPointsNew, weightsNew)
+end
+
+
+"""
+    refine(kVec::Vector, controlPts::Vector, degree::Int, newParametricPoints::Vector, weights=[])
+
+Refine a curve by inserting new parametric points into the curve's knot vector.
+
+NOTE: There are more efficient ways to do this. See, e.g., 'The NURBS Book' p. 162.
+"""
+function refine(kVec::Vector, controlPts::Vector, degree::Int, newParametricPoints::Vector, weights=[])
+
+    # --- make copies
+    knotVecNew       = deepcopy(kVec)
+    controlPointsNew = deepcopy(controlPts)
+    weightsNew       = deepcopy(weights)
+
+    # --- modify copies
+    for (i, newPoint) in enumerate(newParametricPoints)
+        insertKnot!(knotVecNew, controlPointsNew, degree, newPoint, 1, weightsNew)
+    end
+
+    return knotVecNew, controlPointsNew, weightsNew
+end
+
+
+"""
+    insertKnot(C::Curve, newParametricPoint::Real, multiplicity::Int)
+
+Convenience function to insert a knot into a curve.
+"""
+function insertKnot(C::Curve, newParametricPoint::Real, multiplicity::Int=1)
+
+    knotVecNew, controlPointsNew, weightsNew = insertKnot(
+        C.basis.knotVec, C.controlPoints, C.basis.degree, newParametricPoint, multiplicity, weights(C.basis)
+    )
+
+    return similarCurve(C, C.basis.degree, knotVecNew, controlPointsNew, weightsNew)
+end
+
+
+"""
     insertKnot(knotVecOrig, controlPointsOrig, p::Int, newParametricPoint::Real, multiplicity::Int)
 
 Insert a new value with a given mulitplicity (insert the value multiple times) into a knot vector for the polynomial degree 'degree'. Return the resutling knot vector and the new control points.

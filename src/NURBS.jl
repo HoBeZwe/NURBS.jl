@@ -18,6 +18,7 @@ export evalNaive, evalNaiveDerivative
 export Jacobian, JacobiDet
 
 export insertKnot!, insertKnot
+export refine # NOTE: split is an extension of Base.split, i.e., it is publicly available without export
 
 export readMultipatch, readStep
 export generateKnotVec, numBasisFunctions, spanRanges

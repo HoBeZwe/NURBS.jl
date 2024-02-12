@@ -23,7 +23,8 @@ using PlotlyJS
     end
 
     @testset "Fundamental Operations" begin
-        include("knotInsertion.jl")
+        include("fundamentalOperations/knotInsertion.jl")
+        include("fundamentalOperations/splitting.jl")
     end
 
     @testset "Utils" begin

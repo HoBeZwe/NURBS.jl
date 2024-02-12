@@ -6,8 +6,8 @@ Split a curve in the parametric domain equally to obtain n curves.
 """
 function Base.split(C::Curve, n::Int)
 
-    sep = 1/n
-    splits = collect(sep:sep:1-sep)
+    sep = 1.0 / n
+    splits = collect(sep:sep:(1.0 - sep))
 
     return split(C, splits)
 end
@@ -23,7 +23,7 @@ The splits vector needs to be sorted and each value should only occur once.
 """
 function Base.split(C::CurveT, splits::Vector) where {CurveT<:Curve}
 
-    issorted(splits)  || error("The parametric points have to be sorted.")
+    issorted(splits) || error("The parametric points have to be sorted.")
     allunique(splits) || error("There are split points occuring more than once.")
 
     cVec = CurveT[]

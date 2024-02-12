@@ -120,6 +120,20 @@
             # verify
             @test minimum(C1 .≈ C2)
         end
+
+        @testset "New point more often than allowed" begin
+
+            # insert parametric point
+            uNew = 4.2 / 5
+            kVecNew, ctrlPointsNew, wNew = insertKnot(kVec, controlPoints, p, uNew, p + 1, w)
+
+            # evaluate curve with inserted point
+            N = NURBScurve(NURB(p, kVecNew, wNew), ctrlPointsNew)
+            C2 = N(evalpoints)
+
+            # verify
+            @test minimum(C1 .≈ C2)
+        end
     end
 
 end

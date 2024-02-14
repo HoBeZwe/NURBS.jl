@@ -113,7 +113,7 @@ savefig(t, "cruve3DInserted.html"); nothing # hide
 ```
 
 ```@raw html
-<object data="cruve3DInserted.html" type="text/html"  style="width:100%;height:50vh;"> </object>
+<object data="../cruve3DInserted.html" type="text/html"  style="width:100%;height:50vh;"> </object>
 ```
 
 Several knots can be inserted by the [`refine`](@ref refine) function.
@@ -128,7 +128,7 @@ savefig(t, "cruve3Drefined.html"); nothing # hide
 ```
 
 ```@raw html
-<object data="cruve3Drefined.html" type="text/html"  style="width:100%;height:50vh;"> </object>
+<object data="../cruve3Drefined.html" type="text/html"  style="width:100%;height:50vh;"> </object>
 ```
 
 !!! note
@@ -155,7 +155,7 @@ savefig(t, "cruve3Dsplit.html"); nothing # hide
 ```
 
 ```@raw html
-<object data="cruve3Dsplit.html" type="text/html"  style="width:100%;height:50vh;"> </object>
+<object data="../cruve3Dsplit.html" type="text/html"  style="width:100%;height:50vh;"> </object>
 ```
 
 To equally split a curve into ``n`` curves as a second argument an integer can be provided:

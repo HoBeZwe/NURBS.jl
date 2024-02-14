@@ -130,7 +130,7 @@ savefig(t, "surfaceRefined.html"); nothing # hide
 ```
 
 ```@raw html
-<object data="surfaceRefined.html" type="text/html"  style="width:100%;height:50vh;"> </object>
+<object data="../surfaceRefined.html" type="text/html"  style="width:100%;height:50vh;"> </object>
 ```
 
 !!! note
@@ -152,7 +152,7 @@ savefig(t, "surfaceSplit.html"); nothing # hide
 ```
 
 ```@raw html
-<object data="surfaceSplit.html" type="text/html"  style="width:100%;height:50vh;"> </object>
+<object data="../surfaceSplit.html" type="text/html"  style="width:100%;height:50vh;"> </object>
 ```
 
 To equally split a surface into ``n`` times ``m`` surfaces as second and third argument an integer can be provided:

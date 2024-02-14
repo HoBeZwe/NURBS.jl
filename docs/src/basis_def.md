@@ -1,7 +1,11 @@
 
 # Bases
 
-The two considered B-spline and NURBS basis functions are based on a knot vector.
+The considered 
+- B-spline,
+- Curry-Schoenberg, and
+- NURBS 
+basis functions are based on a knot vector.
 
 ---
 ## [Knot Vectors](@id kvec)

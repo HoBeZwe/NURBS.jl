@@ -109,3 +109,50 @@ struct NURBSsurface{F} <: Surface{F}
     controlPoints::Matrix{SVector{3,F}}     # control points in (u, v)- direction
     weights::Matrix{F}                      # weights for each control point in same ordering
 end
+
+
+
+
+
+"""
+    similarCurve(curve::BsplineCurve, p::Int, kVec, cPts, w)
+
+Construct B-spline curve from underlying data: ignore empty weights.
+"""
+function similarCurve(curve::BsplineCurve, p::Int, kVec, cPts, w)
+
+    return BsplineCurve(Bspline(p, kVec), cPts)
+end
+
+
+"""
+    similarCurve(curve::NURBScurve, p::Int, kVec, cPts, w)
+
+Construct NURBS curve from underlying data.
+"""
+function similarCurve(curve::NURBScurve, p::Int, kVec, cPts, w)
+
+    return NURBScurve(NURB(p, kVec, w), cPts)
+end
+
+
+"""
+    similarSurface(surface::BsplineSurface, p::Int, uVec, vVec, cPts, w)
+
+Construct B-spline surface from underlying data: ignore empty weights.
+"""
+function similarSurface(surface::BsplineSurface, p::Int, uVec, vVec, cPts, w)
+
+    return BsplineSurface(Bspline(p, uVec), Bspline(p, vVec), cPts)
+end
+
+
+"""
+    similarSurface(surface::NURBSsurface, p::Int, uVec, vVec, cPts, weights)
+
+Construct NURBS surface from underlying data.
+"""
+function similarSurface(surface::NURBSsurface, p::Int, uVec, vVec, cPts, weights)
+
+    return NURBSsurface(Bspline(p, uVec), Bspline(p, vVec), cPts, weights)
+end

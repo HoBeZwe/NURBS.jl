@@ -30,6 +30,25 @@
     @test Ranges == R
 end
 
+@testset "Convenience Functions" begin
+
+    # --- normalization of knot vectors
+    kVec = Float64[-1, -1, -1, -1, 0, 1, 2, 3, 4, 5, 6, 6, 6, 6]
+    NURBS.isValidKnotVector!(kVec)
+
+    @test kVec[1] == 0
+    @test kVec[end] == 1
+
+    # --- invalid knot vector
+    kVec = Float64[-1, -1, -1, -1, 0, 1, 4, 3, 2, 5, 6, 6, 6, 6]
+    @test_throws ErrorException("The knot vector is not in ascending order.") NURBS.isValidKnotVector!(kVec)
+
+    # --- return weights
+    w = ones(9)
+    kVec = Float64[0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 6, 6, 6]
+    NURBS.weights(NURB(3, kVec, w)) == w
+end
+
 @testset "Greville + Anchors" begin
 
     b = 7

@@ -1,7 +1,11 @@
 
 # Bases
 
-The considered B-spline, Curry-Schoenberg, and NURBS basis functions are defined by initializing corresponding structures. A naive evaluation method is available for all, an efficient evaluation only for B-splines and Curry-Schoenberg splines.
+The considered 
+- B-spline, 
+- Curry-Schoenberg, and 
+- NURBS 
+basis functions are defined by initializing corresponding structures. A naive evaluation method is available for all, an efficient evaluation only for B-splines and Curry-Schoenberg splines.
 
 ---
 ## Define Structures

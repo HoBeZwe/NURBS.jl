@@ -4,6 +4,7 @@ module NURBS
 using LinearAlgebra
 using Statistics
 using StaticArrays
+using Suppressor
 
 
 
@@ -18,6 +19,7 @@ export evalNaive, evalNaiveDerivative
 export Jacobian, JacobiDet
 
 export insertKnot!, insertKnot
+export refine # NOTE: split is an extension of Base.split, i.e., it is publicly available without export
 
 export readMultipatch, readStep
 export generateKnotVec, numBasisFunctions, spanRanges
@@ -49,6 +51,7 @@ include("nurbs/curves.jl")
 include("nurbs/surfaces.jl")
 
 include("fundamentalOperations/knotInsertion.jl")
+include("fundamentalOperations/splitting.jl")
 
 include("utils.jl")
 include("fileIO/multipatch.jl")

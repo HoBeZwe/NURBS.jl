@@ -33,16 +33,20 @@ function Base.split(C::CurveT, splits::Vector) where {CurveT<:Curve}
     kVec = C.basis.knotVec
     cPts = C.controlPoints
 
-    for (i, splitPoint) in enumerate(splits)
+    @suppress begin # suppress info output when constructing the curves
 
-        checkRange(splitPoint) # is input a valid one?
+        for (i, splitPoint) in enumerate(splits)
 
-        kVec1, kVec, w1, w, cPts1, cPts = splitData(p, w, kVec, cPts, splitPoint)
+            checkRange(splitPoint) # is input a valid one?
 
-        push!(cVec, similarCurve(C, p, kVec1, cPts1, w1))
+            kVec1, kVec, w1, w, cPts1, cPts = splitData(p, w, kVec, cPts, splitPoint)
+
+            push!(cVec, similarCurve(C, p, kVec1, cPts1, w1))
+        end
+
+        push!(cVec, similarCurve(C, p, kVec, cPts, w))
+
     end
-
-    push!(cVec, similarCurve(C, p, kVec, cPts, w))
 
     return cVec
 end
@@ -102,12 +106,15 @@ function Base.split(S::SurfaceT; U=[], V=[]) where {SurfaceT<:Surface}
 
     sVec = SurfaceT[]
 
-    # --- all splits along u
-    Su = splitU(S, U)
+    @suppress begin # suppress info output when constructing the surfaces
 
-    # --- split each surface along v
-    for (i, su) in enumerate(Su)
-        append!(sVec, splitV(su, V))
+        # --- all splits along u
+        Su = splitU(S, U)
+
+        # --- split each surface along v
+        for (i, su) in enumerate(Su)
+            append!(sVec, splitV(su, V))
+        end
     end
 
     return sVec

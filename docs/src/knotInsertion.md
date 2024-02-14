@@ -58,19 +58,21 @@ with ``\bar{\bm{p}}_{i,0} = \bm{p}_i`` and
     - ``p-s-1`` control points are replaced starting at index ``k - p + 1``.
 
 
+## Inserting Knots into a Surface
+
+Inserting a knot into a surface (either along ``u`` or along ``v``) basically corresponds to applying the knot insertion process from a curve to the grid of control points of the surface.
+
+
 ---
 ## Knot Refinement
 
-To be done.
+Knot refinement is the insertion of several different knots into a surface or a curve.
 
 
 ---
-## Curve Splitting
+## Splitting Curves and Surfaces
 
-To be done.
+By inserting a knot into a surface such that the knot multiplicity is equal to the degree of the curve, the curve can be separated into two curves.
+The two curves describe the same points in space as the original curve.
 
-
----
-## Surface Knot Insertion
-
-To be done.
+Analogously, a surface can be split into multiple surfaces via knot insertion.

@@ -39,13 +39,13 @@ w[5,5] = 2.0
 w[7,2] = 0.8
 
 # --- initialize structures (using the same basis in both parametric directions)
-PatchB = BsplineSurface(Bspline(p, kVec), Bspline(p, kVec), controlPoints) 
-PatchN = NURBSsurface(Bspline(p, kVec), Bspline(p, kVec), controlPoints, w)
+BSurface = BsplineSurface(Bspline(p, kVec), Bspline(p, kVec), controlPoints) 
+NSurface = NURBSsurface(Bspline(p, kVec), Bspline(p, kVec), controlPoints, w)
 nothing # hide
 ```
 
 ---
-## Evaluate Points on the Surface
+## Evaluate Points on a Surface
 
 To evaluate the surfaces at parametric points hand over the latter. 
 
@@ -53,8 +53,8 @@ To evaluate the surfaces at parametric points hand over the latter.
 uEvalpoints = collect(0:0.01:1.0)
 vEvalpoints = collect(0:0.01:1.0)
 
-SBspline = PatchB(uEvalpoints, vEvalpoints)
-SNurbs   = PatchN(vEvalpoints, vEvalpoints)
+SBspline = BSurface(uEvalpoints, vEvalpoints)
+SNurbs   = NSurface(uEvalpoints, vEvalpoints)
 nothing # hide
 ```
 
@@ -72,7 +72,7 @@ t = plotSurface(SNurbs, controlPoints=controlPoints, enforceRatio=false) # hide
 savefig(t, "surface3D.html"); nothing # hide
 
 # alternatively
-#plotPatches([PatchN], plotControlPoints=true)
+#plotPatches([NSurface], plotControlPoints=true)
 ```
 
 ```@raw html
@@ -80,7 +80,7 @@ savefig(t, "surface3D.html"); nothing # hide
 ```
 
 ---
-## Evaluate Derivatives of the Surface
+## Evaluate Derivatives of a Surface
 
 To evaluate derivatives of surfaces at parametric points hand over the latter and the maximum derivative to be evaluated.
 
@@ -88,16 +88,16 @@ To evaluate derivatives of surfaces at parametric points hand over the latter an
 uEvalpoints = collect(0:0.01:1.0)
 vEvalpoints = collect(0:0.01:1.0)
 
-S = PatchN(uEvalpoints, vEvalpoints, 2) # 0-th, 1st, and 2nd derivatives
+S = NSurface(uEvalpoints, vEvalpoints, 2) # 0-th, 1st, and 2nd derivatives
 nothing # hide
 ```
 
 In case points (e.g., single points) shall be evaluated many times on demand, memory can be preallocated and reused in subsequent calls:
 
 ```@example surfaces
-pM = NURBS.preAllocNURBSsurface(p, p, vEvalpoints, vEvalpoints, 2)
+pM = NURBS.preAllocNURBSsurface(p, p, uEvalpoints, vEvalpoints, 2)
 
-S = PatchN(vEvalpoints, vEvalpoints, 2, pM)
+S = NSurface(uEvalpoints, vEvalpoints, 2, pM)
 nothing # hide
 ```
 
@@ -107,11 +107,56 @@ The `plotSurface` function has an optional argument `tangents` to plot vectors a
 ```@example surfaces
 using PlotlyJS
 
-plotSurface(S[1, 1], tangents=S[2,1], controlPoints=PatchN.controlPoints, enforceRatio=false)
-t = plotSurface(S[1, 1], tangents=S[2,1], controlPoints=PatchN.controlPoints, enforceRatio=false) # hide
+plotSurface(S[1, 1], tangents=S[2,1], controlPoints=NSurface.controlPoints, enforceRatio=false)
+t = plotSurface(S[1, 1], tangents=S[2,1], controlPoints=NSurface.controlPoints, enforceRatio=false) # hide
 savefig(t, "surface3Dder.html"); nothing # hide
 ```
 
 ```@raw html
 <object data="../surface3Dder.html" type="text/html"  style="width:100%;height:50vh;"> </object>
+```
+
+---
+## Refining a Surface
+
+Based on the principles of [knot insertion](@ref knotInsert), several knots can be inserted into a surface (without changing the points the surface describes) by the [`refine`](@ref refine) function.
+
+```@example surfaces
+BSurfaceRef = refine(BSurface; U=[0.5, 0.5, 0.72], V=[0.2, 0.42])
+
+plotPatches([BSurfaceRef], enforceRatio=false, plotControlPoints=true)
+t = plotPatches([BSurfaceRef], enforceRatio=false, plotControlPoints=true) # hide
+savefig(t, "surfaceRefined.html"); nothing # hide
+```
+
+```@raw html
+<object data="surfaceRefined.html" type="text/html"  style="width:100%;height:50vh;"> </object>
+```
+
+!!! note
+    Refining a surface does not change the points in space described by the surface. Effectively, in the plots it can be seen that the number of control points is increased. 
+    However, also underlying properties such as the differentiability are changed.
+
+
+---
+## Splitting a Surface
+
+To split a surface into multiple separate surfaces the function [`split`](@ref NURBS.split) is provided which returns an array of surfaces.
+
+```@example surfaces
+sVec = split(BSurface, U=[0.5,0.75], V=[0.6])
+
+plotPatches(sVec, enforceRatio=false, plotControlPoints=false)
+t = plotPatches(sVec, enforceRatio=false, plotControlPoints=false) # hide
+savefig(t, "surfaceSplit.html"); nothing # hide
+```
+
+```@raw html
+<object data="surfaceSplit.html" type="text/html"  style="width:100%;height:50vh;"> </object>
+```
+
+To equally split a surface into ``n`` times ``m`` surfaces as second and third argument an integer can be provided:
+
+```@example surfaces
+sVec = split(BSurface, 3, 2) # split into 3 x 2 surfaces
 ```

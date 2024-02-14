@@ -4,6 +4,7 @@ module NURBS
 using LinearAlgebra
 using Statistics
 using StaticArrays
+using Suppressor
 
 
 

@@ -1,7 +1,7 @@
 
 # NURBS.jl
 
-This package provides functionality to define and evaluate B-spline and NURBS (non-uniform rational B-spline) basis functions, their derivatives, as well as curves and surfaces based on both considered basis functions.
+This package provides functionality to define and evaluate B-spline, Curry-Schoenberg, and NURBS (non-uniform rational B-spline) basis functions, their derivatives, as well as curves and surfaces based on B-spline and NURBS basis functions.
 
 
 ---
@@ -9,14 +9,17 @@ This package provides functionality to define and evaluate B-spline and NURBS (n
 
 The following aspects are implemented (✓) and planned (⌛):
 
-##### B-spline & NURBS evaluation
+##### B-spline, Curry-Schoenberg & NURBS evaluation
 - ✓ Basis & derivatives
 - ✓ Curves & derivatives
 - ✓ Surfaces & derivatives
 
 ##### Fundamental operations
 - ✓ File I/O (.step)
-- ⌛ Knot insertion / removal
+- ⌛ Knot manipulation
+    - ✓ knot insertion / refinement
+    - ⌛ knot removal
+    - ✓ splitting of curves and surfaces
 - ⌛ Degree elevation / reduction
 - ⌛ Construction of common geometries
 

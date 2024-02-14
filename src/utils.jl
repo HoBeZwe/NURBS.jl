@@ -43,6 +43,19 @@ weights(srfc::Surface{T}, i=0, j=0) where {T} = T[]
 
 
 """
+    weights(w::Array{T}, i, j) where {T}
+
+General case.
+"""
+function weights(w::Array{T}, i, j) where {T}
+
+    isempty(w) && return T[]
+
+    return w[i, j]
+end
+
+
+"""
     isValidKnotVector!(kVec)
 
 Check whether the knot vector has only entries in [0, 1] and is in ascending order.

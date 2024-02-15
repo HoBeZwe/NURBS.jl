@@ -257,3 +257,208 @@ function anchors(kVec, degree::Int)
 end
 
 anchors(Bspl::Bspline) = anchors(Bspl.knotVec, Bspl.degree)
+
+
+"""
+    scale(shape, factor)
+
+Scale a shape by a real factor.
+"""
+function scale(shape, factor)
+
+    shapeCpy = deepcopy(shape)
+    scale!(shapeCpy, factor)
+
+    return shapeCpy
+end
+
+
+"""
+    scale!(shapes::T, factor::Real) where {T<:Shape}
+
+Scale a vector of shapes by a real factor.
+"""
+function scale!(shapes::Vector{S}, factor::Real) where {S<:Shape}
+
+    factor > 0.0 || error("The scaling factor is not ≥ 0.")
+
+    for (i, shape) in enumerate(shapes)
+        scale!(shape, factor)
+    end
+
+    return nothing
+end
+
+
+"""
+    scale!(shape::T, factor::Real) where {T<:Shape}
+
+Scale a shape by a real factor
+"""
+function scale!(shape::T, factor::Real) where {T<:Shape}
+
+    shape.controlPoints .*= factor
+
+    return nothing
+end
+
+
+"""
+    translate(shape, shift)
+
+Translate a shape into the direction given by the vector 'shift'.
+"""
+function translate(shape, shift)
+
+    shapeCpy = deepcopy(shape)
+    translate!(shapeCpy, shift)
+
+    return shapeCpy
+end
+
+
+"""
+    translate!(shapes::Vector{S}, shift::SVector{3, T}) where {S<:Shape, T}
+
+Translate a vector of shapes into the direction given by the vector 'shift'.
+"""
+function translate!(shapes::Vector{S}, shift::SVector{3,T}) where {S<:Shape,T}
+
+    for (i, shape) in enumerate(shapes)
+        translate!(shape, shift)
+    end
+
+    return nothing
+end
+
+
+"""
+    translate!(shape::S, shift::SVector{3,T}) where {S<:Shape, T}
+
+Translate a shape into the direction given by the vector 'shift'.
+"""
+function translate!(shape::S, shift::SVector{3,T}) where {S<:Shape,T}
+
+    for i in eachindex(shape.controlPoints)
+        shape.controlPoints[i] += shift
+    end
+
+    return nothing
+end
+
+
+"""
+    rotate(shape, rotAxis, angle)
+
+Rotate a shape around the rotation axis by an angle (in rad).
+"""
+function rotate(shape, rotAxis, angle)
+
+    shapeCpy = deepcopy(shape)
+    rotate!(shapeCpy, rotAxis, angle)
+
+    return shapeCpy
+end
+
+
+"""
+    rotate!(shapes::Vector{S}, rotAxis::SVector{3,T}, angle::Real) where {S<:Shape,T}
+
+Rotate a vector of shapes around the rotation axis by an angle (in rad).
+"""
+function LinearAlgebra.rotate!(shapes::Vector{S}, rotAxis::SVector{3,T}, angle::Real) where {S<:Shape,T}
+
+    for (i, shape) in enumerate(shapes)
+        rotate!(shape, rotAxis, angle)
+    end
+
+    return nothing
+end
+
+
+"""
+    rotate!(shape::S, rotAxis::SVector{3,T}, angle::Real) where {S<:Shape,T}
+
+Rotate a shape around the rotation axis by an angle (in rad).
+"""
+function LinearAlgebra.rotate!(shape::S, rotAxis::SVector{3,T}, angle::Real) where {S<:Shape,T}
+
+    R = rotationMatrix(rotAxis, angle)
+
+    for i in eachindex(shape.controlPoints)
+        shape.controlPoints[i] = R * shape.controlPoints[i]
+    end
+
+    return nothing
+end
+
+
+"""
+    rotationMatrix(rotAxis, angle::Real)
+
+Determine rotation matrix for a rotation axis and an angle (in rad). 
+"""
+function rotationMatrix(rotAxis, angle::T) where {T}
+
+    rotAxis = normalize(rotAxis)
+
+    # --- auxiliary matrix
+    K = SMatrix{3,3,T}([
+         0          -rotAxis[3]  rotAxis[2]
+         rotAxis[3]  0          -rotAxis[1]
+        -rotAxis[2]  rotAxis[1]  0
+    ])
+
+    # --- Rodriguez rotation formula
+    R = I + sin(angle) * K + (1 - cos(angle)) * K * K
+
+    return R
+end
+
+
+"""
+    mirror(shape, rotAxis, angle)
+
+Mirror through a plane defined by its normal and an anchor point.
+"""
+function mirror(shape, normal, anchor)
+
+    shapeCpy = deepcopy(shape)
+    mirror!(shapeCpy, normal, anchor)
+
+    return shapeCpy
+end
+
+
+"""
+    mirror!(shapes::Vector{S}, normal::SVector{3,T}, anchor::SVector{3,T}) where {S<:Shape,T}
+
+Mirror a vector of shapes through a plane defined by its normal and an anchor point.
+"""
+function mirror!(shapes::Vector{S}, normal::SVector{3,T}, anchor::SVector{3,T}) where {S<:Shape,T}
+
+    for (i, shape) in enumerate(shapes)
+        mirror!(shape, normal, anchor)
+    end
+
+    return nothing
+end
+
+
+"""
+    translate!(shape::S, shift::SVector{3,T}) where {S<:Shape, T}
+
+Mirror a shape through a plane defined by its normal and an anchor point.
+"""
+function mirror!(shape::S, normal::SVector{3,T}, anchor::SVector{3,T}) where {S<:Shape,T}
+
+    normal = normalize(normal)
+
+    for (i, cPt) in enumerate(shape.controlPoints)
+
+        dist = dot(anchor - cPt, normal) # distance to the plane
+        shape.controlPoints[i] += 2 * dist * normal
+    end
+
+    return nothing
+end

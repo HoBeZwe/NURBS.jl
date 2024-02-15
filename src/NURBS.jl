@@ -24,7 +24,10 @@ export refine # NOTE: split is an extension of Base.split, i.e., it is publicly 
 export readMultipatch, readStep
 export generateKnotVec, numBasisFunctions, spanRanges
 export greville, anchors
-
+export scale, scale!
+export translate, translate!
+export rotate, rotate!
+export mirror, mirror!
 
 
 # -------- extensions

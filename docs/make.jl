@@ -17,12 +17,7 @@ makedocs(;
             "Degree Elevation" => "degreeElevation.md",
             "Degree Reduction" => "degreeReduction.md",
         ],
-        "Manual" => Any[
-            "Bases" => "basis.md",
-            "Curves" => "curves.md",
-            "Surfaces" => "surfaces.md",
-            #"Fundamental Operations" => "fundOperations.md",
-        ],
+        "Manual" => Any["Bases" => "basis.md", "Curves" => "curves.md", "Surfaces" => "surfaces.md", "Transformations" => "trafos.md"],
         "File I/O" => "fileio.md",
         "Utils" => "utils.md",
         "Contributing" => "contributing.md",

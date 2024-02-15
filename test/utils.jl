@@ -49,6 +49,54 @@ end
     NURBS.weights(NURB(3, kVec, w)) == w
 end
 
+@testset "Geometry Manipulation" begin
+
+    Patches = readMultipatch("assets/sphere.dat")
+
+    @testset "Scaling" begin
+
+        fac = 2.3
+        P2 = scale(Patches, fac)
+
+        norms = norm.(P2[1].controlPoints)
+
+        # length of the edge points of the patches correspond to the new radius
+        @test norms[1, 1] ≈ fac
+        @test norms[1, end] ≈ fac
+        @test norms[end, 1] ≈ fac
+        @test norms[end, end] ≈ fac
+    end
+
+    @testset "Translation" begin
+
+        shift = SVector(2.3, 1.2, -4.2)
+        P2 = translate(Patches, shift)
+
+        for (i, p2) in enumerate(P2)
+            @test p2.controlPoints[1, 1] ≈ Patches[i].controlPoints[1, 1] + shift
+        end
+    end
+
+    @testset "Rotation" begin
+
+        rotAxis = SVector(0.0, 0.0, 1.0)
+        α = π / 2
+
+        P1 = rotate(Patches[1], rotAxis, α) # 90° rotation around z-axis
+        @test Patches[2].controlPoints ≈ P1.controlPoints # second patch agrees with the rotated one
+    end
+
+    @testset "Mirroring" begin
+
+        normal = SVector(0.0, 1.0, 0.0)
+        anchor = SVector(0.0, 0.0, 0.0)
+
+        P2 = mirror(Patches, normal, anchor) # mirror in xz-plane
+
+        @test P2[3].controlPoints[1, end] ≈ Patches[1].controlPoints[1, end]
+    end
+end
+
 @testset "Greville + Anchors" begin
 
     b = 7

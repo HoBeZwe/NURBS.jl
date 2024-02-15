@@ -3,6 +3,7 @@ using Test
 
 using JuliaFormatter
 using StaticArrays
+using LinearAlgebra
 using PlotlyJS
 
 # --- testsets

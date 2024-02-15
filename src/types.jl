@@ -58,8 +58,9 @@ end
 
 
 
+abstract type Shape{F} end
 
-abstract type Curve{F} end
+abstract type Curve{F} <: Shape{F} end
 
 """
     BsplineCurve{F} <: Curve{F}
@@ -84,7 +85,7 @@ end
 
 
 
-abstract type Surface{F} end
+abstract type Surface{F} <: Shape{F} end
 
 """
     BsplineSurface{F} <: Surface{F}

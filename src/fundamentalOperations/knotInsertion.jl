@@ -239,7 +239,7 @@ function extendKnotVector!(knotVecOrig, degree::Int, newParametricPoint::Real, m
 
     # --- generate new knot vector
     toInsert = repeat([newParametricPoint], newMult) # repeat the parametric point to the final multiplicity (old + new)
-    splice!(knotVecOrig, oldMultIndices, toInsert)                  # insert the total parametric point in final multiplicity
+    splice!(knotVecOrig, oldMultIndices, toInsert)   # insert the total parametric point in final multiplicity
 
     return oldMultIndices, oldMult, newMult - oldMult
 end
@@ -248,13 +248,15 @@ end
 """
     extendControlPoints!(controlPoints, knotVecOrig, degree::Int, pos::Int, uNew::Real, multiplicity::Int, oldMult::Int, weights)
 
-Insert the new control points (and optionally the weights) corresponding to the new values in the knot vector.
+Insert the new control points (and optionally the weights) corresponding to the new values in the knot vector 'multiplicity' times.
 
 Adaption of Algorithm A5.1 from 'The NURBS Book' p. 151.
 
 Modifies controlPoints and weights.
 """
-function extendControlPoints!(controlPoints, knotVecOrig, degree::Int, pos::Int, uNew::Real, multiplicity::Int, oldMult::Int, weights)
+function extendControlPoints!(
+    controlPoints, knotVecOrig, degree::Int, pos::Int, uNew::Real, multiplicity::Int, oldMult::Int, weights=[]
+)
 
     T = eltype(controlPoints[1])
 

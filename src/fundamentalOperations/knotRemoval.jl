@@ -46,7 +46,9 @@ function removeKnot!(knotVec, controlPoints, degree::Int, pointToRemove::Real, m
     oldMultIndices, oldMult, limitedMult = trimability(knotVec, pointToRemove, multiplicity)
 
     # --- modify control points
-    actualRemoved = trimControlPoints!(controlPoints, knotVec, degree, oldMultIndices.stop, pointToRemove, limitedMult, oldMult, weights)
+    actualRemoved = trimControlPoints!(
+        controlPoints, knotVec, degree, oldMultIndices.stop, pointToRemove, limitedMult, oldMult, weights
+    )
 
     # --- remove actually removable knots from the knot vector
     deleteat!(knotVec, oldMultIndices[1:actualRemoved])
@@ -87,7 +89,7 @@ end
 
 
 """
-
+    trimControlPoints!(cPts, kVecOri, degree::Int, pos::Int, pointToRemove::Real, limitedMult::Int, oldMult::Int, weights)
 
 Adaption of Algorithm A5.8 from 'The NURBS Book' p. 185.
 
@@ -97,25 +99,28 @@ function trimControlPoints!(cPts, kVecOri, degree::Int, pos::Int, pointToRemove:
 
     # --- computation including weights
     if !isempty(weights)
-
-        error("Weights not done yet.")
-
-        return nothing
+        cPts .*= weights
+    else
+        weights = ones(size(cPts)) # suboptimal solution: non-existent weights are set to 1
     end
 
     first = pos - degree
     last  = pos - oldMult
 
     temp = similar(cPts, 2 * degree + 1)
+    wemp = similar(weights, 2 * degree + 1)
 
     removed = 0
 
-    for t in 0:limitedMult-1 # remove limitedMult times the knot
+    for t in 0:(limitedMult - 1) # remove limitedMult times the knot
 
         off = first - 1
- 
+
         temp[1] = cPts[off]
         temp[last + 2 - off] = cPts[last + 1]
+
+        wemp[1] = weights[off]
+        wemp[last + 2 - off] = weights[last + 1]
 
         i = first
         j = last
@@ -124,6 +129,7 @@ function trimControlPoints!(cPts, kVecOri, degree::Int, pos::Int, pointToRemove:
         jj = last - off
 
         removable = false
+        removableW = false
 
         # --- compute new control points for one removal step
         while j - i > t
@@ -134,6 +140,9 @@ function trimControlPoints!(cPts, kVecOri, degree::Int, pos::Int, pointToRemove:
             temp[ii + 1] = (cPts[i] - (1 - αi) * temp[ii]) / αi
             temp[jj + 1] = (cPts[j] - αj * temp[jj + 2]) / (1 - αj)
 
+            wemp[ii + 1] = (weights[i] - (1 - αi) * wemp[ii]) / αi
+            wemp[jj + 1] = (weights[j] - αj * wemp[jj + 2]) / (1 - αj)
+
             i += 1
             j -= 1
 
@@ -143,16 +152,18 @@ function trimControlPoints!(cPts, kVecOri, degree::Int, pos::Int, pointToRemove:
 
         # --- can knot be removed? Two different cases to be covered
         if j - i < t
-            
+
             temp[ii] ≈ temp[jj + 2] && (removable = true)
+            wemp[ii] ≈ wemp[jj + 2] && (removableW = true)
         else
 
             αi = (pointToRemove - kVecOri[i]) / (kVecOri[i + degree + 1 + t] - kVecOri[i])
             cPts[i] ≈ (αi * temp[ii + t + 2] + (1 - αi) * temp[ii]) && (removable = true)
+            weights[i] ≈ (αi * wemp[ii + t + 2] + (1 - αi) * wemp[ii]) && (removableW = true)
         end
 
         # --- insert new control points 
-        if removable
+        if removable && removableW
 
             removed += 1
 
@@ -160,9 +171,12 @@ function trimControlPoints!(cPts, kVecOri, degree::Int, pos::Int, pointToRemove:
             j = last
 
             while j - i > t
-                
-                cPts[i] = temp[i - off+1]
-                cPts[j] = temp[j - off+1]
+
+                cPts[i] = temp[i - off + 1]
+                cPts[j] = temp[j - off + 1]
+
+                weights[i] = wemp[i - off + 1]
+                weights[j] = wemp[j - off + 1]
 
                 i += 1
                 j -= 1
@@ -174,14 +188,17 @@ function trimControlPoints!(cPts, kVecOri, degree::Int, pos::Int, pointToRemove:
 
         first -= 1
         last  += 1
-    end    
+    end
 
-    center = floor(Int, (2*pos-degree-oldMult)/2 )
-    spStart = center - floor(Int, (removed-1) / 2)
-    spStop  = center + ceil(Int, (removed-1) / 2)  
+    center  = floor(Int, (2 * pos - degree - oldMult) / 2)
+    spStart = center - floor(Int, (removed - 1) / 2)
+    spStop  = center + ceil(Int, (removed - 1) / 2)
 
     # --- remove control points
     splice!(cPts, spStart:spStop)
+    splice!(weights, spStart:spStop)
+
+    cPts ./= weights
 
     return removed # actual number of removed knots
 end

@@ -26,6 +26,7 @@ using PlotlyJS
     @testset "Fundamental Operations" begin
         include("fundamentalOperations/knotInsertion.jl")
         include("fundamentalOperations/splitting.jl")
+        include("fundamentalOperations/knotRemoval.jl")
     end
 
     @testset "Utils" begin

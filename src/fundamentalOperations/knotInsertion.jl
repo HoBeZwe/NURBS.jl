@@ -123,7 +123,7 @@ function insertKnotU(S::Surface, newParametricPoint::Real, multiplicity::Int=1)
         cPtsNew[:, i] = ctrlPtsMody
     end
 
-    return similarSurface(S, degree, knotVecMod, S.vBasis.knotVec, cPtsNew, wMatNew)
+    return similarSurface(S, degree, S.vBasis.degree, knotVecMod, S.vBasis.knotVec, cPtsNew, wMatNew)
 end
 
 
@@ -163,7 +163,7 @@ function insertKnotV(S::Surface, newParametricPoint::Real, multiplicity::Int=1)
         cPtsNew[i, :] = ctrlPtsMody
     end
 
-    return similarSurface(S, degree, S.uBasis.knotVec, knotVecMod, cPtsNew, wMatNew)
+    return similarSurface(S, S.uBasis.degree, degree, S.uBasis.knotVec, knotVecMod, cPtsNew, wMatNew)
 end
 
 

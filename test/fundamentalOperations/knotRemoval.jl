@@ -73,4 +73,91 @@
             @test_logs (:warn, "The requested knot is not contained in the knot vector.") removeKnot(NC, 0.33, 1)
         end
     end
+
+    @testset "Surfaces" begin
+
+        # --- surface with 3 times removable knot 0.5
+        p = 3
+        kVec = Float64[0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 2]
+
+        P1 = SVector(0.0, 0.0, 0.0)
+        P2 = SVector(0.0, 2.0, 0.0)
+        P3 = SVector(1.5, 3.0, 0.0)
+        P4 = SVector(3.0, 3.0, 0.0)
+        P5 = SVector(4.5, 3.0, 0.0)
+        P6 = SVector(6.0, 2.0, 0.0)
+        P7 = SVector(6.0, 0.0, 0.0)
+
+        cP = [P1, P2, P3, P4, P5, P6, P7]
+
+        P1 = SVector(0.0, 0.0, 2.0)
+        P2 = SVector(0.0, 2.0, 2.0)
+        P3 = SVector(1.5, 3.0, 2.0)
+        P4 = SVector(3.0, 3.0, 2.0)
+        P5 = SVector(4.5, 3.0, 2.0)
+        P6 = SVector(6.0, 2.0, 2.0)
+        P7 = SVector(6.0, 0.0, 2.0)
+
+        cP2 = [P1, P2, P3, P4, P5, P6, P7]
+
+        uEval = vEval = collect(0:0.005:1.0)
+
+        @testset "B-splines" begin
+
+            # --- in u-direction
+            controlPoints = [[cP, cP2][j][i] for i in 1:7, j in 1:2]
+
+            BS1 = BsplineSurface(Bspline(p, kVec), Bspline(1, [0.0, 0.0, 1.0, 1.0]), controlPoints)
+
+            BS2 = removeKnotU(BS1, 0.5, 1) # remove knot once
+
+            S1 = BS1(uEval, vEval)
+            S2 = BS2(uEval, vEval)
+
+            @test S1 ≈ S2 # before and after removal identical        
+
+
+            # --- try to remove more often than possible
+            BS1.controlPoints[4, 1] = SVector(5.5, 0.0, 6.6)
+            @test_logs (:warn, "The knot 0.5 can not be removed 4 times.") match_mode = :any removeKnotU(BS1, 0.5, 4)
+
+
+            # --- in v-direction
+            controlPoints = [[cP, cP2][i][j] for i in 1:2, j in 1:7] # along v
+
+            BS1 = BsplineSurface(Bspline(1, [0.0, 0.0, 1.0, 1.0]), Bspline(p, kVec), controlPoints)
+
+            BS2 = removeKnotV(BS1, 0.5, 1)
+
+            S1 = BS1(uEval, vEval)
+            S2 = BS2(uEval, vEval)
+
+            @test S1 ≈ S2 # before and after removal identical 
+
+
+            # --- try to remove more often than possible
+            BS1.controlPoints[1, 4] = SVector(5.5, 0.0, 6.6)
+            @test_logs (:warn, "The knot 0.5 can not be removed 4 times.") match_mode = :any removeKnotV(BS1, 0.5, 4)
+        end
+
+        @testset "NURBS" begin
+
+            controlPoints = [[cP, cP2][j][i] for i in 1:7, j in 1:2]
+
+            w = [1.4, 0.1, 1.2, 1.5, 1.3, 1.9, 3.0]
+            w = [[w, w][j][i] for i in 1:7, j in 1:2]
+
+            NS1 = NURBSsurface(Bspline(p, kVec), Bspline(1, [0.0, 0.0, 1.0, 1.0]), controlPoints, w)
+
+            NS2 = refine(NS1; U=[0.6, 0.6]) # insert a point twice
+
+            # --- remove knot
+            NS3 = removeKnotU(NS2, 0.6, 1) # remove the knot once
+
+            S1 = NS2(uEval, vEval)
+            S2 = NS3(uEval, vEval)
+
+            @test S1 ≈ S2
+        end
+    end
 end

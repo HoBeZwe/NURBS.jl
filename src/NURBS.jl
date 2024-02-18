@@ -20,7 +20,7 @@ export Jacobian, JacobiDet
 
 export insertKnot!, insertKnot
 export refine # NOTE: split is an extension of Base.split, i.e., it is publicly available without export
-export removeKnot!, removeKnot
+export removeKnot!, removeKnot, removeKnotU, removeKnotV
 
 export readMultipatch, readStep
 export generateKnotVec, numBasisFunctions, spanRanges

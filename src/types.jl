@@ -138,22 +138,22 @@ end
 
 
 """
-    similarSurface(surface::BsplineSurface, p::Int, uVec, vVec, cPts, w)
+    similarSurface(surface::BsplineSurface, pu::Int, pv::Int, uVec, vVec, cPts, w)
 
 Construct B-spline surface from underlying data: ignore empty weights.
 """
-function similarSurface(surface::BsplineSurface, p::Int, uVec, vVec, cPts, w)
+function similarSurface(surface::BsplineSurface, pu::Int, pv::Int, uVec, vVec, cPts, w)
 
-    return BsplineSurface(Bspline(p, uVec), Bspline(p, vVec), cPts)
+    return BsplineSurface(Bspline(pu, uVec), Bspline(pv, vVec), cPts)
 end
 
 
 """
-    similarSurface(surface::NURBSsurface, p::Int, uVec, vVec, cPts, weights)
+    similarSurface(surface::NURBSsurface, pu::Int, pv::Int, uVec, vVec, cPts, weights)
 
 Construct NURBS surface from underlying data.
 """
-function similarSurface(surface::NURBSsurface, p::Int, uVec, vVec, cPts, weights)
+function similarSurface(surface::NURBSsurface, pu::Int, pv::Int, uVec, vVec, cPts, weights)
 
-    return NURBSsurface(Bspline(p, uVec), Bspline(p, vVec), cPts, weights)
+    return NURBSsurface(Bspline(pu, uVec), Bspline(pv, vVec), cPts, weights)
 end

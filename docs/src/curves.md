@@ -168,7 +168,7 @@ cVec = split(NCurve, 4) # split into 4 curves
 ---
 ## Removing Knots from a Curve
 
-Based on the principles of [knot removal](@ref knotRemoval), a single (interior) knot can potentially be removed multiple times from a curve (without changing the points the curve describes) by the [`removeKnot`](@ref removeKnot) function.
+Based on the principles of [knot removal](@ref knotRemoval), an interior knot can potentially be removed multiple times from a curve (without changing the points the curve describes) by the [`removeKnot`](@ref removeKnot) function.
 
 ```@example curves
 p = 3
@@ -209,7 +209,7 @@ savefig(fig, "cruve3DRemoved.html"); nothing # hide
 ```
 
 ```@raw html
-<object data="cruve3DRemoved.html" type="text/html"  style="width:100%;height:50vh;"> </object>
+<object data="../cruve3DRemoved.html" type="text/html"  style="width:100%;height:50vh;"> </object>
 ```
 
 !!! note

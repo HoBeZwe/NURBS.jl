@@ -15,6 +15,102 @@ end
 
 
 """
+    removeKnotU(S::Surface, pointToRemove::Real, multiplicity::Int)
+
+Remove a knot in u-direction 'multiplicity' times.
+
+TODO: replace by more efficient algorithm of Tiller.
+"""
+function removeKnotU(S::Surface, pointToRemove::Real, multiplicity::Int)
+
+    degree = S.uBasis.degree
+    knotVec = S.uBasis.knotVec
+
+    # --- analyze the knot vector: how many times is the knot actually contained?
+    oldMultIndices, oldMult, limitedMult = trimability(knotVec, pointToRemove, multiplicity)
+
+    # --- remove knots from the knot vector
+    knotVecMod = deepcopy(knotVec)
+    deleteat!(knotVecMod, oldMultIndices[1:limitedMult])
+
+    # --- modify control points
+    N = numBasisFunctions(knotVecMod, degree)
+    M = size(S.controlPoints, 2)
+
+    wMatNew = similar(weights(S), N, M)
+    cPtsNew = similar(S.controlPoints, N, M)
+
+    for i in eachindex(S.controlPoints[1, :])
+
+        ctrlPtsMody = deepcopy(S.controlPoints[:, i])
+        weightsMody = deepcopy(weights(S, :, i))
+
+        actualRemoved = trimControlPoints!(
+            ctrlPtsMody, knotVec, degree, oldMultIndices.stop, pointToRemove, limitedMult, oldMult, weightsMody
+        )
+
+        if actualRemoved < limitedMult
+            @warn "The knot $(pointToRemove) can not be removed $multiplicity times."
+            return S
+        end
+
+        isempty(weightsMody) || (wMatNew[:, i] = weightsMody)
+        cPtsNew[:, i] = ctrlPtsMody
+    end
+
+    return similarSurface(S, degree, S.vBasis.degree, knotVecMod, S.vBasis.knotVec, cPtsNew, wMatNew)
+end
+
+
+"""
+    removeKnotV(S::Surface, pointToRemove::Real, multiplicity::Int)
+
+Remove a knot in v-direction 'multiplicity' times.
+
+TODO: replace by more efficient algorithm of Tiller.
+"""
+function removeKnotV(S::Surface, pointToRemove::Real, multiplicity::Int)
+
+    degree = S.vBasis.degree
+    knotVec = S.vBasis.knotVec
+
+    # --- analyze the knot vector: how many times is the knot actually contained?
+    oldMultIndices, oldMult, limitedMult = trimability(knotVec, pointToRemove, multiplicity)
+
+    # --- remove knots from the knot vector
+    knotVecMod = deepcopy(knotVec)
+    deleteat!(knotVecMod, oldMultIndices[1:limitedMult])
+
+    # --- modify control points
+    N = numBasisFunctions(knotVecMod, degree)
+    M = size(S.controlPoints, 1)
+
+    wMatNew = similar(weights(S), M, N)
+    cPtsNew = similar(S.controlPoints, M, N)
+
+    for i in eachindex(S.controlPoints[:, 1])
+
+        ctrlPtsMody = deepcopy(S.controlPoints[i, :])
+        weightsMody = deepcopy(weights(S, i, :))
+
+        actualRemoved = trimControlPoints!(
+            ctrlPtsMody, knotVec, degree, oldMultIndices.stop, pointToRemove, limitedMult, oldMult, weightsMody
+        )
+
+        if actualRemoved < limitedMult
+            @warn "The knot $(pointToRemove) can not be removed $multiplicity times."
+            return S
+        end
+
+        isempty(weightsMody) || (wMatNew[i, :] = weightsMody)
+        cPtsNew[i, :] = ctrlPtsMody
+    end
+
+    return similarSurface(S, S.uBasis.degree, degree, S.uBasis.knotVec, knotVecMod, cPtsNew, wMatNew)
+end
+
+
+"""
     removeKnot(knotVec, controlPoints, degree::Int, pointToRemove::Real, multiplicity::Int, weights)
 
 Remove a knot 'multiplicity' times.

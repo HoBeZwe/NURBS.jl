@@ -160,3 +160,80 @@ To equally split a surface into ``n`` times ``m`` surfaces as second and third a
 ```@example surfaces
 sVec = split(BSurface, 3, 2) # split into 3 x 2 surfaces
 ```
+
+
+---
+## Removing Knots from a Surface
+
+Based on the principles of [knot removal](@ref knotRemoval), an interior knot can potentially be removed multiple times from a surface (without changing the points the surface describes) by the [`removeKnotU`](@ref removeKnotU) and the [`removeKnotV`](@ref removeKnotV) functions.
+
+```@example surfaces
+# --- surface with removable knots
+p = 3
+kVec = Float64[0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 2]
+
+P1 = SVector(0.0, 0.0, 0.0)
+P2 = SVector(0.0, 2.0, 0.0)
+P3 = SVector(1.5, 3.0, 0.0)
+P4 = SVector(3.0, 3.0, 0.0)
+P5 = SVector(4.5, 3.0, 0.0)
+P6 = SVector(6.0, 2.0, 0.0)
+P7 = SVector(6.0, 0.0, 0.0)
+
+cP = [P1 , P2 , P3 , P4 , P5 , P6 , P7 ]
+
+P1 = SVector(0.0, 0.0, 2.0)
+P2 = SVector(0.0, 2.0, 2.0)
+P3 = SVector(1.5, 3.0, 2.0)
+P4 = SVector(3.0, 3.0, 2.0)
+P5 = SVector(4.5, 3.0, 2.0)
+P6 = SVector(6.0, 2.0, 2.0)
+P7 = SVector(6.0, 0.0, 2.0)
+
+cP2 = [P1 , P2 , P3 , P4 , P5 , P6 , P7 ]
+
+controlPoints = [[cP, cP2][j][i] for i in 1:7, j in 1:2] 
+
+BS1 = BsplineSurface(Bspline(p, kVec), Bspline(1, [0.0,0.0,1.0,1.0]), controlPoints)
+
+
+# --- remove knot
+BS2 = removeKnotU(BS1, 0.5, 1) # remove knot once
+
+
+# --- plot before and after
+t1 = plotPatches([BS1], enforceRatio=true, plotControlPoints=true)
+t2 = plotPatches([BS2], enforceRatio=true, plotControlPoints=true)
+
+uEval = vEval = collect(0:0.005:1.0)
+
+S1 = BS1(uEval, vEval)
+S2 = BS2(uEval, vEval)
+
+x, t1 = plotSurface(S1, controlPoints=BS1.controlPoints, returnTrace=true)
+x, t2 = plotSurface(S2, controlPoints=BS2.controlPoints, returnTrace=true)
+
+fig = make_subplots(
+    rows=1, cols=2,
+    specs=fill(Spec(kind="scene"), 1, 2)
+)
+
+for i in eachindex(t1)
+    add_trace!(fig, t1[i], row=1, col=1)
+end
+for i in eachindex(t2)
+    add_trace!(fig, t2[i], row=1, col=2)
+end
+
+fig
+savefig(fig, "surfaceRemoved.html"); nothing # hide
+```
+
+```@raw html
+<object data="../surfaceRemoved.html" type="text/html"  style="width:100%;height:50vh;"> </object>
+```
+
+!!! note
+    Removing a knot from a surface is only possible when the continuity of the surface is sufficient at the knot.
+    A central part of the removeKnot functions is to verify if the knot can actually be removed.
+    If not, warnings are generated, indicating the encountered limitations.

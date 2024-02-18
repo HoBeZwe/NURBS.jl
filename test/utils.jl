@@ -84,6 +84,9 @@ end
 
         P1 = rotate(Patches[1], rotAxis, α) # 90° rotation around z-axis
         @test Patches[2].controlPoints ≈ P1.controlPoints # second patch agrees with the rotated one
+
+        P1 = rotate(Patches, rotAxis, 2π) # 360° rotation around z-axis
+        @test Patches[2].controlPoints ≈ P1[2].controlPoints # second patch agrees with the rotated one
     end
 
     @testset "Mirroring" begin

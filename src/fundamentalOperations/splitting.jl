@@ -170,10 +170,10 @@ function splitU(S::SurfaceT, splits::Vector) where {SurfaceT<:Surface}
         kVec = kVec2
         isempty(wAux) || (wAux = wMat2)
 
-        push!(sVec, similarSurface(S, degree, kVec1, S.vBasis.knotVec, cPts1, wMat1))
+        push!(sVec, similarSurface(S, degree, S.vBasis.degree, kVec1, S.vBasis.knotVec, cPts1, wMat1))
     end
 
-    push!(sVec, similarSurface(S, degree, kVec, S.vBasis.knotVec, cPts, wAux))
+    push!(sVec, similarSurface(S, degree, S.vBasis.degree, kVec, S.vBasis.knotVec, cPts, wAux))
 
     return sVec
 end
@@ -228,10 +228,10 @@ function splitV(S::SurfaceT, splits::Vector) where {SurfaceT<:Surface}
         kVec = kVec2
         isempty(wAux) || (wAux = wMat2)
 
-        push!(sVec, similarSurface(S, degree, S.uBasis.knotVec, kVec1, cPts1, wMat1))
+        push!(sVec, similarSurface(S, S.uBasis.degree, degree, S.uBasis.knotVec, kVec1, cPts1, wMat1))
     end
 
-    push!(sVec, similarSurface(S, degree, S.uBasis.knotVec, kVec, cPts, wAux))
+    push!(sVec, similarSurface(S, S.uBasis.degree, degree, S.uBasis.knotVec, kVec, cPts, wAux))
 
     return sVec
 end

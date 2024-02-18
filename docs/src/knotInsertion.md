@@ -58,6 +58,7 @@ with ``\bar{\bm{p}}_{i,0} = \bm{p}_i`` and
     - ``p-s-1`` control points are replaced starting at index ``k - p + 1``.
 
 
+---
 ## Inserting Knots into a Surface
 
 Inserting a knot into a surface (either along ``u`` or along ``v``) basically corresponds to applying the knot insertion process from a curve to the grid of control points of the surface.

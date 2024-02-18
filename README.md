@@ -27,10 +27,15 @@ The following aspects are implemented (✓) and planned (⌛):
 
 ##### Fundamental operations
 - ✓ File I/O (.step)
-- ⌛ Knot manipulation
-    - ✓ knot insertion / refinement
-    - ⌛ knot removal
-    - ✓ splitting of curves and surfaces
+- ✓ Knot manipulation
+    - knot insertion / refinement
+    - knot removal
+    - splitting of curves and surfaces
+- ✓ Transformation of curves and surfaces
+    - scaling
+    - translating
+    - rotating
+    - mirroring
 - ⌛ Degree elevation / reduction
 - ⌛ Construction of common geometries
 

@@ -163,3 +163,56 @@ To equally split a curve into ``n`` curves as a second argument an integer can b
 ```@example curves
 cVec = split(NCurve, 4) # split into 4 curves
 ```
+
+
+---
+## Removing Knots from a Curve
+
+Based on the principles of [knot removal](@ref knotRemoval), an interior knot can potentially be removed multiple times from a curve (without changing the points the curve describes) by the [`removeKnot`](@ref removeKnot) function.
+
+```@example curves
+p = 3
+
+P1 = SVector(0.0, 0.0, 1.0)
+P2 = SVector(0.0, 2.0, 0.0)
+P3 = SVector(1.5, 3.0, 0.0)
+P4 = SVector(3.0, 3.0, 0.0)
+P5 = SVector(4.5, 3.0, 0.0)
+P6 = SVector(6.0, 2.0, 0.0)
+P7 = SVector(6.0, 0.0, 1.0)
+
+cP = [P1, P2, P3, P4, P5, P6, P7]
+
+kVec = Float64[0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 2]
+
+BCurve1 = BsplineCurve(Bspline(p, kVec), cP)
+C1 = BCurve1(evalpoints)
+
+BCurve2 = removeKnot(BCurve1, 0.5, 2) # remove knot at 0.5 twice
+C2 = BCurve2(evalpoints)
+
+# --- plot both curves 
+t1 = plotCurve3D(C1, controlPoints=BCurve1.controlPoints, returnTrace=true)
+t2 = plotCurve3D(C2, controlPoints=BCurve2.controlPoints, returnTrace=true)
+
+fig = make_subplots(
+    rows=1, cols=2,
+    specs=fill(Spec(kind="scene"), 1, 2)
+)
+
+add_trace!(fig, t1[1], row=1, col=1)
+add_trace!(fig, t1[2], row=1, col=1)
+add_trace!(fig, t2[1], row=1, col=2)
+add_trace!(fig, t2[2], row=1, col=2)
+fig
+savefig(fig, "cruve3DRemoved.html"); nothing # hide
+```
+
+```@raw html
+<object data="../cruve3DRemoved.html" type="text/html"  style="width:100%;height:50vh;"> </object>
+```
+
+!!! note
+    Removing a knot from a curve is only possible when the continuity of the curve is sufficient at the knot.
+    A central part of the [`removeKnot`](@ref removeKnot) function is to verify if the knot can actually be removed.
+    If not, warnings are generated, indicating the encountered limitations.

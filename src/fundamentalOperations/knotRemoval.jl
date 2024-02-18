@@ -1,7 +1,8 @@
 
 """
+    removeKnot(C::Curve, pointToRemove::Real, multiplicity::Int)
 
-Remove a knot from a curve 'multiplicity' times.
+Remove a knot from a curve ´multiplicity´ times.
 """
 function removeKnot(C::Curve, pointToRemove::Real, multiplicity::Int)
 

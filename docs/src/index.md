@@ -20,12 +20,12 @@ The following aspects are implemented (✓) and planned (⌛):
     - knot insertion / refinement
     - knot removal
     - splitting of curves and surfaces
-- ⌛ Degree elevation / reduction
 - ✓ Transformation of curves and surfaces
     - scaling
     - translating
     - rotating
     - mirroring
+- ⌛ Degree elevation / reduction
 - ⌛ Construction of common geometries
 
 Basically, chapters 2-4 of [[1]](@ref refs) are implemented so far (adapted to 1-based indexing).

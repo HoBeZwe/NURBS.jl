@@ -230,7 +230,7 @@ savefig(fig, "surfaceRemoved.html"); nothing # hide
 ```
 
 ```@raw html
-<object data="surfaceRemoved.html" type="text/html"  style="width:100%;height:50vh;"> </object>
+<object data="../surfaceRemoved.html" type="text/html"  style="width:100%;height:50vh;"> </object>
 ```
 
 !!! note

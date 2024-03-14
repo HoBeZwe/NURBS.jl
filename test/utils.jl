@@ -101,18 +101,19 @@ end
 end
 
 @testset "Greville + Anchors" begin
-
     b = 7
     p = 2
     kVec = generateKnotVec(b, p)
 
     Bspl = Bspline(p, kVec)
 
-    gs = greville(Bspl)
-    ac = anchors(Bspl)
+    for spline in [Bspline(p, kVec), NURB(p, kVec, ones(length(kVec) - p - 1)), CurrySchoenberg(p, kVec)]
+        gs = greville(spline)
+        ac = anchors(spline)
 
-    @test gs ≈ [0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0] # computed by hand accrding to definitions
-    @test ac ≈ [0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0] # computed by hand accrding to definitions
+        @test gs ≈ [0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0] # computed by hand according to definitions
+        @test ac ≈ [0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0] # computed by hand according to definitions
+    end
 end
 
 @testset "File IO" begin

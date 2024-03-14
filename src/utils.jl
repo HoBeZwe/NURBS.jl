@@ -86,7 +86,7 @@ end
 """
     generateKnotVec(b::Int, degree::Int)
 
-Convenience function to generate a knot vector for 'b' basis functions and a certain 'degree': 
+Convenience function to generate a knot vector for 'b' basis functions and a certain 'degree':
 
 The first and last entry are repeated 'degree'+1 times. Normalized to [0, 1].
 """
@@ -236,7 +236,8 @@ function greville(kVec, degree::Int)
     return gSites
 end
 
-greville(Bspl::Bspline) = greville(Bspl.knotVec, Bspl.degree)
+greville(Bspl::Basis) = greville(Bspl.knotVec, Bspl.degree)
+
 
 
 """
@@ -256,7 +257,7 @@ function anchors(kVec, degree::Int)
     return aSites
 end
 
-anchors(Bspl::Bspline) = anchors(Bspl.knotVec, Bspl.degree)
+anchors(Bspl::Basis) = anchors(Bspl.knotVec, Bspl.degree)
 
 
 """
@@ -396,7 +397,7 @@ end
 """
     rotationMatrix(rotAxis, angle::Real)
 
-Determine rotation matrix for a rotation axis and an angle (in rad). 
+Determine rotation matrix for a rotation axis and an angle (in rad).
 """
 function rotationMatrix(rotAxis, angle::T) where {T}
 

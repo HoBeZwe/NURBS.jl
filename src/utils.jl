@@ -227,7 +227,7 @@ Return the Greville sites (as defined in [3]) corresponding to the given knotvec
 function greville(kVec, degree::Int)
 
     N = length(kVec) - degree - 1 # number of B-splines
-    gSites = zeros(N)
+    gSites = zeros(eltype(kVec), N)
 
     for i in 1:N
         gSites[i] = sum(kVec[(i + 1):(i + degree)]) / degree
@@ -248,7 +248,7 @@ Return the anchors (as defined in [4]) corresponding to the given knotvector and
 function anchors(kVec, degree::Int)
 
     N = length(kVec) - degree - 1 # number of B-splines
-    aSites = zeros(N)
+    aSites = zeros(eltype(kVec), N)
 
     for i in 1:N
         aSites[i] = median(kVec[i:(i + degree + 1)])

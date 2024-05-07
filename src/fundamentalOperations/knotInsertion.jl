@@ -232,7 +232,7 @@ function extendKnotVector!(knotVecOrig, degree::Int, newParametricPoint::Real, m
 
     # --- check whether resulting mulitplicity makes sense
     newMult = multiplicity + oldMult
-    if newMult > degree
+    if newMult > degree + 1
         @info "The multiplicity of the inserted knot is limited to $(degree)."
         newMult = degree
     end
@@ -258,13 +258,14 @@ function extendControlPoints!(
     controlPoints, knotVecOrig, degree::Int, pos::Int, uNew::Real, multiplicity::Int, oldMult::Int, weights=[]
 )
 
-    T = eltype(controlPoints[1])
+    degree == 0 && return extendControlPoints!(controlPoints, pos, multiplicity, oldMult) # not so nice - why does algorithm not hold for degree=0?
+    #T = eltype(controlPoints[1])
 
     # --- computation including weights
     if !isempty(weights)
 
-        newControlPoints = [SVector{3,T}(0.0, 0.0, 0.0) for i in 1:(degree - oldMult + multiplicity - 1)]
-        newWeights = [T(0.0) for i in 1:(degree - oldMult + multiplicity - 1)]
+        newControlPoints = similar(controlPoints, degree - oldMult + multiplicity - 1) #[SVector{3,T}(0.0, 0.0, 0.0) for i in 1:(degree - oldMult + multiplicity - 1)]
+        newWeights = similar(weights, degree - oldMult + multiplicity - 1) #[T(0.0) for i in 1:(degree - oldMult + multiplicity - 1)]
 
         auxC = controlPoints[(pos - degree):(pos - oldMult)]
         auxW = weights[(pos - degree):(pos - oldMult)]
@@ -301,7 +302,7 @@ function extendControlPoints!(
     end
 
     # --- computation when there are no weights
-    newControlPoints = [SVector{3,T}(0.0, 0.0, 0.0) for i in 1:(degree - oldMult + multiplicity - 1)]
+    newControlPoints = similar(controlPoints, degree - oldMult + multiplicity - 1) #[SVector{3,T}(0.0, 0.0, 0.0) for i in 1:(degree - oldMult + multiplicity - 1)]
 
     aux = controlPoints[(pos - degree):(pos - oldMult)]
     for r in 1:multiplicity
@@ -312,7 +313,6 @@ function extendControlPoints!(
             αᵢ = (uNew - knotVecOrig[L]) / (knotVecOrig[pos + i] - knotVecOrig[L])
             aux[i] = αᵢ * aux[i + 1] + (1.0 - αᵢ) * aux[i]
         end
-
         newControlPoints[r] = aux[1]
         newControlPoints[end - r + 1] = aux[end - r]
     end
@@ -324,6 +324,26 @@ function extendControlPoints!(
 
     # splice new computed points into array (replacing the correct amount)
     splice!(controlPoints, (pos - degree + 1):(pos - oldMult - 1), newControlPoints)
+
+    return nothing
+end
+
+"""
+Lowest order polynomial degree = 0.
+
+Can multiplicity be maximum 1 and/or oldMult maximum 0? => simplify below algorithm further.
+"""
+function extendControlPoints!(controlPoints, pos::Int, multiplicity::Int, oldMult::Int)
+
+    newControlPoints = similar(controlPoints, oldMult + multiplicity)
+
+    aux = controlPoints[(pos):(pos - oldMult)]
+    for r in 1:multiplicity
+        newControlPoints[r] = aux[1]
+    end
+
+    # splice new computed points into array (replacing the correct amount)
+    splice!(controlPoints, (pos + 1):(pos - oldMult - 1), newControlPoints)
 
     return nothing
 end

@@ -1,7 +1,7 @@
 name = "NURBS"
 uuid = "dde13934-061e-461b-aa91-2c0fad390a0d"
 authors = ["Bernd Hofmann <bernd.hofmann@tum.de> and contributors"]
-version = "0.6.0"
+version = "0.6.1"
 
 [deps]
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"

@@ -226,6 +226,8 @@ Return the Greville sites (as defined in [3]) corresponding to the given knotvec
 """
 function greville(kVec, degree::Int)
 
+    degree == 0 && return unique(kVec)
+
     N = length(kVec) - degree - 1 # number of B-splines
     gSites = zeros(eltype(kVec), N)
 

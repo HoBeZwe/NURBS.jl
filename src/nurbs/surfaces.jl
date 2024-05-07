@@ -29,7 +29,10 @@ Note: the efficient evaluation via the B-spline basis is employed (no use of the
 """
 function surfacePoints(uBasis::Basis, vBasis::Basis, controlPoints, uVector, vVector, weights)
 
-    # u-direction: determine the basis functions evaluated at uVector 
+    # Promote input types for initialization
+    T = promote_type(eltype.(controlPoints[:])..., eltype(uVector), eltype(vVector), eltype(weights))
+
+    # u-direction: determine the basis functions evaluated at uVector
     nbasisFun = numBasisFunctions(uBasis)
     uSpan = findSpan(nbasisFun, uVector, uBasis.knotVec, uBasis.degree)
     Nu = basisFun(uSpan, uVector, uBasis)
@@ -40,8 +43,8 @@ function surfacePoints(uBasis::Basis, vBasis::Basis, controlPoints, uVector, vVe
     Nv = basisFun(vSpan, vVector, vBasis)
 
     # intialize
-    surface   = [SVector(0.0, 0.0, 0.0) for i in eachindex(uVector), j in eachindex(vVector)]
-    normalize = [0.0 for i in eachindex(uVector), j in eachindex(vVector)]
+    surface   = [SVector{3,T}(0.0, 0.0, 0.0) for i in eachindex(uVector), j in eachindex(vVector)]
+    normalize = [T(0.0) for i in eachindex(uVector), j in eachindex(vVector)]
 
     # determine the surface values
     for uPointInd in eachindex(uVector)
@@ -52,8 +55,8 @@ function surfacePoints(uBasis::Basis, vBasis::Basis, controlPoints, uVector, vVe
 
             for i in 1:(vBasis.degree + 1)
 
-                temp = SVector(0.0, 0.0, 0.0)
-                normTemp = 0.0
+                temp = SVector{3,T}(0.0, 0.0, 0.0)
+                normTemp = T(0.0)
 
                 vind = vSpan[vPointInd] - vBasis.degree + i - 1
                 for k in 1:(uBasis.degree + 1)
@@ -142,11 +145,16 @@ Allocate all memory for surfaceDerivativesPoints!
 """
 function preAllocNURBSsurface(uDegree::Int, vDegree::Int, uVector, vVector, k::Int)
 
+    # Promote input types for initialization
+    T = promote_type(eltype(uVector), eltype(vVector))
+
     preallocU = preAllocDer(uDegree, uVector, k)
     preallocV = preAllocDer(vDegree, vVector, k)
 
-    surfaces = [[SVector(0.0, 0.0, 0.0) for i in eachindex(uVector), j in eachindex(vVector)] for q in 1:(k + 1), p in (1:(k + 1))]
-    w = [[0.0 for i in eachindex(uVector), j in eachindex(vVector)] for q in 1:(k + 1), p in 1:(k + 1)]
+    surfaces = [
+        [SVector{3,T}(0.0, 0.0, 0.0) for i in eachindex(uVector), j in eachindex(vVector)] for q in 1:(k + 1), p in (1:(k + 1))
+    ]
+    w = [[T(0.0) for i in eachindex(uVector), j in eachindex(vVector)] for q in 1:(k + 1), p in 1:(k + 1)]
 
     return pAllocNURBSsuface(preallocU, preallocV, surfaces, w)
 end
@@ -180,12 +188,17 @@ function surfaceDerivativesPoints!(
     prealloc::pAllocNURBSsuface, uDegree::Int, vDegree::Int, uKnotVector, vKnotVector, controlPoints, uVector, vVector, weights, k::Int
 )
 
+    # Promote input types for initialization
+    T = promote_type(
+        eltype(uKnotVector), eltype(vKnotVector), eltype.(controlPoints[:])..., eltype(uVector), eltype(vVector), eltype(weights)
+    )
+
     preallocU = prealloc.preallocU
     preallocV = prealloc.preallocV
     surfaces = prealloc.surfaces
     w = prealloc.w
 
-    # u-direction: determine the basis functions evaluated at uVector 
+    # u-direction: determine the basis functions evaluated at uVector
     nbasisFun = length(uKnotVector) - uDegree - 1
     uSpan = findSpan!(preallocU.spanVec, nbasisFun, uVector, uKnotVector, uDegree)
     Nu = derBasisFun!(preallocU, uSpan, uDegree, uVector, uKnotVector, k)
@@ -204,7 +217,7 @@ function surfaceDerivativesPoints!(
 
     for i in eachindex(surfaces)
         for j in eachindex(surfaces[1])
-            surfaces[i][j] = SVector(0.0, 0.0, 0.0)
+            surfaces[i][j] = SVector{3,T}(0.0, 0.0, 0.0)
         end
     end
 
@@ -223,8 +236,8 @@ function surfaceDerivativesPoints!(
                     # derivatives of A and w
                     for ind in 1:(vDegree + 1)
 
-                        temp = SVector(0.0, 0.0, 0.0)
-                        normTemp = 0.0
+                        temp = SVector{3,T}(0.0, 0.0, 0.0)
+                        normTemp = T(0.0)
 
                         vind = vSpan[vPointInd] - vDegree + ind - 1
                         for kind in 1:(uDegree + 1)

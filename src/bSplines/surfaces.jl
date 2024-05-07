@@ -28,7 +28,10 @@ x / u direction
 """
 function surfacePoints(uBasis::Basis, vBasis::Basis, controlPoints, uVector, vVector)
 
-    # u-direction: determine the basis functions evaluated at uVector 
+    # Promote input types for initialization
+    T = promote_type(eltype.(controlPoints[:])..., eltype(uVector), eltype(vVector))
+
+    # u-direction: determine the basis functions evaluated at uVector
     nbasisFun = numBasisFunctions(uBasis)
     uSpan = findSpan(nbasisFun, uVector, uBasis.knotVec, uBasis.degree)
     Nu = basisFun(uSpan, uVector, uBasis)
@@ -39,7 +42,7 @@ function surfacePoints(uBasis::Basis, vBasis::Basis, controlPoints, uVector, vVe
     Nv = basisFun(vSpan, vVector, vBasis)
 
     # intialize
-    surface = [SVector(0.0, 0.0, 0.0) for i in eachindex(uVector), j in eachindex(vVector)]
+    surface = [SVector{3,T}(0.0, 0.0, 0.0) for i in eachindex(uVector), j in eachindex(vVector)]
 
     # determine the surface values
     for uPointInd in eachindex(uVector)
@@ -50,7 +53,7 @@ function surfacePoints(uBasis::Basis, vBasis::Basis, controlPoints, uVector, vVe
 
             for i in 1:(vBasis.degree + 1)
 
-                temp = SVector(0.0, 0.0, 0.0)
+                temp = SVector{3,T}(0.0, 0.0, 0.0)
 
                 vind = vSpan[vPointInd] - vBasis.degree + i - 1
                 for k in 1:(uBasis.degree + 1)
@@ -107,7 +110,10 @@ TODO: implement algorithm A.37 and A.38 of 'The Nurbs book'
 """
 function surfaceDerivativesPoints(uDegree::Int, vDegree::Int, uKnotVector, vKnotVector, controlPoints, uVector, vVector, k::Int)
 
-    # u-direction: determine the basis functions evaluated at uVector 
+    # Promote input types for initialization
+    T = promote_type(eltype(uKnotVector), eltype(vKnotVector), eltype.(controlPoints[:])..., eltype(uVector), eltype(vVector))
+
+    # u-direction: determine the basis functions evaluated at uVector
     nbasisFun = length(uKnotVector) - uDegree - 1
     uSpan = findSpan(nbasisFun, uVector, uKnotVector, uDegree)
     Nu = derBasisFun(uSpan, uDegree, uVector, uKnotVector, k)
@@ -118,7 +124,7 @@ function surfaceDerivativesPoints(uDegree::Int, vDegree::Int, uKnotVector, vKnot
     Nv = derBasisFun(vSpan, vDegree, vVector, vKnotVector, k)
 
     # intialize
-    surfaces = [[SVector(0.0, 0.0, 0.0) for i in eachindex(uVector), j in eachindex(vVector)] for q in 1:(k + 1), p in 1:(k + 1)]
+    surfaces = [[SVector{3,T}(0.0, 0.0, 0.0) for i in eachindex(uVector), j in eachindex(vVector)] for q in 1:(k + 1), p in 1:(k + 1)]
 
     # determine the surface derivative values
     for q in 1:(k + 1)
@@ -138,7 +144,10 @@ Compute the q-th derivative along 'u' and the p-th derivative along 'v'.
 """
 function surfaceDerivativesPointsUV(uDegree::Int, vDegree::Int, controlPoints, uVector, vVector, Nu, Nv, q::Int, p::Int, uSpan, vSpan)
 
-    surfaces = [SVector(0.0, 0.0, 0.0) for i in eachindex(uVector), j in eachindex(vVector)]
+    # Promote input types for initialization
+    T = promote_type(eltype.(controlPoints[:])..., eltype(uVector), eltype(vVector))
+
+    surfaces = [SVector{3,T}(0.0, 0.0, 0.0) for i in eachindex(uVector), j in eachindex(vVector)]
 
     for uPointInd in eachindex(uVector)
 
@@ -148,7 +157,7 @@ function surfaceDerivativesPointsUV(uDegree::Int, vDegree::Int, controlPoints, u
 
             for i in 1:(vDegree + 1)
 
-                temp = SVector(0.0, 0.0, 0.0)
+                temp = SVector{3,T}(0.0, 0.0, 0.0)
 
                 vind = vSpan[vPointInd] - vDegree + i - 1
                 for kind in 1:(uDegree + 1)

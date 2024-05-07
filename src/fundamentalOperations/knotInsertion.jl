@@ -232,7 +232,7 @@ function extendKnotVector!(knotVecOrig, degree::Int, newParametricPoint::Real, m
 
     # --- check whether resulting mulitplicity makes sense
     newMult = multiplicity + oldMult
-    if newMult > degree + 1
+    if newMult > degree
         @info "The multiplicity of the inserted knot is limited to $(degree)."
         newMult = degree
     end

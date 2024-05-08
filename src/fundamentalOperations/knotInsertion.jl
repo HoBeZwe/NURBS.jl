@@ -232,16 +232,34 @@ function extendKnotVector!(knotVecOrig, degree::Int, newParametricPoint::Real, m
 
     # --- check whether resulting mulitplicity makes sense
     newMult = multiplicity + oldMult
-    if newMult > degree
-        @info "The multiplicity of the inserted knot is limited to $(degree)."
-        newMult = degree
-    end
+    newMult = limitMultiplicity(newMult, degree)
 
     # --- generate new knot vector
     toInsert = repeat([newParametricPoint], newMult) # repeat the parametric point to the final multiplicity (old + new)
     splice!(knotVecOrig, oldMultIndices, toInsert)   # insert the total parametric point in final multiplicity
 
     return oldMultIndices, oldMult, newMult - oldMult
+end
+
+
+"""
+    limitMultiplicity(newMult::Int, degree::Int)
+
+Limit the multiplicity to the maximum allowed value.
+"""
+function limitMultiplicity(newMult::Int, degree::Int)
+
+    if degree == 0
+        newMult > 1 && @info "The multiplicity of the inserted knot is limited to 1."
+        return 1
+    end
+
+    if newMult > degree
+        @info "The multiplicity of the inserted knot is limited to $(degree)."
+        return degree
+    end
+
+    return newMult
 end
 
 
@@ -258,8 +276,7 @@ function extendControlPoints!(
     controlPoints, knotVecOrig, degree::Int, pos::Int, uNew::Real, multiplicity::Int, oldMult::Int, weights=[]
 )
 
-    degree == 0 && return extendControlPoints!(controlPoints, pos, multiplicity, oldMult) # not so nice - why does algorithm not hold for degree=0?
-    #T = eltype(controlPoints[1])
+    degree == 0 && return extendControlPoints!(controlPoints, pos, multiplicity, oldMult)
 
     # --- computation including weights
     if !isempty(weights)
@@ -335,15 +352,10 @@ Can multiplicity be maximum 1 and/or oldMult maximum 0? => simplify below algori
 """
 function extendControlPoints!(controlPoints, pos::Int, multiplicity::Int, oldMult::Int)
 
-    newControlPoints = similar(controlPoints, oldMult + multiplicity)
+    multiplicity == 0 && return nothing
 
-    aux = controlPoints[(pos):(pos - oldMult)]
-    for r in 1:multiplicity
-        newControlPoints[r] = aux[1]
-    end
-
-    # splice new computed points into array (replacing the correct amount)
-    splice!(controlPoints, (pos + 1):(pos - oldMult - 1), newControlPoints)
+    # splice new points into array 
+    splice!(controlPoints, (pos + 1):pos, [controlPoints[pos]])
 
     return nothing
 end

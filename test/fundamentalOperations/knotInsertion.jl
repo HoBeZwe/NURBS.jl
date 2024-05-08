@@ -76,6 +76,22 @@
                 # verify
                 @test minimum(C1 .≈ C2)
             end
+
+            @testset "Degree = 0 case" begin
+
+                kV2 = Float64[0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
+                cP = [P1, P2, P3, P4, P5]
+
+                N  = BsplineCurve(Bspline(0, kV2), cP)
+                C1 = N(evalpoints)
+
+                # insert a list of parametric points
+                N2 = insertKnot(N, 0.1, 2)
+                C2 = N2(evalpoints)
+
+                # verify
+                @test minimum(C1 .≈ C2)
+            end
         end
 
 

@@ -25,7 +25,7 @@ Note: the efficient evaluation via the B-spline basis is employed (no use of the
 function curvePoints(basis::Basis, controlPoints, uVector, weights)
 
     # Promote input types for initialization
-    T = promote_type(eltype.(controlPoints[:])..., eltype(uVector), eltype(weights))
+    T = promote_type(eltype(eltype(controlPoints)), eltype(uVector), eltype(weights))
 
     # the number of basis functions is determined by the number of knot vectors and the degree
     nbasisFun = numBasisFunctions(basis)
@@ -87,7 +87,7 @@ Note: the efficient evaluation via the B-spline basis is employed (no use of the
 function curveDerivativesPoints(degree::Int, knotVector, controlPoints, uVector, weights, k::Int)
 
     # Promote input types for initialization
-    T = promote_type(eltype(knotVector), eltype.(controlPoints[:])..., eltype(uVector), eltype(weights))
+    T = promote_type(eltype(knotVector), eltype(eltype(controlPoints)), eltype(uVector), eltype(weights))
 
     # the number of basis functions is determined by the number of knot vectors and the degree
     nbasisFun = length(knotVector) - degree - 1

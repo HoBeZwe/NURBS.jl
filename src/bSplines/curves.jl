@@ -23,7 +23,7 @@ controlPoints = [P1, P2, P3]
 function curvePoints(basis::Basis, controlPoints, uVector)
 
     # Promote input types for initialization
-    T = promote_type(eltype.(controlPoints[:])..., eltype(uVector))
+    T = promote_type(eltype(eltype(controlPoints)), eltype(uVector))
 
     # the number of basis functions is determined by the number of knot vectors and the degree
     nbasisFun = numBasisFunctions(basis)
@@ -71,7 +71,7 @@ controlPoints = [P1, P2, P3]
 function curveDerivativesPoints(degree::Int, knotVector, controlPoints, uVector, k::Int)
 
     # Promote input types for initialization
-    T = promote_type(eltype(knotVector), eltype.(controlPoints[:])..., eltype(uVector))
+    T = promote_type(eltype(knotVector), eltype(eltype(controlPoints)), eltype(uVector))
 
     # the number of basis functions is determined by the number of knot vectors and the degree
     nbasisFun = length(knotVector) - degree - 1

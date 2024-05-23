@@ -29,7 +29,7 @@ x / u direction
 function surfacePoints(uBasis::Basis, vBasis::Basis, controlPoints, uVector, vVector)
 
     # Promote input types for initialization
-    T = promote_type(eltype.(controlPoints[:])..., eltype(uVector), eltype(vVector))
+    T = promote_type(eltype(eltype(controlPoints)), eltype(uVector), eltype(vVector))
 
     # u-direction: determine the basis functions evaluated at uVector
     nbasisFun = numBasisFunctions(uBasis)
@@ -111,7 +111,7 @@ TODO: implement algorithm A.37 and A.38 of 'The Nurbs book'
 function surfaceDerivativesPoints(uDegree::Int, vDegree::Int, uKnotVector, vKnotVector, controlPoints, uVector, vVector, k::Int)
 
     # Promote input types for initialization
-    T = promote_type(eltype(uKnotVector), eltype(vKnotVector), eltype.(controlPoints[:])..., eltype(uVector), eltype(vVector))
+    T = promote_type(eltype(uKnotVector), eltype(vKnotVector), eltype(eltype(controlPoints)), eltype(uVector), eltype(vVector))
 
     # u-direction: determine the basis functions evaluated at uVector
     nbasisFun = length(uKnotVector) - uDegree - 1
@@ -145,7 +145,7 @@ Compute the q-th derivative along 'u' and the p-th derivative along 'v'.
 function surfaceDerivativesPointsUV(uDegree::Int, vDegree::Int, controlPoints, uVector, vVector, Nu, Nv, q::Int, p::Int, uSpan, vSpan)
 
     # Promote input types for initialization
-    T = promote_type(eltype.(controlPoints[:])..., eltype(uVector), eltype(vVector))
+    T = promote_type(eltype(eltype(controlPoints)), eltype(uVector), eltype(vVector))
 
     surfaces = [SVector{3,T}(0.0, 0.0, 0.0) for i in eachindex(uVector), j in eachindex(vVector)]
 

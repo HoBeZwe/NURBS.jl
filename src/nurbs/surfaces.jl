@@ -30,7 +30,7 @@ Note: the efficient evaluation via the B-spline basis is employed (no use of the
 function surfacePoints(uBasis::Basis, vBasis::Basis, controlPoints, uVector, vVector, weights)
 
     # Promote input types for initialization
-    T = promote_type(eltype.(controlPoints[:])..., eltype(uVector), eltype(vVector), eltype(weights))
+    T = promote_type(eltype(eltype(controlPoints)), eltype(uVector), eltype(vVector), eltype(weights))
 
     # u-direction: determine the basis functions evaluated at uVector
     nbasisFun = numBasisFunctions(uBasis)
@@ -190,7 +190,7 @@ function surfaceDerivativesPoints!(
 
     # Promote input types for initialization
     T = promote_type(
-        eltype(uKnotVector), eltype(vKnotVector), eltype.(controlPoints[:])..., eltype(uVector), eltype(vVector), eltype(weights)
+        eltype(uKnotVector), eltype(vKnotVector), eltype(eltype(controlPoints)), eltype(uVector), eltype(vVector), eltype(weights)
     )
 
     preallocU = prealloc.preallocU

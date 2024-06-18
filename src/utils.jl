@@ -168,6 +168,19 @@ function JacobiDet(Ju, Jv)
     return dJ
 end
 
+function JacobiDet(Ju::SVector{3,T}, Jv::SVector{3,T}) where {T}
+
+    xu = Ju[1]
+    yu = Ju[2]
+    zu = Ju[3]
+
+    xv = Jv[1]
+    yv = Jv[2]
+    zv = Jv[3]
+
+    return sqrt((yu * zv - zu * yv)^2 + (zu * xv - xu * zv)^2 + (xu * yv - yu * xv)^2)
+end
+
 
 """
     spanRanges(Bspl::Bspline, points)

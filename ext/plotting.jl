@@ -174,7 +174,7 @@ function NURBS.plotPatches(Patches; plotControlPoints=true, enforceRatio=true, r
     traces = PlotlyJS.GenericTrace[]
     maxvec = Float64[]
 
-    col = 1:size(Patches, 1)
+    col = 1 .+ rand(length(Patches))#1:size(Patches, 1)
 
     for (ind, patch) in enumerate(Patches)
 

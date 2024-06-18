@@ -111,6 +111,30 @@ end
 
 
 """
+    coarsen(knotVec, controlPoints, degree::Int, pointsToRemove::Vector, weights=[])
+
+Coarsen a curve by removing parametric points from a curve's knot vector.
+
+NOTE: There are more efficient ways to do this.
+"""
+function coarsen(knotVec, controlPoints, degree::Int, pointsToRemove::Vector, weights=[])
+
+    # --- make copies
+    knotVecMod       = deepcopy(knotVec)
+    controlPointsMod = deepcopy(controlPoints)
+    weightsMod       = deepcopy(weights)
+
+    # --- modify copies
+    for (i, remPoint) in enumerate(pointsToRemove)
+        checkRange(remPoint)
+        removeKnot!(knotVecMod, controlPointsMod, degree, remPoint, 1, weightsMod)
+    end
+
+    return knotVecMod, controlPointsMod, weightsMod
+end
+
+
+"""
     removeKnot(knotVec, controlPoints, degree::Int, pointToRemove::Real, multiplicity::Int, weights)
 
 Remove a knot 'multiplicity' times.
@@ -249,7 +273,6 @@ function trimControlPoints!(cPts, kVecOri, degree::Int, pos::Int, pointToRemove:
 
         # --- can knot be removed? Two different cases to be covered
         if j - i < t
-
             temp[ii] ≈ temp[jj + 2] && (removable = true)
             wemp[ii] ≈ wemp[jj + 2] && (removableW = true)
         else

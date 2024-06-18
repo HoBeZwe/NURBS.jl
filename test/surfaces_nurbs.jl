@@ -116,6 +116,10 @@
         @test S[2, 1][1, 1] ≈ SVector(4.4444444444, 0.0, 0.0)
         @test S[2, 2][1, 1] ≈ SVector(-3.950617283, 0.0, 0.0)
 
+        a = SVector(2.1, 0.0, 1.0)
+        b = SVector(0.0, 0.0, 3.4)
+        @test JacobiDet(a, b) == norm(a × b) # area of parallelogram spanned by a and b
+
         @test_nowarn Jacobian(Patch, uEvalpoints, vEvalpoints)
 
 

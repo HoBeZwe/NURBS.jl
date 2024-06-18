@@ -19,7 +19,7 @@ export evalNaive, evalNaiveDerivative
 export Jacobian, JacobiDet
 
 export insertKnot!, insertKnot
-export refine # NOTE: split is an extension of Base.split, i.e., it is publicly available without export
+export coarsen, refine # NOTE: split is an extension of Base.split, i.e., it is publicly available without export
 export removeKnot!, removeKnot, removeKnotU, removeKnotV
 
 export readMultipatch, readStep

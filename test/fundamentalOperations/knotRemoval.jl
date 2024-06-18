@@ -26,6 +26,10 @@
             BC = BsplineCurve(Bspline(p, kVec), cP)
 
             RC = removeKnot(BC, 0.5, 3)
+            kVecMod, cPmod, wMod = coarsen(kVec, cP, p, [0.5, 0.5, 0.5])
+
+            @test RC.basis.knotVec == kVecMod
+            @test RC.controlPoints == cPmod
 
             cPR = RC.controlPoints
 

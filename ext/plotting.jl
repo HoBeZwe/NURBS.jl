@@ -166,7 +166,9 @@ end
 
 Plot multipatch geometry.
 """
-function NURBS.plotPatches(Patches; plotControlPoints=true, enforceRatio=true, resolution=0.05)
+function NURBS.plotPatches(
+    Patches; mesh=[], pos=[],plotControlPoints=true, localVertices=false, patchID=false, enforceRatio=true, resolution=0.05
+)
 
     uEvalpoints = collect(0:resolution:1.0)
     vEvalpoints = collect(0:resolution:1.0)
@@ -196,6 +198,18 @@ function NURBS.plotPatches(Patches; plotControlPoints=true, enforceRatio=true, r
         end
         [push!(traces, trace[i]) for i in eachindex(trace)]
         push!(maxvec, maxi)
+
+        isempty(mesh) || plotMesh!(traces, patch, mesh, uEvalpoints, vEvalpoints)
+        localVertices && plotLocalvertices!(traces, patch)
+        patchID && plotPatchID!(traces, patch, ind)
+    end
+
+    if !isempty(pos) 
+        x = [pos[i][1] for i in eachindex(pos)]
+        y = [pos[i][2] for i in eachindex(pos)]
+        z = [pos[i][3] for i in eachindex(pos)]
+        txt = ["$i" for i in 1:length(pos)]
+        push!(traces, PlotlyJS.scatter3d(x=x, y=y, z=z, mode="markers+text", text=txt, markersize=0.4, legend=:none, showlegend=false))
     end
 
     maxmax = maximum(maxvec)
@@ -213,6 +227,71 @@ function NURBS.plotPatches(Patches; plotControlPoints=true, enforceRatio=true, r
     else
         PlotlyJS.plot(traces)
     end
+end
+
+function plotPatchID!(traces, patch, ind)
+
+    p1 = patch([0.5], [0.5])[1]
+
+    t1 = PlotlyJS.scatter3d(;
+        x=[p1[1]], y=[p1[2]], z=[p1[3]], mode="markers+text", text=["$ind"], markersize=0.4, legend=:none, showlegend=false
+    )
+    push!(traces, t1)
+
+    return nothing
+end
+
+function plotLocalvertices!(traces, patch)
+
+    off = 0.025
+    p1 = patch([off], [off])
+    p2 = patch([off], [1 - off])
+    p3 = patch([1 - off], [1 - off])
+    p4 = patch([1 - off], [off])
+
+    x = [p1[1][1], p2[1][1], p3[1][1], p4[1][1]]
+    y = [p1[1][2], p2[1][2], p3[1][2], p4[1][2]]
+    z = [p1[1][3], p2[1][3], p3[1][3], p4[1][3]]
+
+    t1 = PlotlyJS.scatter3d(;
+        x=x, y=y, z=z, mode="markers+text", text=["1", "2", "3", "4"], markersize=0.7, legend=:none, showlegend=false
+    )
+    push!(traces, t1)
+
+    return nothing
+end
+
+
+function plotMesh!(traces, patch, mesh, uEvalpoints, vEvalpoints)
+
+    uKnotMesh = mesh[1]
+    vKnotMesh = mesh[2]
+
+    for (ind, vVal) in enumerate(vKnotMesh)
+
+        C = patch(uEvalpoints, [vVal])
+
+        x = [C[i][1] for i in eachindex(C)]
+        y = [C[i][2] for i in eachindex(C)]
+        z = [C[i][3] for i in eachindex(C)]
+
+        t1 = PlotlyJS.scatter3d(; x=x, y=y, z=z, mode="lines", markersize=0.4, legend=:none, showlegend=false)
+        push!(traces, t1)
+    end
+
+    for (ind, uVal) in enumerate(uKnotMesh)
+
+        C = patch([uVal], vEvalpoints)
+
+        x = [C[i][1] for i in eachindex(C)]
+        y = [C[i][2] for i in eachindex(C)]
+        z = [C[i][3] for i in eachindex(C)]
+
+        t1 = PlotlyJS.scatter3d(; x=x, y=y, z=z, mode="lines", markersize=0.4, legend=:none, showlegend=false)
+        push!(traces, t1)
+    end
+
+    return nothing
 end
 
 

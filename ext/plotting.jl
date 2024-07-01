@@ -167,7 +167,7 @@ end
 Plot multipatch geometry.
 """
 function NURBS.plotPatches(
-    Patches; mesh=[], pos=[],plotControlPoints=true, localVertices=false, patchID=false, enforceRatio=true, resolution=0.05
+    Patches; mesh=[], pos=[], plotControlPoints=true, localVertices=false, patchID=false, enforceRatio=true, resolution=0.05
 )
 
     uEvalpoints = collect(0:resolution:1.0)
@@ -204,12 +204,14 @@ function NURBS.plotPatches(
         patchID && plotPatchID!(traces, patch, ind)
     end
 
-    if !isempty(pos) 
+    if !isempty(pos)
         x = [pos[i][1] for i in eachindex(pos)]
         y = [pos[i][2] for i in eachindex(pos)]
         z = [pos[i][3] for i in eachindex(pos)]
         txt = ["$i" for i in 1:length(pos)]
-        push!(traces, PlotlyJS.scatter3d(x=x, y=y, z=z, mode="markers+text", text=txt, markersize=0.4, legend=:none, showlegend=false))
+        push!(
+            traces, PlotlyJS.scatter3d(; x=x, y=y, z=z, mode="markers+text", text=txt, markersize=0.4, legend=:none, showlegend=false)
+        )
     end
 
     maxmax = maximum(maxvec)
@@ -229,6 +231,11 @@ function NURBS.plotPatches(
     end
 end
 
+""" 
+    plotPatchID!(traces, patch, ind)
+
+Plot the unique IDs of the patches.
+"""
 function plotPatchID!(traces, patch, ind)
 
     p1 = patch([0.5], [0.5])[1]
@@ -241,6 +248,12 @@ function plotPatchID!(traces, patch, ind)
     return nothing
 end
 
+
+"""
+    plotLocalvertices!(traces, patch)
+
+Plot the four local vertices on each patch.
+"""
 function plotLocalvertices!(traces, patch)
 
     off = 0.025
@@ -262,6 +275,11 @@ function plotLocalvertices!(traces, patch)
 end
 
 
+"""
+    plotMesh!(traces, patch, mesh, uEvalpoints, vEvalpoints)
+
+Plot the mesh structure defined by mesh=[U, V] with U and V being vectors with entries in [0,1].
+"""
 function plotMesh!(traces, patch, mesh, uEvalpoints, vEvalpoints)
 
     uKnotMesh = mesh[1]

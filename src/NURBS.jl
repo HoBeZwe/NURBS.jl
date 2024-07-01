@@ -64,7 +64,7 @@ include("utils.jl")
 include("fileIO/multipatch.jl")
 include("fileIO/step.jl")
 
-include("connectivity/surfaces.jl")
+include("connectivity/interfaces.jl")
 include("connectivity/bezierMesh.jl")
 
 if !isdefined(Base, :get_extension)

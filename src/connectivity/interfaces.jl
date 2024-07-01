@@ -72,9 +72,9 @@ struct Connectivity{I}
     bezierAdjacency::Vector{BezierCellAdjacency{I}}
 end
 
-function Connectivity(patches::Vector{<: Surface}, cU, cV; tol=1e-3) 
+function Connectivity(patches::Vector{<:Surface}, cU, cV; tol=1e-3)
 
-    interfaces, commonVtxs = identifyInterfaces(patches, tol=tol)
+    interfaces, commonVtxs = identifyInterfaces(patches; tol=tol)
     ifPatchwise = getPatchInterfaces(patches, interfaces, commonVtxs)
     bezierAdj = bezierAdjacency(interfaces, commonVtxs, cU, cV, length(patches))
 
@@ -201,7 +201,9 @@ function identifyInterfaces(patches::Vector{<:Surface{F}}; tol=1e-3) where {F}
                 end
 
             else
-                error("Interfaces intersect!\n")
+                error(
+                    "Patches touch at more than two corner points ($nCommonPts corner points). So far only one common edge between patches is supported!\n",
+                )
             end
         end
     end
@@ -325,7 +327,7 @@ function getGlobalIndex(P, Plist; tol=1e-3)
         norm(Pentry - P) < tol && return ind
     end
 
-    return error("point not found")
+    return error("Point not found!")
 end
 
 

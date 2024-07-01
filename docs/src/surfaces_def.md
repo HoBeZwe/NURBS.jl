@@ -8,20 +8,20 @@ Based on both bases surfaces are defined.
 ## Definitions
 
 
-### B-Spline Surfaces
+#### B-Spline Surfaces
 
 A tensor product surface [[1, p. 100]](@ref refs) 
 ```math
-\bm{s}(u,v) = \sum_{i=1}^{B_u} \sum_{j=1}^{B_v} N_{i,p}(u) N_{j,q}(v) \bm{p}_{i,j}
+\bm{s}(u,v) = \sum_{i=1}^{N_u} \sum_{j=1}^{N_v} B_{i,p}(u) B_{j,q}(v) \bm{p}_{i,j}
 ```
 is defined by introducing two knot-vectors for the B-splines of degree ``p`` and ``q``
 and a second parametric value ``v \in [0, 1]``, as well as a net of constant controlpoints ``\bm{p}_{i,j} \in \mathbb{R}^3``.
 
-### NURBS Surfaces
+#### NURBS Surfaces
 
 Analogously, a NURBS surface
 ```math
-\bm{s}(u,v) = \sum_{i=1}^{B_u} \sum_{j=1}^{B_v} R_{i,j}(u,v) \bm{p}_{i,j} = \cfrac{\sum_{i=1}^{B_u} \sum_{j=1}^{B_v} N_{i,p}(u) N_{j,q}(v) w_{i,j} \bm{p}_{i,j}}{\sum_{i=1}^{B_u} \sum_{j=1}^{B_v} N_{i,p}(u) N_{j,q}(v) w_{i,j}}
+\bm{s}(u,v) = \sum_{i=1}^{N_u} \sum_{j=1}^{N_v} R_{i,j}(u,v) \bm{p}_{i,j} = \cfrac{\sum_{i=1}^{N_u} \sum_{j=1}^{N_v} B_{i,p}(u) B_{j,q}(v) w_{i,j} \bm{p}_{i,j}}{\sum_{i=1}^{N_u} \sum_{j=1}^{N_v} B_{i,p}(u) B_{j,q}(v) w_{i,j}}
 ```
 is defined.
 
@@ -34,18 +34,18 @@ is defined.
 ## Derivatives
 
 
-### B-Spline Surfaces
+#### B-Spline Surfaces
 
 The ``m``-th derivative in ``u`` and ``m``-th derivative in ``v`` of a B-spline surface is given as [[1, p. 111]](@ref refs)
 ```math
-\bm{s}^{(m,n)}(u,v) = \cfrac{\partial^{m+n}}{\partial^m u \partial^n v}\bm{s}(u,v) = \sum_{i=1}^{B_u} \sum_{j=1}^{B_v} N_{i,p}^{(m)}(u) N_{j,p}^{(n)}(u) \bm{p}_{i,j} \,.
+\bm{s}^{(m,n)}(u,v) = \cfrac{\partial^{m+n}}{\partial^m u \partial^n v}\bm{s}(u,v) = \sum_{i=1}^{N_u} \sum_{j=1}^{N_v} B_{i,p}^{(m)}(u) B_{j,p}^{(n)}(u) \bm{p}_{i,j} \,.
 ```
 
-### NURBS Surfaces
+#### NURBS Surfaces
 
 The ``m``-th derivative in ``u`` and ``m``-th derivative in ``v`` of a NURBS surface is given as 
 ```math
-\bm{s}^{(m,n)}(u,v) = \cfrac{\partial^{m+n}}{\partial^m u \partial^n v}\bm{s}(u,v) = \sum_{i=1}^{B_u} \sum_{j=1}^{B_v} R_{i,j}^{(m,n)}(u,v) \bm{p}_{i,j} \,.
+\bm{s}^{(m,n)}(u,v) = \cfrac{\partial^{m+n}}{\partial^m u \partial^n v}\bm{s}(u,v) = \sum_{i=1}^{N_u} \sum_{j=1}^{N_v} R_{i,j}^{(m,n)}(u,v) \bm{p}_{i,j} \,.
 ```
 It can be computed as [[1, p. 136]](@ref refs)
 ```math
@@ -58,14 +58,14 @@ It can be computed as [[1, p. 136]](@ref refs)
 ```
 with
 ```math
-\bm{a}^{(m,n)}(u,v) = \sum_{i=1}^{B_u} \sum_{j=1}^{B_v} N_{i,p}^{(m)}(u) N_{j,q}^{(n)}(v) w_{i,j} \bm{p}_{i,j} 
+\bm{a}^{(m,n)}(u,v) = \sum_{i=1}^{N_u} \sum_{j=1}^{N_v} B_{i,p}^{(m)}(u) B_{j,q}^{(n)}(v) w_{i,j} \bm{p}_{i,j} 
 ```
 and
 ```math
-w^{(m,n)}(u,v) = \sum_{i=1}^{B_u} \sum_{j=1}^{B_v} N_{i,p}^{(m)}(u) N_{j,q}^{(n)}(v) w_{i,j}  \,.
+w^{(m,n)}(u,v) = \sum_{i=1}^{N_u} \sum_{j=1}^{N_v} B_{i,p}^{(m)}(u) B_{j,q}^{(n)}(v) w_{i,j}  \,.
 ```
 
-### [Jacobian](@id jac)
+#### [Jacobian](@id jac)
 
 The Jacobian matrix ``\bm{J}(u,v)`` for the surface is given as
 ```math

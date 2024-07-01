@@ -83,6 +83,7 @@ end
 
 
 """
+    identifyInterfaces(patches::Vector{<:Surface{F}}; tol=1e-3) where {F}
 
 Determine the interfaces between patches including the property if the basis functions normal to the edge point in the same direction.
 
@@ -213,7 +214,7 @@ end
 
 
 """
-
+    getPatchInterfaces(patches::Vector{<:Surface{F}}, interfaces, commonVtxs) where {F}
 
 Determine for each patch the local edges where there is an interface and whether the orientation has to be flipped.
 

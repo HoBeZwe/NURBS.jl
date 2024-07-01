@@ -8,7 +8,7 @@ The considered
 basis functions are defined by initializing corresponding structures. A naive evaluation method is available for all, an efficient evaluation only for B-splines and Curry-Schoenberg splines.
 
 ---
-## Define Structures
+## Defining Structures
 
 B-spline, Curry-Schoenberg, and NURBS bases are defined by initializing a [`Bspline`](@ref Bspline), a [`CurrySchoenberg`](@ref CurrySchoenberg), or a [`NURB`](@ref NURB) structure, respectively.
 
@@ -67,7 +67,7 @@ Plots.plot(evalpoints, bspline, w=2,
 Plots.plot!(evalpoints, nurb, w=2, label="NURB")
 Plots.plot!(evalpoints, cspl, w=2, label="Curry-Schoenberg")
 xlims!(0, 1) # hide
-ylims!(0, 1) # hide
+ylims!(0, 3) # hide
 savefig("plotBspl.html"); nothing # hide
 ```
 
@@ -112,7 +112,7 @@ Plots.plot(evalpoints, bspline, w=2,
     xlabel="𝑢", 
     ylabel="𝑁ᵢ,₂(𝑢)")
 xlims!(0, 1) # hide
-ylims!(0, 1) # hide
+ylims!(0, 12) # hide
 savefig("plotBspleff.html"); nothing # hide
 ```
 

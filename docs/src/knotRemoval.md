@@ -10,15 +10,15 @@ It is of use for [[1, p. 180]](@ref refs):
 ---
 ## Removing Knots from a Curve
 
-For a given curve ``\bm{c}(u) = \sum_{i=1}^B N_{i,p}(u) \bm{p}_i`` defined on the knot vector
+For a given curve ``\bm{c}(u) = \sum_{i=1}^N B_{i,p}(u) \bm{p}_i`` defined on the knot vector
 ```math
 U = \{u_1, \dots, u_M\}
 ```
 the knot ``\bar{u}= u_r`` with multiplicity ``s`` is ``t`` times (``1 \leq t \leq s``) removable if the curve has an equivalent representation
 ```math
-\bm{c}(u) = \sum_{i=1}^{\bar{B}} \bar{N}_{i,p}(u) \bar{\bm{p}}_i \,,
+\bm{c}(u) = \sum_{i=1}^{\bar{N}} \bar{B}_{i,p}(u) \bar{\bm{p}}_i \,,
 ```
-where and ``\bar{B} = B-t`` and the ``\bar{N}_{i,p}`` are the ``p``th degree basis functions defined on the trimmed knot vector ``\bar{U}``.
+where and ``\bar{N} = N-t`` and the ``\bar{B}_{i,p}`` are the ``p``th degree basis functions defined on the trimmed knot vector ``\bar{U}``.
 
 !!! note
     Hence, there are three tasks to fulfill:
@@ -29,7 +29,7 @@ where and ``\bar{B} = B-t`` and the ``\bar{N}_{i,p}`` are the ``p``th degree bas
 While the first one is a standard task, the second and third one can be achieved as follows [[1, p. 183]](@ref refs):
 
 
-### Removing a Knot Once
+#### Removing a Knot Once
 
 For ``t=1``, potentially ``n=p-s+1`` control points have to be destroyed and replaced by ``n-1`` new control points.
 
@@ -56,7 +56,7 @@ has to hold, or
 in order for the knot to be removable. 
 
 
-### Removing a Knot Multiple Times
+#### Removing a Knot Multiple Times
 
 For ``t \geq 1`` the points 
 ```math

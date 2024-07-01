@@ -28,7 +28,15 @@ The following aspects are implemented (✓) and planned (⌛):
 - ⌛ Degree elevation / reduction
 - ⌛ Construction of common geometries
 
-Basically, chapters 2-4 of [[1]](@ref refs) are implemented so far (adapted to 1-based indexing).
+##### Virtual mesh structures for FEM (on surfaces)
+- ✓ Determine patch connectivity
+    - identify interfaces between patches
+    - introduce per patch local numbering for vertices and edges
+- ✓ Bezier cell connectivty 
+    - introduce on each patch a Bezier cell structure
+    - determine adjacency information of cells
+
+Concerning the B-splines itself, chapters 2-5.4 of [[1]](@ref refs) are implemented so far (adapted to 1-based indexing).
 
 !!! note
     Open knot vectors are assumed everywhere, if not stated otherwise.

@@ -12,7 +12,7 @@ It is of use for [[1, p. 142]](@ref refs):
 
 #### Inserting a Single Knot
 
-A given curve ``\bm{c}(u) = \sum_{i=1}^B N_{i,p}(u) \bm{p}_i`` defined on the knot vector
+A given curve ``\bm{c}(u) = \sum_{i=1}^N B_{i,p}(u) \bm{p}_i`` defined on the knot vector
 ```math
 U = \{u_1, \dots, u_M\}
 ```
@@ -22,9 +22,9 @@ can be represented equivalently by inserting ``\bar{u}`` into ``U`` at the ``k``
 ```
 as
 ```math
-\bm{c}(u) = \sum_{i=1}^{\bar{B}} \bar{N}_{i,p}(u) \bar{\bm{p}}_i \,,
+\bm{c}(u) = \sum_{i=1}^{\bar{N}} \bar{B}_{i,p}(u) \bar{\bm{p}}_i \,,
 ```
-where ``\bar{M} = M+1`` and ``\bar{B} = B+1`` and the ``\bar{N}_{i,p}`` are the ``p``th degree basis functions defined on ``\bar{U}``.
+where ``\bar{M} = M+1`` and ``\bar{N} = N+1`` and the ``\bar{B}_{i,p}`` are the ``p``th degree basis functions defined on ``\bar{U}``.
 
 !!! note
     Hence, there are two tasks to fulfill:

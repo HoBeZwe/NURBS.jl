@@ -1,5 +1,5 @@
 
-# Bases
+# B-Spline Bases
 
 The considered 
 - B-spline,
@@ -29,68 +29,68 @@ where ``u_i \leq u_{i+1}``, i.e., the entries are sorted in ascending order, ``u
 ---
 ## Definitions 
 
-### [B-Splines](@id bspl)
+#### [B-Splines](@id bspl)
 
-The B-spline basis functions of degree ``p`` are defined as ``N_{i,p}`` on the knot vector ``U`` recursively, starting with the piecewise constant (``p=0``) [[1, p. 50]](@ref refs)
+The B-spline basis functions of degree ``p`` are defined as ``B_{i,p}`` on the knot vector ``U`` recursively, starting with the piecewise constant (``p=0``) [[1, p. 50]](@ref refs)
 ```math
-N_{i,0}(u) = \begin{cases} 1 & u_i \leq u < u_{i+1} \\ 0 & \text{otherwise}\end{cases}
+B_{i,0}(u) = \begin{cases} 1 & u_i \leq u < u_{i+1} \\ 0 & \text{otherwise}\end{cases}
 ```
 as well as for ``p>0``
 ```math
-N_{i,p}(u) = \cfrac{u - u_i}{u_{i+p} - u_i} \, N_{i, p-1}(u) + \cfrac{u_{i+p+1} - u}{u_{i+p+1} - u_{i+1}} \, N_{i+1, p-1}(u) \,.
+B_{i,p}(u) = \cfrac{u - u_i}{u_{i+p} - u_i} \, B_{i, p-1}(u) + \cfrac{u_{i+p+1} - u}{u_{i+p+1} - u_{i+1}} \, B_{i+1, p-1}(u) \,.
 ```
 Whenever one of the contained quotients exhibits a division by 0, the quotient is defined to be 0 itself.
 
 !!! note
-    The number of basis functions ``B`` is related to the length of the knot vector ``M`` and the polynomial degree ``p`` as
+    The number of basis functions ``N`` is related to the length of the knot vector ``M`` and the polynomial degree ``p`` as
     ```math
-    B = M - p - 1 \,.
+    N = M - p - 1 \,.
     ```
 
-### [Curry-Schoenberg Splines](@id csspl)
+#### [Curry-Schoenberg Splines](@id csspl)
 
 The Curry-Schoenberg spline basis functions [[3, p. 88]](@ref refs)
 ```math
-n_{i,p}(u) = \cfrac{p+1}{u_{i+p+1} - u_i} N_{i,p}(u)
+b_{i,p}(u) = \cfrac{p+1}{u_{i+p+1} - u_i} B_{i,p}(u)
 ```
 are defined as a normalized version of the B-splines. 
 
 
 
-### [NURBS](@id nurbs)
+#### [NURBS](@id nurbs)
 
-Introducing ``B`` weights ``w_i \in \mathbb{R}_+`` the rational B-spline basis functions [[1, p. 118]](@ref refs)
+Introducing ``N`` weights ``w_i \in \mathbb{R}_+`` the rational B-spline basis functions [[1, p. 118]](@ref refs)
 ```math
-R_{i, p}(u) = \cfrac{N_{i, p}(u) w_i}{\sum_{j=1}^B N_{j, p}(u) w_i}
+R_{i, p}(u) = \cfrac{B_{i, p}(u) w_i}{\sum_{j=1}^N B_{j, p}(u) w_i}
 ```
-are defined based on the B-spline basis ``N_{i, p}`` on the knot vector ``U``.
+are defined based on the B-spline basis ``B_{i, p}`` on the knot vector ``U``.
 
 
 ---
 ## [Derivatives](@id derB)
 
-### B-Splines
+#### B-Splines
 
-The ``k``-th derivative of the B-splines ``N_{i, p}`` can be computed as [[1, p. 61]](@ref refs)
+The ``k``-th derivative of the B-splines ``B_{i, p}`` can be computed as [[1, p. 61]](@ref refs)
 ```math
-N_{i,p}^{(k)}(u) = p \left( \cfrac{N_{i,p-1}^{(k-1)}}{u_{i+p} - u_i} - \cfrac{N_{i+1,p-1}^{(k-1)}}{u_{i+p+1} - u_{i+1}} \right) \,.
+B_{i,p}^{(k)}(u) = p \left( \cfrac{B_{i,p-1}^{(k-1)}}{u_{i+p} - u_i} - \cfrac{B_{i+1,p-1}^{(k-1)}}{u_{i+p+1} - u_{i+1}} \right) \,.
 ```
 
 !!! note
     The [Curry-Schoenberg](@ref csspl) splines are related to the derivatives of the B-splines as
     ```math
-    N_{i,p}^{(1)}(u) = n_{i,p-1}(u) - n_{i+1,p-1}(u) \,.
+    B_{i,p}^{(1)}(u) = b_{i,p-1}(u) - b_{i+1,p-1}(u) \,.
     ``` 
     As this is their common use, derivatives of the Curry-Schoenberg splines are not used/implemented in this package.
 
 
-### NURBS
+#### NURBS
 
 The ``k``-th derivative of the NURBS basis functions ``R_{i, p}`` can be computed as [[2]](@ref refs)
 ```math
-R_{i,p}^{(k)}(u) = \cfrac{w_i \, N_{i,p}^{(k)}(u) - \sum_{j=1}^k \begin{pmatrix} k \\j\end{pmatrix} W^{(j)}(u) R_{i,p}^{k-j}(u)}{W^{(0)}(u)}
+R_{i,p}^{(k)}(u) = \cfrac{w_i \, B_{i,p}^{(k)}(u) - \sum_{j=1}^k \begin{pmatrix} k \\j\end{pmatrix} W^{(j)}(u) R_{i,p}^{k-j}(u)}{W^{(0)}(u)}
 ```
 with
 ```math
-W^{(k)}(u) = \sum_{i=1}^B N_{i, p}^{(k)}(u) w_i \,.
+W^{(k)}(u) = \sum_{i=1}^N B_{i, p}^{(k)}(u) w_i \,.
 ```

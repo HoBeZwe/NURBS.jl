@@ -22,6 +22,7 @@ end
 
 
 """
+    Interface
 
 An interface is defined by two patches: their ID and wether the vectors normal to the interface point in the same direction.
 """
@@ -72,6 +73,11 @@ struct Connectivity{I}
     bezierAdjacency::Vector{BezierCellAdjacency{I}}
 end
 
+"""
+    Connectivity(patches::Vector{<:Surface}, cU, cV; tol=1e-3)
+
+Constructor for Connectivity structure.
+"""
 function Connectivity(patches::Vector{<:Surface}, cU, cV; tol=1e-3)
 
     interfaces, commonVtxs = identifyInterfaces(patches; tol=tol)
@@ -86,8 +92,6 @@ end
     identifyInterfaces(patches::Vector{<:Surface{F}}; tol=1e-3) where {F}
 
 Determine the interfaces between patches including the property if the basis functions normal to the edge point in the same direction.
-
-Note: not an efficient implementation. Preferably write the information in the geometry file.
 """
 function identifyInterfaces(patches::Vector{<:Surface{F}}; tol=1e-3) where {F}
 

@@ -144,8 +144,12 @@ end
     @testset "plotPatches" begin
 
         Patches = readMultipatch("assets/sphere.dat")
-        @test_nowarn plotPatches(Patches, plotControlPoints=true, resolution=0.1)
-        @test_nowarn plotPatches(Patches, plotControlPoints=false, resolution=0.1, enforceRatio=false) # different optional arguments
+        @test_nowarn plotPatches(Patches, plotControlPoints=true, resolution=0.25)
+        @test_nowarn plotPatches(Patches, plotControlPoints=false, resolution=0.25, enforceRatio=false) # different optional arguments
+        @test_nowarn plotPatches(Patches, plotControlPoints=false, resolution=0.25, localVertices=true, patchID=true) # different optional arguments
+        @test_nowarn plotPatches(
+            Patches, plotControlPoints=false, resolution=0.25, mesh=[[0.2, 0.1], [0.1, 0.7]], pos=[SVector(0.1, 0.5, 0.9)]
+        )
     end
 
     @testset "Plotting Curves" begin

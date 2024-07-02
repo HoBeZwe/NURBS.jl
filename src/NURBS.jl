@@ -30,6 +30,8 @@ export translate, translate!
 export rotate, rotate!
 export mirror, mirror!
 
+export PatchInterface, Interface, InterfacePatchwise, InterfaceData, Connectivity
+export identifyInterfaces, getPatchInterfaces, patchID, localEdge, patchIDs, localEdges
 
 # -------- extensions
 function plotCurve3D end
@@ -61,6 +63,9 @@ include("fundamentalOperations/knotRemoval.jl")
 include("utils.jl")
 include("fileIO/multipatch.jl")
 include("fileIO/step.jl")
+
+include("connectivity/interfaces.jl")
+include("connectivity/bezierMesh.jl")
 
 if !isdefined(Base, :get_extension)
     include("../ext/NURBSext.jl") # for backwards compatibility with julia versions below 1.9

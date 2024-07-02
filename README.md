@@ -39,6 +39,13 @@ The following aspects are implemented (✓) and planned (⌛):
 - ⌛ Degree elevation / reduction
 - ⌛ Construction of common geometries
 
+##### Connectivity
+- ✓ Determine patch connectivity
+    - identify interfaces between patches
+    - introduce per patch local numbering for vertices and edges
+- ✓ Virtual Bezier mesh connectivty (for FEM)
+    - introduce on each patch a virtual Bezier mesh
+    - determine adjacency information of mesh cells
 
 
 ## Citation

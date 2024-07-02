@@ -33,6 +33,11 @@ using PlotlyJS
         include("utils.jl")
     end
 
+    @testset "Connectivity" begin
+        include("connectivity/interfaces.jl")
+        include("connectivity/bezierMesh.jl")
+    end
+
     @testset "Test formatting of files" begin
         pkgpath = pkgdir(NURBS)   # path of this package including name
         @test format(pkgpath, overwrite=false)  # check whether files are formatted according to the .JuliaFormatter.toml 

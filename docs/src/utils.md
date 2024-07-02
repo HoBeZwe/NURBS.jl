@@ -23,7 +23,7 @@ nothing # hide
 
 To compute the Greville sites [[3]](@ref refs) 
 ```math
-\gamma_i = \cfrac{u_{i+1}+ \dots + u_{i+p}}{p} \qquad i = 1, \dots, B
+\gamma_i = \cfrac{u_{i+1}+ \dots + u_{i+p}}{p} \qquad i = 1, \dots, N
 ```
 corresponding to a given knot vector with entries ``u_i`` and a polynomial degree ``p`` the function [`greville`](@ref greville) is provided.
 

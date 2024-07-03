@@ -35,8 +35,9 @@ function curvePoints(basis::Basis, controlPoints, uVector, weights)
     N = basisFun(spans, uVector, basis)
 
     # determine the curve values
-    curve     = [SVector{3,T}(0.0, 0.0, 0.0) for i in eachindex(uVector)] # initialize
-    normalize = [T(0.0) for i in eachindex(uVector)]
+    lu        = length(uVector)
+    curve     = fill(SVector{3,T}(0.0, 0.0, 0.0), lu)
+    normalize = zeros(T, lu)
 
     for (j, span) in enumerate(spans)
         for ind in 1:(basis.degree + 1)
@@ -97,8 +98,12 @@ function curveDerivativesPoints(degree::Int, knotVector, controlPoints, uVector,
     N = derBasisFun(spans, degree, uVector, knotVector, k)
 
     # determine the curve values
-    curves    = [[SVector{3,T}(0.0, 0.0, 0.0) for i in eachindex(uVector)] for q in 1:(k + 1)] # initialize
-    normalize = [T(0.0) for i in eachindex(uVector)]
+    lu = length(uVector)
+    curves = Vector{Vector{SVector{3,T}}}(undef, k + 1)
+    for i in 1:(k + 1)
+        curves[i] = fill(SVector{3,T}(0.0, 0.0, 0.0), lu)
+    end
+    normalize = zeros(T, lu)
 
     # --- 0-th derivative
     for (j, span) in enumerate(spans)
@@ -115,7 +120,10 @@ function curveDerivativesPoints(degree::Int, knotVector, controlPoints, uVector,
         curves[1][j] /= normalize[j]
     end
 
-    w = [[T(0.0) for i in eachindex(uVector)] for q in 1:k]
+    w = Vector{Vector{T}}(undef, k)
+    for i in 1:k
+        w[i] = zeros(T, lu)
+    end
 
     # --- q-th derivative
     for q in 1:k

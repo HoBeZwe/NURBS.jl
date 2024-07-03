@@ -43,8 +43,10 @@ function surfacePoints(uBasis::Basis, vBasis::Basis, controlPoints, uVector, vVe
     Nv = basisFun(vSpan, vVector, vBasis)
 
     # intialize
-    surface   = [SVector{3,T}(0.0, 0.0, 0.0) for i in eachindex(uVector), j in eachindex(vVector)]
-    normalize = [T(0.0) for i in eachindex(uVector), j in eachindex(vVector)]
+    lu        = length(uVector)
+    lv        = length(vVector)
+    surface   = fill(SVector{3,T}(0.0, 0.0, 0.0), lu, lv)
+    normalize = zeros(T, lu, lv)
 
     # determine the surface values
     for uPointInd in eachindex(uVector)
@@ -151,10 +153,19 @@ function preAllocNURBSsurface(uDegree::Int, vDegree::Int, uVector, vVector, k::I
     preallocU = preAllocDer(uDegree, uVector, k)
     preallocV = preAllocDer(vDegree, vVector, k)
 
-    surfaces = [
-        [SVector{3,T}(0.0, 0.0, 0.0) for i in eachindex(uVector), j in eachindex(vVector)] for q in 1:(k + 1), p in (1:(k + 1))
-    ]
-    w = [[T(0.0) for i in eachindex(uVector), j in eachindex(vVector)] for q in 1:(k + 1), p in 1:(k + 1)]
+    lu = length(uVector)
+    lv = length(vVector)
+    kp = k + 1
+
+    w = Matrix{Matrix{T}}(undef, kp, kp)
+    for i in 1:kp, j in 1:kp
+        w[i, j] = zeros(T, lu, lv)
+    end
+
+    surfaces = Matrix{Matrix{SVector{3,T}}}(undef, kp, kp)
+    for i in 1:kp, j in 1:kp
+        surfaces[i, j] = fill(SVector{3,T}(0.0, 0.0, 0.0), lu, lv)
+    end
 
     return pAllocNURBSsuface(preallocU, preallocV, surfaces, w)
 end

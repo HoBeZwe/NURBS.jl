@@ -33,7 +33,7 @@ function curvePoints(basis::Basis, controlPoints, uVector)
     N = basisFun(spans, uVector, basis)
 
     # determine the curve values
-    curve = [SVector{3,T}(0.0, 0.0, 0.0) for i in eachindex(uVector)] # initialize
+    curve = fill(SVector{3,T}(0.0, 0.0, 0.0), length(uVector)) # initialize
 
     for (j, span) in enumerate(spans)
         for ind in 1:(basis.degree + 1)
@@ -81,8 +81,10 @@ function curveDerivativesPoints(degree::Int, knotVector, controlPoints, uVector,
     N = derBasisFun(spans, degree, uVector, knotVector, k)
 
     # determine the curve values
-    #curve = [SVector(0.0, 0.0, 0.0) for i in eachindex(uVector)] # initialize
-    curves = [[SVector{3,T}(0.0, 0.0, 0.0) for i in eachindex(uVector)] for j in 1:(k + 1)]
+    curves = Vector{Vector{SVector{3,T}}}(undef, k + 1)
+    for i in 1:(k + 1)
+        curves[i] = fill(SVector{3,T}(0.0, 0.0, 0.0), length(uVector))
+    end
 
     for q in 1:(k + 1)
         for (j, span) in enumerate(spans)

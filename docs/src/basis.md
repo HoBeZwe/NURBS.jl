@@ -112,7 +112,7 @@ Plots.plot(evalpoints, bspline, w=2,
     xlabel="𝑢", 
     ylabel="𝑁ᵢ,₂(𝑢)")
 xlims!(0, 1) # hide
-ylims!(0, 12) # hide
+ylims!(0, 1) # hide
 savefig("plotBspleff.html"); nothing # hide
 ```
 
@@ -127,7 +127,7 @@ Plots.plot(evalpoints, crySbrg, w=2,
     xlabel="𝑢", 
     ylabel="𝑛ᵢ,₂(𝑢)")
 xlims!(0, 1) # hide
-ylims!(0, 2.0) # hide
+ylims!(0, 12.0) # hide
 savefig("plotCspleff.html"); nothing # hide
 ```
 

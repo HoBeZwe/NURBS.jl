@@ -277,7 +277,13 @@ function extractCtrlPoints(line::String, firstCommaInd::Int, points, offset::Int
     sizeV = length(ctrlPointsInds)
     sizeU = length(ctrlPointsInds[1])
 
-    return [SVector{3,T}(points[ctrlPointsInds[v][u] - offset]) for v in 1:sizeV, u in 1:sizeU], pStopInd
+    list = fill(SVector{3,T}(0, 0, 0), sizeV, sizeU)
+    for v in 1:sizeV, u in 1:sizeU
+        list[v, u] = SVector{3,T}(points[ctrlPointsInds[v][u] - offset])
+    end
+
+    return list, pStopInd
+
 end
 
 

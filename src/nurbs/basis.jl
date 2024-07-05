@@ -6,7 +6,7 @@ i-th NURB basis function evaluated at all 'evalpoints'.
 """
 function evalNaive(basis::NURB, i::Int, evalpoints)
 
-    return nurbsNaive(basis.knotVec, i, basis.degree, evalpoints, basis.weights)
+    return nurbsNaive(basis.knotVec, i, degree(basis), evalpoints, basis.weights)
 end
 
 

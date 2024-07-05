@@ -29,16 +29,16 @@ function curvePoints(basis::Basis, controlPoints, uVector)
     nbasisFun = numBasisFunctions(basis)
 
     # determine the basis functions evaluated at uVector
-    spans = findSpan(nbasisFun, uVector, basis.knotVec, basis.degree)
+    spans = findSpan(nbasisFun, uVector, basis.knotVec, degree(basis))
     N = basisFun(spans, uVector, basis)
 
     # determine the curve values
     curve = fill(SVector{3,T}(0.0, 0.0, 0.0), length(uVector)) # initialize
 
     for (j, span) in enumerate(spans)
-        for ind in 1:(basis.degree + 1)
+        for ind in 1:(degree(basis) + 1)
 
-            curve[j] += N[j, ind] * controlPoints[span - basis.degree + ind - 1]
+            curve[j] += N[j, ind] * controlPoints[span - degree(basis) + ind - 1]
         end
     end
 
@@ -51,8 +51,7 @@ end
 
 Convenience function to compute points on all k derivatives of a B-spline curve.
 """
-(curve::BsplineCurve)(uVector, k::Int) =
-    curveDerivativesPoints(curve.basis.degree, curve.basis.knotVec, curve.controlPoints, uVector, k)
+(curve::BsplineCurve)(uVector, k::Int) = curveDerivativesPoints(degree(curve), curve.basis.knotVec, curve.controlPoints, uVector, k)
 
 
 """

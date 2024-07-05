@@ -7,9 +7,9 @@ Compute the k-th derivative of i-th b-spline basis function evaluated at all 'ev
 function evalNaiveDerivative(basis::Bspline, i::Int, k::Int, evalpoints)
 
     k < 1 && error("The k-th derivative has to be k ≥ 1!")
-    k > basis.degree && return zeros(size(evalpoints)) # p+1 th derivative of a polynomial of degree p is zero
+    k > degree(basis) && return zeros(size(evalpoints)) # p+1 th derivative of a polynomial of degree p is zero
 
-    return bSplineNaiveDerivative(basis.knotVec, i, basis.degree, evalpoints, k)
+    return bSplineNaiveDerivative(basis.knotVec, i, degree(basis), evalpoints, k)
 end
 
 
@@ -75,9 +75,9 @@ function (basis::Bspline)(evalpoints, k::Int)
     #basis.divMax < 0 && error("The k-th derivative has to be k ≥ 0!")
 
     numBasis = numBasisFunctions(basis)
-    knotSpan = findSpan(numBasis, evalpoints, basis.knotVec, basis.degree)
+    knotSpan = findSpan(numBasis, evalpoints, basis.knotVec, degree(basis))
 
-    return derBasisFun(knotSpan, basis.degree, evalpoints, basis.knotVec, k)
+    return derBasisFun(knotSpan, degree(basis), evalpoints, basis.knotVec, k)
 end
 
 
@@ -102,9 +102,9 @@ function (basis::Bspline)(evalpoints::Vector{T}, k::Int, prealloc::pAllocDer) wh
     #basis.divMax < 0 && error("The k-th derivative has to be k ≥ 0!")
 
     numBasis = numBasisFunctions(basis)
-    knotSpan = findSpan!(prealloc.spanVec, numBasis, evalpoints, basis.knotVec, basis.degree)
+    knotSpan = findSpan!(prealloc.spanVec, numBasis, evalpoints, basis.knotVec, degree(basis))
 
-    return derBasisFun!(prealloc, knotSpan, basis.degree, evalpoints, basis.knotVec, k)
+    return derBasisFun!(prealloc, knotSpan, degree(basis), evalpoints, basis.knotVec, k)
 end
 
 
@@ -113,7 +113,7 @@ end
 
 Allocate memory for derBasisFun.
 """
-function preAllocDer(degree::Int, evalpoints::Vector{T}, numberDerivatives::Int) where {T}
+function preAllocDer(degree::I, evalpoints::Vector{T}, numberDerivatives::I) where {T,I}
 
     dersv = zeros(T, length(evalpoints), numberDerivatives + 1, degree + 1)
 
@@ -123,7 +123,7 @@ function preAllocDer(degree::Int, evalpoints::Vector{T}, numberDerivatives::Int)
     right = zeros(T, degree + 1)
     a     = zeros(T, 2, degree + 1)
 
-    spanVec = similar(evalpoints, eltype(degree))
+    spanVec = similar(evalpoints, I)
 
     return pAllocDer(dersv, ders, ndu, left, right, a, spanVec)
 end

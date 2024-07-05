@@ -56,6 +56,7 @@ struct NURB{F} <: Basis{F}
     end
 end
 
+degree(B::Basis) = B.degree
 
 
 abstract type Shape{F} end
@@ -82,7 +83,7 @@ struct NURBScurve{F} <: Curve{F}
     controlPoints::Vector{SVector{3,F}}
 end
 
-
+degree(C::Curve) = degree(C.basis)
 
 
 abstract type Surface{F} <: Shape{F} end

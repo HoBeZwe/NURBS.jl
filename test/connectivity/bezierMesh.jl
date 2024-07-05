@@ -180,7 +180,12 @@
         @test badj[20].atLocalVerts == LocalV20
         @test badj[45].atLocalVerts == LocalV45
         @test badj[64].atLocalVerts == LocalV64
+    end
 
+    @testset "Corner cases" begin
 
+        @test NURBS.touchingEdge(1, 1, 17, false, 4, 4) == -1
+        @test NURBS.touchingVert(1, 1, 17, false, 4, 4) == (-1, -1)
+        @test NURBS.cornerBezierCell(17, 1, 1, 1) == -1
     end
 end

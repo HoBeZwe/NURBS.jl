@@ -34,12 +34,12 @@ function surfacePoints(uBasis::Basis, vBasis::Basis, controlPoints, uVector, vVe
 
     # u-direction: determine the basis functions evaluated at uVector
     nbasisFun = numBasisFunctions(uBasis)
-    uSpan = findSpan(nbasisFun, uVector, uBasis.knotVec, uBasis.degree)
+    uSpan = findSpan(nbasisFun, uVector, uBasis.knotVec, degree(uBasis))
     Nu = basisFun(uSpan, uVector, uBasis)
 
     # v-direction: determine the basis functions evaluated at vVector
     nbasisFun = numBasisFunctions(vBasis)
-    vSpan = findSpan(nbasisFun, vVector, vBasis.knotVec, vBasis.degree)
+    vSpan = findSpan(nbasisFun, vVector, vBasis.knotVec, degree(vBasis))
     Nv = basisFun(vSpan, vVector, vBasis)
 
     # intialize
@@ -51,17 +51,17 @@ function surfacePoints(uBasis::Basis, vBasis::Basis, controlPoints, uVector, vVe
     # determine the surface values
     for uPointInd in eachindex(uVector)
 
-        uind = uSpan[uPointInd] - uBasis.degree - 1
+        uind = uSpan[uPointInd] - degree(uBasis) - 1
 
         for vPointInd in eachindex(vVector)
 
-            for i in 1:(vBasis.degree + 1)
+            for i in 1:(degree(vBasis) + 1)
 
                 temp = SVector{3,T}(0.0, 0.0, 0.0)
                 normTemp = T(0.0)
 
-                vind = vSpan[vPointInd] - vBasis.degree + i - 1
-                for k in 1:(uBasis.degree + 1)
+                vind = vSpan[vPointInd] - degree(vBasis) + i - 1
+                for k in 1:(degree(uBasis) + 1)
 
                     aux = Nu[uPointInd, k] * weights[uind + k, vind]
 
@@ -87,8 +87,8 @@ end
 Convenience function to compute points on all k derivatives of a NURBSsurface.
 """
 (Patch::NURBSsurface)(uEvalpoints, vEvalpoints, k::Int) = surfaceDerivativesPoints(
-    Patch.uBasis.degree,
-    Patch.vBasis.degree,
+    degree(Patch.uBasis),
+    degree(Patch.vBasis),
     Patch.uBasis.knotVec,
     Patch.vBasis.knotVec,
     Patch.controlPoints,
@@ -114,8 +114,8 @@ Convenience function to compute points on all k derivatives of a NURBSsurface, f
 """
 (Patch::NURBSsurface)(uEvalpoints, vEvalpoints, k::Int, prealloc::pAllocNURBSsuface) = surfaceDerivativesPoints!(
     prealloc,
-    Patch.uBasis.degree,
-    Patch.vBasis.degree,
+    degree(Patch.uBasis),
+    degree(Patch.vBasis),
     Patch.uBasis.knotVec,
     Patch.vBasis.knotVec,
     Patch.controlPoints,

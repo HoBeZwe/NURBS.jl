@@ -31,7 +31,7 @@ function curvePoints(basis::Basis, controlPoints, uVector, weights)
     nbasisFun = numBasisFunctions(basis)
 
     # determine the basis functions evaluated at uVector
-    spans = findSpan(nbasisFun, uVector, basis.knotVec, basis.degree)
+    spans = findSpan(nbasisFun, uVector, basis.knotVec, degree(basis))
     N = basisFun(spans, uVector, basis)
 
     # determine the curve values
@@ -40,9 +40,9 @@ function curvePoints(basis::Basis, controlPoints, uVector, weights)
     normalize = zeros(T, lu)
 
     for (j, span) in enumerate(spans)
-        for ind in 1:(basis.degree + 1)
+        for ind in 1:(degree(basis) + 1)
 
-            index = span - basis.degree + ind - 1
+            index = span - degree(basis) + ind - 1
 
             aux = N[j, ind] * weights[index]
 
@@ -65,7 +65,7 @@ end
 Convenience function to compute points on all k derivatives of a NURBS curve.
 """
 (curve::NURBScurve)(uVector, k::Int) =
-    curveDerivativesPoints(curve.basis.degree, curve.basis.knotVec, curve.controlPoints, uVector, curve.basis.weights, k)
+    curveDerivativesPoints(degree(curve), curve.basis.knotVec, curve.controlPoints, uVector, curve.basis.weights, k)
 
 
 """

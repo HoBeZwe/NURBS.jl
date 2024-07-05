@@ -28,7 +28,7 @@ function Base.split(C::CurveT, splits::Vector) where {CurveT<:Curve}
 
     cVec = CurveT[]
 
-    p = C.basis.degree
+    p = degree(C)
     w = weights(C.basis)
     kVec = C.basis.knotVec
     cPts = C.controlPoints
@@ -61,15 +61,15 @@ function Base.split(C::Curve, splitPoint=0.5)
 
     checkRange(splitPoint) # is input a valid one?
 
-    p = C.basis.degree
+    p = degree(C)
     w = weights(C.basis)
     kVec = C.basis.knotVec
     cPts = C.controlPoints
 
     kVec1, kVec2, w1, w2, cPts1, cPts2 = splitData(p, w, kVec, cPts, splitPoint)
 
-    C1 = similarCurve(C, C.basis.degree, kVec1, cPts1, w1)
-    C2 = similarCurve(C, C.basis.degree, kVec2, cPts2, w2)
+    C1 = similarCurve(C, degree(C), kVec1, cPts1, w1)
+    C2 = similarCurve(C, degree(C), kVec2, cPts2, w2)
 
     return C1, C2
 end
@@ -132,7 +132,7 @@ function splitU(S::SurfaceT, splits::Vector) where {SurfaceT<:Surface}
 
     sVec = SurfaceT[]
 
-    degree = S.uBasis.degree
+    degr = degree(S.uBasis)
     kVec = S.uBasis.knotVec
     cPts = S.controlPoints
     wAux = weights(S)
@@ -142,11 +142,11 @@ function splitU(S::SurfaceT, splits::Vector) where {SurfaceT<:Surface}
         checkRange(splitPoint) # is input a valid one?
 
         # --- split knot vector: increase multiplicity of split entry to degree
-        kVec1, kVec2, oldMultIndices, oldMult, limitedMult = splitKnots(degree, kVec, splitPoint)
+        kVec1, kVec2, oldMultIndices, oldMult, limitedMult = splitKnots(degr, kVec, splitPoint)
 
         # --- split control points + weights
-        N1 = numBasisFunctions(kVec1, degree)
-        N2 = numBasisFunctions(kVec2, degree)
+        N1 = numBasisFunctions(kVec1, degr)
+        N2 = numBasisFunctions(kVec2, degr)
         M = size(cPts, 2)
 
         wMat1 = similar(weights(S), N1, M)
@@ -158,7 +158,7 @@ function splitU(S::SurfaceT, splits::Vector) where {SurfaceT<:Surface}
         for i in eachindex(cPts[1, :])
 
             cPts1[:, i], cPts2[:, i], wMod = splitControlPoints(
-                degree, weights(wAux, :, i), cPts[:, i], kVec, oldMultIndices, oldMult, limitedMult, splitPoint
+                degr, weights(wAux, :, i), cPts[:, i], kVec, oldMultIndices, oldMult, limitedMult, splitPoint
             )
 
             if !isempty(wAux)
@@ -170,10 +170,10 @@ function splitU(S::SurfaceT, splits::Vector) where {SurfaceT<:Surface}
         kVec = kVec2
         isempty(wAux) || (wAux = wMat2)
 
-        push!(sVec, similarSurface(S, degree, S.vBasis.degree, kVec1, S.vBasis.knotVec, cPts1, wMat1))
+        push!(sVec, similarSurface(S, degr, degree(S.vBasis), kVec1, S.vBasis.knotVec, cPts1, wMat1))
     end
 
-    push!(sVec, similarSurface(S, degree, S.vBasis.degree, kVec, S.vBasis.knotVec, cPts, wAux))
+    push!(sVec, similarSurface(S, degr, degree(S.vBasis), kVec, S.vBasis.knotVec, cPts, wAux))
 
     return sVec
 end
@@ -190,7 +190,7 @@ function splitV(S::SurfaceT, splits::Vector) where {SurfaceT<:Surface}
 
     sVec = SurfaceT[]
 
-    degree = S.vBasis.degree
+    degr = degree(S.vBasis)
     kVec = S.vBasis.knotVec
     cPts = S.controlPoints
     wAux = weights(S)
@@ -200,11 +200,11 @@ function splitV(S::SurfaceT, splits::Vector) where {SurfaceT<:Surface}
         checkRange(splitPoint) # is input a valid one?
 
         # --- split knot vector: increase multiplicity of split entry to degree
-        kVec1, kVec2, oldMultIndices, oldMult, limitedMult = splitKnots(degree, kVec, splitPoint)
+        kVec1, kVec2, oldMultIndices, oldMult, limitedMult = splitKnots(degr, kVec, splitPoint)
 
         # --- split control points + weights
-        N1 = numBasisFunctions(kVec1, degree)
-        N2 = numBasisFunctions(kVec2, degree)
+        N1 = numBasisFunctions(kVec1, degr)
+        N2 = numBasisFunctions(kVec2, degr)
         M = size(cPts, 1)
 
         wMat1 = similar(weights(S), M, N1)
@@ -216,7 +216,7 @@ function splitV(S::SurfaceT, splits::Vector) where {SurfaceT<:Surface}
         for i in eachindex(cPts[:, 1])
 
             cPts1[i, :], cPts2[i, :], wMod = splitControlPoints(
-                degree, weights(wAux, i, :), cPts[i, :], kVec, oldMultIndices, oldMult, limitedMult, splitPoint
+                degr, weights(wAux, i, :), cPts[i, :], kVec, oldMultIndices, oldMult, limitedMult, splitPoint
             )
 
             if !isempty(wAux)
@@ -228,10 +228,10 @@ function splitV(S::SurfaceT, splits::Vector) where {SurfaceT<:Surface}
         kVec = kVec2
         isempty(wAux) || (wAux = wMat2)
 
-        push!(sVec, similarSurface(S, S.uBasis.degree, degree, S.uBasis.knotVec, kVec1, cPts1, wMat1))
+        push!(sVec, similarSurface(S, degree(S.uBasis), degr, S.uBasis.knotVec, kVec1, cPts1, wMat1))
     end
 
-    push!(sVec, similarSurface(S, S.uBasis.degree, degree, S.uBasis.knotVec, kVec, cPts, wAux))
+    push!(sVec, similarSurface(S, degree(S.uBasis), degr, S.uBasis.knotVec, kVec, cPts, wAux))
 
     return sVec
 end

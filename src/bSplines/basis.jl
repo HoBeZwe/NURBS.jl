@@ -8,7 +8,7 @@ function evalNaive(basis::Basis, i::Int, evalpoints)
 
     norma = normalization(basis, i)
 
-    return norma * bSplineNaive(basis.knotVec, i, basis.degree, evalpoints)
+    return norma * bSplineNaive(basis.knotVec, i, degree(basis), evalpoints)
 end
 
 
@@ -102,7 +102,7 @@ Normalization for the standard B-splines to obtain Curry-Schoenberg splines.
 """
 function normalization(basis::CurrySchoenberg, i::Int)
 
-    return (basis.degree + 1) / (basis.knotVec[i + basis.degree + 1] - basis.knotVec[i])
+    return (degree(basis) + 1) / (basis.knotVec[i + degree(basis) + 1] - basis.knotVec[i])
 end
 
 
@@ -114,7 +114,7 @@ Evaluate B-spline basis at all evalpoints.
 function (basis::Union{Bspline,CurrySchoenberg})(evalpoints)
 
     numBasis = numBasisFunctions(basis)
-    knotSpan = findSpan(numBasis, evalpoints, basis.knotVec, basis.degree)
+    knotSpan = findSpan(numBasis, evalpoints, basis.knotVec, degree(basis))
 
     return basisFun(knotSpan, evalpoints, basis)
 end
@@ -137,7 +137,7 @@ Evaluate B-spline basis at all evalpoints.
 function (basis::Union{Bspline,CurrySchoenberg})(evalpoints, prealloc::pAlloc)
 
     numBasis = numBasisFunctions(basis)
-    knotSpan = findSpan!(prealloc.spanVec, numBasis, evalpoints, basis.knotVec, basis.degree)
+    knotSpan = findSpan!(prealloc.spanVec, numBasis, evalpoints, basis.knotVec, degree(basis))
 
     return basisFun!(prealloc, knotSpan, evalpoints, basis)
 end
@@ -227,7 +227,7 @@ Allocate memory and call basisFun!
 """
 function basisFun(knotSpan, uVector, basis::Basis)
 
-    prealloc = preAlloc(basis.degree, uVector)
+    prealloc = preAlloc(degree(basis), uVector)
 
     return basisFun!(prealloc, knotSpan, uVector, basis)
 end
@@ -244,7 +244,7 @@ Adapted from Algorithm A2.2 from 'The NURBS Book' p. 70.
 """
 function basisFun!(prealloc::pAlloc, knotSpan, uVector, basis::Basis)
 
-    degree = basis.degree
+    degr = degree(basis)
     knotVector = basis.knotVec
 
     B = prealloc.B
@@ -258,7 +258,7 @@ function basisFun!(prealloc::pAlloc, knotSpan, uVector, basis::Basis)
         i = knotSpan[jj] #+ 1 #findspan uses 0-based numbering
         N[1] = 1.0
 
-        for j in 1:degree
+        for j in 1:degr
             left[j + 1]  = u - knotVector[i + 1 - j]
             right[j + 1] = knotVector[i + j] - u
             saved        = 0.0
@@ -271,7 +271,7 @@ function basisFun!(prealloc::pAlloc, knotSpan, uVector, basis::Basis)
             N[j + 1] = saved
         end
 
-        normalize!(N, i, degree, knotVector, basis)
+        normalize!(N, i, degr, knotVector, basis)
 
         B[jj, :] = N
     end

@@ -108,6 +108,8 @@ function touchingEdge(pID, cell, localEdge, reverse, cU, cV)
     localEdge == 2 && return cellCart2Lin(1, i, pID, cU, cV)
     localEdge == 3 && return cellCart2Lin(i, cV, pID, cU, cV)
     localEdge == 4 && return cellCart2Lin(cU, i, pID, cU, cV)
+
+    return -1 # localEdge ∉ {1,2,3,4}
 end
 
 reverseOrder(::Val{true}, cell, cV) = cV - cell + 1
@@ -123,6 +125,8 @@ function touchingVert(pID, cell, localEdge, reverse, cU, cV)
     localEdge == 2 && return cellCart2LinTruncated(1, is, pID, cU, cV), cellCart2LinTruncated(1, ip, pID, cU, cV)
     localEdge == 3 && return cellCart2LinTruncated(is, cV, pID, cU, cV), cellCart2LinTruncated(ip, cV, pID, cU, cV)
     localEdge == 4 && return cellCart2LinTruncated(cU, is, pID, cU, cV), cellCart2LinTruncated(cU, ip, pID, cU, cV)
+
+    return -1, -1 # localEdge ∉ {1,2,3,4}
 end
 
 offsetByOne(::Val{true}, i) = i - 1, i + 1
@@ -134,6 +138,8 @@ function adjacencyCorner!(patchAdj, p1Id, p2Id, l1, l2, cU, cV)
     cellInd2 = cornerBezierCell(l2, p2Id, cU, cV) # the touching cell
 
     push!(patchAdj[cellInd1].atLocalVerts[l1], cellInd2)
+
+    return nothing
 end
 
 function cornerBezierCell(localEdge, pId, cU, cV)
@@ -142,6 +148,8 @@ function cornerBezierCell(localEdge, pId, cU, cV)
     localEdge == 2 && return cellCart2Lin(1, cV, pId, cU, cV)
     localEdge == 3 && return cellCart2Lin(cU, cV, pId, cU, cV)
     localEdge == 4 && return cellCart2Lin(cU, 1, pId, cU, cV)
+
+    return -1 # localEdge ∉ {1,2,3,4}
 end
 
 

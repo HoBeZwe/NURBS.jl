@@ -20,10 +20,10 @@ Convenience function to refine a curve.
 function refine(C::Curve, newParametricPoints::Vector)
 
     knotVecNew, controlPointsNew, weightsNew = refine(
-        C.basis.knotVec, C.controlPoints, C.basis.degree, newParametricPoints, weights(C.basis)
+        C.basis.knotVec, C.controlPoints, degree(C), newParametricPoints, weights(C.basis)
     )
 
-    return similarCurve(C, C.basis.degree, knotVecNew, controlPointsNew, weightsNew)
+    return similarCurve(C, degree(C), knotVecNew, controlPointsNew, weightsNew)
 end
 
 
@@ -80,10 +80,10 @@ Convenience function to insert a knot into a curve.
 function insertKnot(C::Curve, newParametricPoint::Real, multiplicity::Int=1)
 
     knotVecNew, controlPointsNew, weightsNew = insertKnot(
-        C.basis.knotVec, C.controlPoints, C.basis.degree, newParametricPoint, multiplicity, weights(C.basis)
+        C.basis.knotVec, C.controlPoints, degree(C), newParametricPoint, multiplicity, weights(C.basis)
     )
 
-    return similarCurve(C, C.basis.degree, knotVecNew, controlPointsNew, weightsNew)
+    return similarCurve(C, degree(C), knotVecNew, controlPointsNew, weightsNew)
 end
 
 
@@ -96,15 +96,15 @@ TODO: the computation of the alphas is redundant.
 """
 function insertKnotU(S::Surface, newParametricPoint::Real, multiplicity::Int=1)
 
-    degree = S.uBasis.degree
+    degr = degree(S.uBasis)
     knotVecOrig = S.uBasis.knotVec
 
     # --- modify knot vector
     knotVecMod = deepcopy(knotVecOrig)
-    oldMultIndices, oldMult, limitedMult = extendKnotVector!(knotVecMod, degree, newParametricPoint, multiplicity)
+    oldMultIndices, oldMult, limitedMult = extendKnotVector!(knotVecMod, degr, newParametricPoint, multiplicity)
 
     # --- modify control points
-    N = numBasisFunctions(knotVecMod, degree)
+    N = numBasisFunctions(knotVecMod, degr)
     M = size(S.controlPoints, 2)
 
     wMatNew = similar(weights(S), N, M)
@@ -116,14 +116,14 @@ function insertKnotU(S::Surface, newParametricPoint::Real, multiplicity::Int=1)
         weightsMody = deepcopy(weights(S, :, i))
 
         extendControlPoints!(
-            ctrlPtsMody, knotVecOrig, degree, oldMultIndices.stop, newParametricPoint, limitedMult, oldMult, weightsMody
+            ctrlPtsMody, knotVecOrig, degr, oldMultIndices.stop, newParametricPoint, limitedMult, oldMult, weightsMody
         )
 
         isempty(weightsMody) || (wMatNew[:, i] = weightsMody)
         cPtsNew[:, i] = ctrlPtsMody
     end
 
-    return similarSurface(S, degree, S.vBasis.degree, knotVecMod, S.vBasis.knotVec, cPtsNew, wMatNew)
+    return similarSurface(S, degr, degree(S.vBasis), knotVecMod, S.vBasis.knotVec, cPtsNew, wMatNew)
 end
 
 
@@ -136,15 +136,15 @@ TODO: the computation of the alphas is redundant.
 """
 function insertKnotV(S::Surface, newParametricPoint::Real, multiplicity::Int=1)
 
-    degree = S.vBasis.degree
+    degr = degree(S.vBasis)
     knotVecOrig = S.vBasis.knotVec
 
     # --- modify knot vector
     knotVecMod = deepcopy(knotVecOrig)
-    oldMultIndices, oldMult, limitedMult = extendKnotVector!(knotVecMod, degree, newParametricPoint, multiplicity)
+    oldMultIndices, oldMult, limitedMult = extendKnotVector!(knotVecMod, degr, newParametricPoint, multiplicity)
 
     # --- modify control points
-    N = numBasisFunctions(knotVecMod, degree)
+    N = numBasisFunctions(knotVecMod, degr)
     M = size(S.controlPoints, 1)
 
     wMatNew = similar(weights(S), M, N)
@@ -156,14 +156,14 @@ function insertKnotV(S::Surface, newParametricPoint::Real, multiplicity::Int=1)
         weightsMody = deepcopy(weights(S, i, :))
 
         extendControlPoints!(
-            ctrlPtsMody, knotVecOrig, degree, oldMultIndices.stop, newParametricPoint, limitedMult, oldMult, weightsMody
+            ctrlPtsMody, knotVecOrig, degr, oldMultIndices.stop, newParametricPoint, limitedMult, oldMult, weightsMody
         )
 
         isempty(weightsMody) || (wMatNew[i, :] = weightsMody)
         cPtsNew[i, :] = ctrlPtsMody
     end
 
-    return similarSurface(S, S.uBasis.degree, degree, S.uBasis.knotVec, knotVecMod, cPtsNew, wMatNew)
+    return similarSurface(S, degree(S.uBasis), degr, S.uBasis.knotVec, knotVecMod, cPtsNew, wMatNew)
 end
 
 

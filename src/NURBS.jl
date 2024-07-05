@@ -13,6 +13,7 @@ using Suppressor
 export Bspline, NURB, CurrySchoenberg
 export BsplineCurve, NURBScurve
 export BsplineSurface, NURBSsurface, Surface
+export degree
 
 # functions
 export evalNaive, evalNaiveDerivative

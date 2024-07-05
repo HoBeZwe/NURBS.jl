@@ -7,9 +7,9 @@ Compute the k-th derivative of i-th NURBS basis function evaluated at all 'evalp
 function evalNaiveDerivative(basis::NURB, i::Int, k::Int, evalpoints)
 
     k < 1 && error("The k-th derivative has to be k ≥ 1!")
-    k > basis.degree && return zeros(size(evalpoints)) # p+1 th derivative is zero
+    k > degree(basis) && return zeros(size(evalpoints)) # p+1 th derivative is zero
 
-    return nurbsNaiveDerivative(basis.knotVec, i, basis.degree, basis.weights, evalpoints, k)
+    return nurbsNaiveDerivative(basis.knotVec, i, degree(basis), basis.weights, evalpoints, k)
 end
 
 

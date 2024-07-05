@@ -6,7 +6,7 @@ The number of basis functions is fixed by the knot vector and the degree.
 
 Assumption: the first and last knot vector entry has mulitplicity degree + 1.
 """
-numBasisFunctions(basis::Basis) = length(basis.knotVec) - basis.degree - 1
+numBasisFunctions(basis::Basis) = length(basis.knotVec) - degree(basis) - 1
 numBasisFunctions(knotVec, degree) = length(knotVec) - degree - 1
 
 
@@ -192,8 +192,8 @@ Return a vector of ranges (one entry per span).
 function spanRanges(Bspl::Bspline, points; emptyRanges=false)
 
     numBasis = numBasisFunctions(Bspl)
-    knotSpan = findSpan(numBasis, points, Bspl.knotVec, Bspl.degree) # find for each point the span index
-    p = Bspl.degree
+    knotSpan = findSpan(numBasis, points, Bspl.knotVec, degree(Bspl)) # find for each point the span index
+    p = degree(Bspl)
 
     # open knot vector: set first p ranges to 0:-1 (empty range)
     if emptyRanges
@@ -251,7 +251,7 @@ function greville(kVec, degree::Int)
     return gSites
 end
 
-greville(Bspl::Basis) = greville(Bspl.knotVec, Bspl.degree)
+greville(Bspl::Basis) = greville(Bspl.knotVec, degree(Bspl))
 
 
 
@@ -272,7 +272,7 @@ function anchors(kVec, degree::Int)
     return aSites
 end
 
-anchors(Bspl::Basis) = anchors(Bspl.knotVec, Bspl.degree)
+anchors(Bspl::Basis) = anchors(Bspl.knotVec, degree(Bspl))
 
 
 """

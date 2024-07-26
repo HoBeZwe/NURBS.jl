@@ -5,6 +5,8 @@ using LinearAlgebra
 using Statistics
 using StaticArrays
 using Suppressor
+using FileIO
+using UUIDs
 
 
 
@@ -64,6 +66,19 @@ include("fundamentalOperations/knotRemoval.jl")
 include("utils.jl")
 include("fileIO/multipatch.jl")
 include("fileIO/step.jl")
+include("fileIO/fileIO.jl")
+
+function __init__() # locally initialize file formats for FileIO load and save functions
+    add_format(format"DAT", io -> endswith(io.name, ".dat>"), [".dat"], [:NURBS => UUID("dde13934-061e-461b-aa91-2c0fad390a0d")])
+    add_format(
+        format"STEP",
+        "ISO-10303-21",
+        [".stp", ".step", ".stpnc", ".p21", ".210"],
+        [:NURBS => UUID("dde13934-061e-461b-aa91-2c0fad390a0d")],
+    )
+end
+# NOTE: think about registering reading of step files officially to the FileIO package
+
 
 include("connectivity/interfaces.jl")
 include("connectivity/bezierMesh.jl")

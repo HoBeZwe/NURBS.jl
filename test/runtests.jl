@@ -5,6 +5,7 @@ using JuliaFormatter
 using StaticArrays
 using LinearAlgebra
 using PlotlyJS
+using FileIO
 
 # --- testsets
 @testset "Testing NURBS functionality" begin

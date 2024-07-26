@@ -124,12 +124,18 @@ end
     Patches = readMultipatch("assets/sphere.dat")
     @test length(Patches) == 6
 
+    Patches = load("assets/sphere.dat")
+    @test length(Patches) == 6
+
 
     # --- .step files
     # B-spline
     @test_nowarn Patches = readStep("assets/torus.stp")
 
     Patches = readStep("assets/torus.stp")
+    @test length(Patches) == 30
+
+    Patches = load("assets/torus.stp")
     @test length(Patches) == 30
 
     # NURBS

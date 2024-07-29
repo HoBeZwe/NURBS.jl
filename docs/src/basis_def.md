@@ -47,6 +47,12 @@ Whenever one of the contained quotients exhibits a division by 0, the quotient i
     N = M - p - 1 \,.
     ```
 
+!!! note
+    To maintain the partition of unity property also at ``u=1`` we modify the above definition at ``u=1`` and define
+    ```math
+    B_{N,p}(1) = 1 \,.
+    ```
+
 #### [Curry-Schoenberg Splines](@id csspl)
 
 The Curry-Schoenberg spline basis functions [[3, p. 88]](@ref refs)

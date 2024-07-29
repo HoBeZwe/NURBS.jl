@@ -1,7 +1,7 @@
 name = "NURBS"
 uuid = "dde13934-061e-461b-aa91-2c0fad390a0d"
 authors = ["Bernd Hofmann <bernd.hofmann@tum.de> and contributors"]
-version = "0.6.2"
+version = "0.6.3"
 
 [deps]
 FileIO = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"

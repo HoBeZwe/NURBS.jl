@@ -13,34 +13,38 @@ end
 
 
 """
-    bSplineNaive(knotVector, i::Int, degree::Int, evalpoints; normalize=true)
+    bSplineNaive(knotVector, i::Int, degree::Int, evalpoints)
 
 i-th b-spline basis function of degree 'degree' evaluated at all 'evalpoints'.
 
 The knotvector is assumed to be normalized to [1, 0].
 """
-function bSplineNaive(knotVector, i::Int, degree::Int, evalpoints)
+function bSplineNaive(knotVector, i::Int, degree::Int, evalpoints::AbstractArray{T}) where {T}
 
     # array to store the evaluated points in
-    N = similar(evalpoints)
+    B = similar(evalpoints)
+
+    N = numBasisFunctions(knotVector, degree)
 
     # loop over all points to be evaluated
     for (ind, u) in enumerate(evalpoints)
-        N[ind] = bSplineNaive(knotVector, i, degree, u)
+        B[ind] = bSplineNaive(knotVector, i, degree, u)
     end
 
-    return N
+    return B
 end
 
 
 """
-    bSplineNaive(knotVector, i::Int, degree::Int, u::Real)
+    bSplineNaive(knotVector, i::Int, degree::Int, u::Real, N)
 
 i-th b-spline basis function of degree 'degree' evaluated at u.
 
 Formula (2.5) of 'The NURBS Book' p. 50.
 """
-function bSplineNaive(knotVector, i::Int, degree::Int, u::Real)
+function bSplineNaive(knotVector, i::Int, degree::Int, u::T, N=numBasisFunctions(knotVector, degree)) where {T}
+
+    i == N && u == one(T) && return one(T)
 
     # handle degree 0 case (end of recursion)
     degree == 0 && return bSplineNaive(knotVector, i, u)
@@ -55,12 +59,12 @@ function bSplineNaive(knotVector, i::Int, degree::Int, u::Real)
     coeff2 = (uiP1 - u) / (uiP1 - ui1)
 
     # handle division by 0 ('The NURBS Book' p. 51)
-    isfinite(coeff1) || (coeff1 = 0.0)
-    isfinite(coeff2) || (coeff2 = 0.0)
+    isfinite(coeff1) || (coeff1 = zero(T))
+    isfinite(coeff2) || (coeff2 = zero(T))
 
-    N = coeff1 * bSplineNaive(knotVector, i, degree - 1, u) + coeff2 * bSplineNaive(knotVector, i + 1, degree - 1, u)
+    B = coeff1 * bSplineNaive(knotVector, i, degree - 1, u, N) + coeff2 * bSplineNaive(knotVector, i + 1, degree - 1, u, N)
 
-    return N
+    return B
 end
 
 
@@ -71,15 +75,15 @@ i-th b-spline basis function of degree 0 evaluated at u.
 
 Formula (2.5) of 'The NURBS Book' p. 50.
 """
-function bSplineNaive(knotVector, i::Int, u::Real)
+function bSplineNaive(knotVector, i::Int, u::T) where {T<:Real}
 
     ui  = knotVector[i]
     ui1 = knotVector[i + 1]
 
     if u ≥ ui && u < ui1
-        return 1.0
+        return one(T)
     else
-        return 0.0
+        return zero(T)
     end
 end
 
@@ -89,9 +93,9 @@ end
 
 For Bsplines there is no normalization.
 """
-function normalization(basis::Basis, i::Int)
+function normalization(basis::Basis{F}, i::Int) where {F}
 
-    return 1.0
+    return one(F)
 end
 
 
@@ -304,4 +308,6 @@ function normalize!(N, i::T, degree::T, knotVector, basis::CurrySchoenberg) wher
         ind = i - dp1 + j # index follows from the knotspan
         N[j] *= dp1 / (knotVector[ind + dp1] - knotVector[ind])
     end
+
+    return nothing
 end

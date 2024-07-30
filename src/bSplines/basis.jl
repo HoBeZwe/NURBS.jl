@@ -28,7 +28,7 @@ function bSplineNaive(knotVector, i::Int, degree::Int, evalpoints::AbstractArray
 
     # loop over all points to be evaluated
     for (ind, u) in enumerate(evalpoints)
-        B[ind] = bSplineNaive(knotVector, i, degree, u)
+        B[ind] = bSplineNaive(knotVector, i, degree, u, N)
     end
 
     return B
@@ -117,14 +117,14 @@ Evaluate B-spline basis at all evalpoints.
 """
 function (basis::Union{Bspline,CurrySchoenberg})(evalpoints)
 
-    numBasis = numBasisFunctions(basis)
-    knotSpan = findSpan(numBasis, evalpoints, basis.knotVec, degree(basis))
+    prealloc = preAlloc(degree(basis), evalpoints)
+    basis(evalpoints, prealloc)
 
-    return basisFun(knotSpan, evalpoints, basis)
+    return prealloc.B
 end
 
 
-struct pAlloc{T<:Real,F<:Int}
+struct pAlloc{T,F}
     B::Matrix{T}
     N::Vector{T}
     left::Vector{T}
@@ -141,9 +141,10 @@ Evaluate B-spline basis at all evalpoints.
 function (basis::Union{Bspline,CurrySchoenberg})(evalpoints, prealloc::pAlloc)
 
     numBasis = numBasisFunctions(basis)
-    knotSpan = findSpan!(prealloc.spanVec, numBasis, evalpoints, basis.knotVec, degree(basis))
+    findSpan!(prealloc.spanVec, numBasis, evalpoints, basis.knotVec, degree(basis))
+    basisFun!(prealloc, prealloc.spanVec, evalpoints, basis)
 
-    return basisFun!(prealloc, knotSpan, evalpoints, basis)
+    return prealloc.B
 end
 
 
@@ -152,18 +153,24 @@ end
 
 Allocate memory for basisFun.
 """
-function preAlloc(degree::Int, uVector::Vector{T}) where {T}
+function preAlloc(degree, uVector)
 
-    B = zeros(T, length(uVector), degree + 1)
-    N = zeros(T, degree + 1)
+    F = eltype(uVector)
+    p = degree + 1
 
-    left  = zeros(T, degree + 1)
-    right = zeros(T, degree + 1)
+    B = zeros(F, length(uVector), p)
+    N = zeros(F, p)
 
-    spanVec = similar(uVector, eltype(degree))
+    left  = zeros(F, p)
+    right = zeros(F, p)
+
+    spanVec = allocSpan(uVector, degree)
 
     return pAlloc(B, N, left, right, spanVec)
 end
+
+allocSpan(uVector::Vector{F}, degree::T) where {T,F} = similar(uVector, T)
+allocSpan(u::F, degree::T) where {T,F} = return zeros(T, 1)
 
 
 """
@@ -171,11 +178,12 @@ end
 
 Allocate memory and call findSpan!    
 """
-function findSpan(b::T, uVec, kVec, p::T) where {T<:Int}
+function findSpan(b::T, uVec::AbstractArray, kVec, p::T) where {T}
 
-    spanVec = similar(uVec, eltype(b))
+    spanVec = similar(uVec, T)
+    findSpan!(spanVec, b, uVec, kVec, p)
 
-    return findSpan!(spanVec, b, uVec, kVec, p)
+    return spanVec
 end
 
 
@@ -190,37 +198,39 @@ Modification of Algorithm A2.1 from 'The NURBS Book' p. 68.
 
 Assumption that the knotVector is open! (the first and last knot are repeated degree + 1 times)
 """
-function findSpan!(spanVec, b::T, uVec, kVec, p::T) where {T<:Int}
+function findSpan!(spanVec::Vector{T}, b::T, uVec, kVec, p::T) where {T}
 
-    for (j, u) in enumerate(uVec)
-
-        # --- Special case 
-        if u == kVec[end]
-            spanVec[j] = b
-            continue
-        end
-
-        # --- Do binary search 
-        low  = p + 1
-        high = b + 1
-
-        mid = Base.midpoint(low, high)
-
-        while u < kVec[mid] || u >= kVec[mid + 1] # is u in interval [ kVec[mid]...kVec[mid+1] ) ?
-
-            if u < kVec[mid]
-                high = mid
-            else
-                low = mid
-            end
-
-            mid = Base.midpoint(low, high)
-        end
-
-        spanVec[j] = mid
+    for j in eachindex(uVec)
+        spanVec[j] = findSpan(b, uVec[j], kVec, p)
     end
 
-    return spanVec
+    return nothing
+end
+
+
+function findSpan(b::T, u::F, kVec, p::T) where {F,T}
+
+    # --- Special case 
+    u == kVec[end] && return b
+
+    # --- Do binary search 
+    low  = p + 1
+    high = b + 1
+
+    mid = Base.midpoint(low, high)
+
+    while u < kVec[mid] || u >= kVec[mid + 1] # is u outside the interval [ kVec[mid]...kVec[mid+1] ) ?
+
+        if u < kVec[mid]
+            high = mid
+        else
+            low = mid
+        end
+
+        mid = Base.midpoint(low, high)
+    end # if not, we have found the interval
+
+    return mid
 end
 
 
@@ -232,8 +242,9 @@ Allocate memory and call basisFun!
 function basisFun(knotSpan, uVector, basis::Basis)
 
     prealloc = preAlloc(degree(basis), uVector)
+    basisFun!(prealloc, knotSpan, uVector, basis)
 
-    return basisFun!(prealloc, knotSpan, uVector, basis)
+    return prealloc.B
 end
 
 
@@ -280,7 +291,7 @@ function basisFun!(prealloc::pAlloc, knotSpan, uVector, basis::Basis)
         B[jj, :] = N
     end
 
-    return B
+    return nothing
 end
 
 

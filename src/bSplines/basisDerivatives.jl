@@ -72,16 +72,14 @@ Evaluate k-the derivative of B-spline basis at all evalpoints (all basis functio
 """
 function (basis::Bspline)(evalpoints, k::Int)
 
-    #basis.divMax < 0 && error("The k-th derivative has to be k ≥ 0!")
+    prealloc = preAllocDer(degree(basis), evalpoints, k)
+    basis(evalpoints, k, prealloc)
 
-    numBasis = numBasisFunctions(basis)
-    knotSpan = findSpan(numBasis, evalpoints, basis.knotVec, degree(basis))
-
-    return derBasisFun(knotSpan, degree(basis), evalpoints, basis.knotVec, k)
+    return prealloc.dersv
 end
 
 
-struct pAllocDer{T<:Real,F<:Int,L}
+struct pAllocDer{T,F,L}
     dersv::Array{T,L}
     ders::Matrix{T}
     ndu::Matrix{T}
@@ -97,14 +95,15 @@ end
 
 Evaluate k-the derivative of B-spline basis at all evalpoints (all basis functions different from 0 at the evalpoints are evaluated).
 """
-function (basis::Bspline)(evalpoints::Vector{T}, k::Int, prealloc::pAllocDer) where {T}
+function (basis::Bspline)(evalpoints, k::Int, prealloc::pAllocDer)
 
     #basis.divMax < 0 && error("The k-th derivative has to be k ≥ 0!")
 
     numBasis = numBasisFunctions(basis)
-    knotSpan = findSpan!(prealloc.spanVec, numBasis, evalpoints, basis.knotVec, degree(basis))
+    findSpan!(prealloc.spanVec, numBasis, evalpoints, basis.knotVec, degree(basis))
+    derBasisFun!(prealloc, prealloc.spanVec, degree(basis), evalpoints, basis.knotVec, k)
 
-    return derBasisFun!(prealloc, knotSpan, degree(basis), evalpoints, basis.knotVec, k)
+    return prealloc.dersv
 end
 
 
@@ -113,17 +112,18 @@ end
 
 Allocate memory for derBasisFun.
 """
-function preAllocDer(degree::I, evalpoints::Vector{T}, numberDerivatives::I) where {T,I}
+function preAllocDer(degree::T, evalpoints, numberDerivatives::T) where {T}
 
-    dersv = zeros(T, length(evalpoints), numberDerivatives + 1, degree + 1)
+    F = eltype(evalpoints)
+    dersv = zeros(F, length(evalpoints), numberDerivatives + 1, degree + 1)
 
-    ders  = zeros(T, numberDerivatives + 1, degree + 1)
-    ndu   = zeros(T, degree + 1, degree + 1)
-    left  = zeros(T, degree + 1)
-    right = zeros(T, degree + 1)
-    a     = zeros(T, 2, degree + 1)
+    ders  = zeros(F, numberDerivatives + 1, degree + 1)
+    ndu   = zeros(F, degree + 1, degree + 1)
+    left  = zeros(F, degree + 1)
+    right = zeros(F, degree + 1)
+    a     = zeros(F, 2, degree + 1)
 
-    spanVec = similar(evalpoints, I)
+    spanVec = allocSpan(evalpoints, degree)
 
     return pAllocDer(dersv, ders, ndu, left, right, a, spanVec)
 end
@@ -134,11 +134,12 @@ end
 
 Same as derBasisFun! but with memory allocation.
 """
-function derBasisFun(knotSpan, degree::Int, evalpoints::Vector{T}, knotVector, numberDerivatives::Int) where {T}
+function derBasisFun(knotSpan, degree::Int, evalpoints, knotVector, numberDerivatives::Int)
 
     prealloc = preAllocDer(degree, evalpoints, numberDerivatives)
+    derBasisFun!(prealloc, knotSpan, degree, evalpoints, knotVector, numberDerivatives)
 
-    return derBasisFun!(prealloc, knotSpan, degree::Int, evalpoints, knotVector, numberDerivatives::Int)
+    return prealloc.dersv
 end
 
 
@@ -237,5 +238,5 @@ function derBasisFun!(prealloc::pAllocDer, knotSpan, degree::Int, evalpoints, kn
         dersv[jj, :, :] = ders
     end
 
-    return dersv
+    return nothing
 end

@@ -31,7 +31,7 @@
         kVec = Float64[0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 6, 6, 6]
         #kVec ./= maximum(kVec)
 
-        evalpoints = [2.5 / 6]
+        evalpoints = 2.5 / 6
 
 
         # --- B-spline structure
@@ -43,7 +43,7 @@
 
         # --- naive eval
         B = evalNaive(Bspl, 4, evalpoints)
-        @test B[1] ≈ 1 / 8
+        @test B ≈ 1 / 8
         @test Bspl.knotVec[end] == 1.0 # automatic normalization
 
         # --- smart eval 
@@ -63,10 +63,10 @@
 
         # --- naive eval
         C = evalNaive(Cspl, 4, evalpoints)
-        C[1] ≈ 3 / 4 # compare to analytical value
+        C ≈ 3 / 4 # compare to analytical value
 
         C = evalNaive(Cspl, 5, evalpoints)
-        C[1] ≈ 9 / 2 # compare to analytical value
+        C ≈ 9 / 2 # compare to analytical value
 
         # --- smart eval 
         Csmart = Cspl(evalpoints)
@@ -93,7 +93,7 @@
         kVec = Float64[0, 0, 0, 0, 1, 2, 3, 4, 5, 5, 5]
         #kVec ./= maximum(kVec)
 
-        evalpoints = [2.5 / 5]
+        evalpoints = 2.5 / 5
 
 
         # --- B-spline structure
@@ -101,11 +101,11 @@
 
 
         # --- naive eval
-        B = evalNaiveDerivative(Bspl, 4, 1, evalpoints)
+        B = evalNaiveDerivative(Bspl, 4, 1, [evalpoints])
         @test B[1] ≈ -2.5
         @test Bspl.knotVec[end] == 1.0 # automatic normalization
 
-        B = evalNaiveDerivative(Bspl, 4, 2, evalpoints)
+        B = evalNaiveDerivative(Bspl, 4, 2, [evalpoints])
         @test B[1] ≈ 25.0
 
         # --- smart eval 

@@ -33,14 +33,12 @@ function surfacePoints(uBasis::Basis, vBasis::Basis, controlPoints, uVector, vVe
     T = promote_type(eltype(eltype(controlPoints)), eltype(uVector), eltype(vVector), eltype(weights))
 
     # u-direction: determine the basis functions evaluated at uVector
-    nbasisFun = numBasisFunctions(uBasis)
-    uSpan = findSpan(nbasisFun, uVector, uBasis.knotVec, degree(uBasis))
-    Nu = basisFun(uSpan, uVector, uBasis)
+    preallocU = preAlloc(degree(uBasis), uVector)
+    uBasis(uVector, preallocU) # prealloc is modified
 
     # v-direction: determine the basis functions evaluated at vVector
-    nbasisFun = numBasisFunctions(vBasis)
-    vSpan = findSpan(nbasisFun, vVector, vBasis.knotVec, degree(vBasis))
-    Nv = basisFun(vSpan, vVector, vBasis)
+    preallocV = preAlloc(degree(vBasis), vVector)
+    vBasis(vVector, preallocV) # prealloc is modified
 
     # intialize
     lu        = length(uVector)
@@ -51,7 +49,7 @@ function surfacePoints(uBasis::Basis, vBasis::Basis, controlPoints, uVector, vVe
     # determine the surface values
     for uPointInd in eachindex(uVector)
 
-        uind = uSpan[uPointInd] - degree(uBasis) - 1
+        uind = preallocU.spanVec[uPointInd] - degree(uBasis) - 1
 
         for vPointInd in eachindex(vVector)
 
@@ -60,17 +58,17 @@ function surfacePoints(uBasis::Basis, vBasis::Basis, controlPoints, uVector, vVe
                 temp = SVector{3,T}(0.0, 0.0, 0.0)
                 normTemp = T(0.0)
 
-                vind = vSpan[vPointInd] - degree(vBasis) + i - 1
+                vind = preallocV.spanVec[vPointInd] - degree(vBasis) + i - 1
                 for k in 1:(degree(uBasis) + 1)
 
-                    aux = Nu[uPointInd, k] * weights[uind + k, vind]
+                    aux = preallocU.B[uPointInd, k] * weights[uind + k, vind]
 
                     temp     += aux * controlPoints[uind + k, vind]
                     normTemp += aux
                 end
 
-                surface[uPointInd, vPointInd]   += Nv[vPointInd, i] * temp
-                normalize[uPointInd, vPointInd] += Nv[vPointInd, i] * normTemp
+                surface[uPointInd, vPointInd]   += preallocV.B[vPointInd, i] * temp
+                normalize[uPointInd, vPointInd] += preallocV.B[vPointInd, i] * normTemp
             end
 
             surface[uPointInd, vPointInd] /= normalize[uPointInd, vPointInd]
@@ -86,17 +84,8 @@ end
 
 Convenience function to compute points on all k derivatives of a NURBSsurface.
 """
-(Patch::NURBSsurface)(uEvalpoints, vEvalpoints, k::Int) = surfaceDerivativesPoints(
-    degree(Patch.uBasis),
-    degree(Patch.vBasis),
-    Patch.uBasis.knotVec,
-    Patch.vBasis.knotVec,
-    Patch.controlPoints,
-    uEvalpoints,
-    vEvalpoints,
-    Patch.weights,
-    k,
-)
+(Patch::NURBSsurface)(uEvalpoints, vEvalpoints, k::Int) =
+    surfaceDerivativesPoints(Patch.uBasis, Patch.vBasis, Patch.controlPoints, uEvalpoints, vEvalpoints, Patch.weights, k)
 
 
 struct pAllocNURBSsuface{T<:Real,F<:Int,L}
@@ -112,18 +101,8 @@ end
 
 Convenience function to compute points on all k derivatives of a NURBSsurface, for preallocated memory.
 """
-(Patch::NURBSsurface)(uEvalpoints, vEvalpoints, k::Int, prealloc::pAllocNURBSsuface) = surfaceDerivativesPoints!(
-    prealloc,
-    degree(Patch.uBasis),
-    degree(Patch.vBasis),
-    Patch.uBasis.knotVec,
-    Patch.vBasis.knotVec,
-    Patch.controlPoints,
-    uEvalpoints,
-    vEvalpoints,
-    Patch.weights,
-    k,
-)
+(Patch::NURBSsurface)(uEvalpoints, vEvalpoints, k::Int, prealloc::pAllocNURBSsuface) =
+    surfaceDerivativesPoints!(prealloc, Patch.uBasis, Patch.vBasis, Patch.controlPoints, uEvalpoints, vEvalpoints, Patch.weights, k)
 
 
 """
@@ -131,12 +110,10 @@ Convenience function to compute points on all k derivatives of a NURBSsurface, f
 
 Allocate memory and call surfaceDerivativesPoints!
 """
-function surfaceDerivativesPoints(
-    uDegree::Int, vDegree::Int, uKnotVector, vKnotVector, controlPoints, uVector, vVector, weights, k::Int
-)
-    prealloc = preAllocNURBSsurface(uDegree, vDegree, uVector, vVector, k)
+function surfaceDerivativesPoints(uBasis::Basis, vBasis::Basis, controlPoints, uVector, vVector, weights, k::Int)
+    prealloc = preAllocNURBSsurface(degree(uBasis), degree(vBasis), uVector, vVector, k)
 
-    return surfaceDerivativesPoints!(prealloc, uDegree, vDegree, uKnotVector, vKnotVector, controlPoints, uVector, vVector, weights, k)
+    return surfaceDerivativesPoints!(prealloc, uBasis, vBasis, controlPoints, uVector, vVector, weights, k)
 end
 
 
@@ -196,28 +173,20 @@ Returns a (k x k) matrix where each entry is a matrix of size (uKnotVector x vKn
 Note: the efficient evaluation via the B-spline basis is employed (no use of the naive evaluation of the NURBS basis).
 """
 function surfaceDerivativesPoints!(
-    prealloc::pAllocNURBSsuface, uDegree::Int, vDegree::Int, uKnotVector, vKnotVector, controlPoints, uVector, vVector, weights, k::Int
+    prealloc::pAllocNURBSsuface, uBasis::Basis, vBasis::Basis, controlPoints, uVector, vVector, weights, k::Int
 )
 
     # Promote input types for initialization
-    T = promote_type(
-        eltype(uKnotVector), eltype(vKnotVector), eltype(eltype(controlPoints)), eltype(uVector), eltype(vVector), eltype(weights)
-    )
+    T = promote_type(eltype(eltype(controlPoints)), eltype(uVector), eltype(vVector), eltype(weights))
 
     preallocU = prealloc.preallocU
     preallocV = prealloc.preallocV
     surfaces = prealloc.surfaces
     w = prealloc.w
 
-    # u-direction: determine the basis functions evaluated at uVector
-    nbasisFun = length(uKnotVector) - uDegree - 1
-    uSpan = findSpan!(preallocU.spanVec, nbasisFun, uVector, uKnotVector, uDegree)
-    Nu = derBasisFun!(preallocU, uSpan, uDegree, uVector, uKnotVector, k)
-
-    # v-direction: determine the basis functions evaluated at vVector
-    nbasisFun = length(vKnotVector) - vDegree - 1
-    vSpan = findSpan!(preallocV.spanVec, nbasisFun, vVector, vKnotVector, vDegree)
-    Nv = derBasisFun!(preallocV, vSpan, vDegree, vVector, vKnotVector, k)
+    # determine the basis functions evaluated at uVector
+    uBasis(uVector, k, preallocU) # prealloc is modified
+    vBasis(vVector, k, preallocV) # prealloc is modified
 
     # initialize
     for i in eachindex(w)
@@ -239,28 +208,28 @@ function surfaceDerivativesPoints!(
             # loop over u-points
             for uPointInd in eachindex(uVector)
 
-                uind = uSpan[uPointInd] - uDegree - 1
+                uind = preallocU.spanVec[uPointInd] - degree(uBasis) - 1
 
                 # loop over v-points
                 for vPointInd in eachindex(vVector)
 
                     # derivatives of A and w
-                    for ind in 1:(vDegree + 1)
+                    for ind in 1:(degree(vBasis) + 1)
 
                         temp = SVector{3,T}(0.0, 0.0, 0.0)
                         normTemp = T(0.0)
 
-                        vind = vSpan[vPointInd] - vDegree + ind - 1
-                        for kind in 1:(uDegree + 1)
+                        vind = preallocV.spanVec[vPointInd] - degree(vBasis) + ind - 1
+                        for kind in 1:(degree(uBasis) + 1)
 
-                            aux = Nu[uPointInd, q + 1, kind] * weights[uind + kind, vind]
+                            aux = preallocU.dersv[uPointInd, q + 1, kind] * weights[uind + kind, vind]
 
                             temp     += aux * controlPoints[uind + kind, vind]
                             normTemp += aux
                         end
 
-                        surfaces[q + 1, p + 1][uPointInd, vPointInd] += Nv[vPointInd, p + 1, ind] * temp
-                        w[q + 1, p + 1][uPointInd, vPointInd]        += Nv[vPointInd, p + 1, ind] * normTemp
+                        surfaces[q + 1, p + 1][uPointInd, vPointInd] += preallocV.dersv[vPointInd, p + 1, ind] * temp
+                        w[q + 1, p + 1][uPointInd, vPointInd]        += preallocV.dersv[vPointInd, p + 1, ind] * normTemp
                     end
 
                     # second term

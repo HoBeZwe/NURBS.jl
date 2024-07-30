@@ -25,20 +25,17 @@ function curvePoints(basis::Basis, controlPoints, uVector)
     # Promote input types for initialization
     T = promote_type(eltype(eltype(controlPoints)), eltype(uVector))
 
-    # the number of basis functions is determined by the number of knot vectors and the degree
-    nbasisFun = numBasisFunctions(basis)
-
     # determine the basis functions evaluated at uVector
-    spans = findSpan(nbasisFun, uVector, basis.knotVec, degree(basis))
-    N = basisFun(spans, uVector, basis)
+    prealloc = preAlloc(degree(basis), uVector)
+    basis(uVector, prealloc) # modifies prealloc
 
     # determine the curve values
     curve = fill(SVector{3,T}(0.0, 0.0, 0.0), length(uVector)) # initialize
 
-    for (j, span) in enumerate(spans)
+    for (j, span) in enumerate(prealloc.spanVec)
         for ind in 1:(degree(basis) + 1)
 
-            curve[j] += N[j, ind] * controlPoints[span - degree(basis) + ind - 1]
+            curve[j] += prealloc.B[j, ind] * controlPoints[span - degree(basis) + ind - 1]
         end
     end
 
@@ -51,7 +48,7 @@ end
 
 Convenience function to compute points on all k derivatives of a B-spline curve.
 """
-(curve::BsplineCurve)(uVector, k::Int) = curveDerivativesPoints(degree(curve), curve.basis.knotVec, curve.controlPoints, uVector, k)
+(curve::BsplineCurve)(uVector, k::Int) = curveDerivativesPoints(curve.basis, curve.controlPoints, uVector, k)
 
 
 """
@@ -67,29 +64,27 @@ P3 = SVector(0.25, 0.3, 0.0)
 
 controlPoints = [P1, P2, P3]
 """
-function curveDerivativesPoints(degree::Int, knotVector, controlPoints, uVector, k::Int)
+function curveDerivativesPoints(basis::Basis, controlPoints, uVector, k::Int)
 
     # Promote input types for initialization
-    T = promote_type(eltype(knotVector), eltype(eltype(controlPoints)), eltype(uVector))
-
-    # the number of basis functions is determined by the number of knot vectors and the degree
-    nbasisFun = length(knotVector) - degree - 1
+    T = promote_type(eltype(eltype(controlPoints)), eltype(uVector))
 
     # determine the basis functions evaluated at uVector
-    spans = findSpan(nbasisFun, uVector, knotVector, degree)
-    N = derBasisFun(spans, degree, uVector, knotVector, k)
+    prealloc = preAllocDer(degree(basis), uVector, k)
+    basis(uVector, k, prealloc) # modifies prealloc
 
-    # determine the curve values
+    # initialize
     curves = Vector{Vector{SVector{3,T}}}(undef, k + 1)
     for i in 1:(k + 1)
         curves[i] = fill(SVector{3,T}(0.0, 0.0, 0.0), length(uVector))
     end
 
+    # determine the curve values
     for q in 1:(k + 1)
-        for (j, span) in enumerate(spans)
-            for ind in 1:(degree + 1)
+        for (j, span) in enumerate(prealloc.spanVec)
+            for ind in 1:(degree(basis) + 1)
 
-                curves[q][j] += N[j, q, ind] * controlPoints[span - degree + ind - 1]
+                curves[q][j] += prealloc.dersv[j, q, ind] * controlPoints[span - degree(basis) + ind - 1]
             end
         end
     end

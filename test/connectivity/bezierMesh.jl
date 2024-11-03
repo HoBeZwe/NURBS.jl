@@ -187,5 +187,8 @@
         @test NURBS.touchingEdge(1, 1, 17, false, 4, 4) == -1
         @test NURBS.touchingVert(1, 1, 17, false, 4, 4) == (-1, -1)
         @test NURBS.cornerBezierCell(17, 1, 1, 1) == -1
+
+        pInd, cellU, cellV = NURBS.cellLin2Cart(17, 4, 4)
+        @test NURBS.cellCart2Lin(cellU, cellV, pInd, 4, 4) == 17
     end
 end

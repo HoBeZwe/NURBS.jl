@@ -63,7 +63,7 @@ It converts the surface to an unstructured grid and exports a .vtu file which ca
 using NURBS, FileIO
 Patches = load("assets/torus.stp")
 
-saveVtk("path/filename", Patches; resolution=0.01) # filename without extension
+saveVtk("filename", Patches; resolution=0.01) # filename without extension
 nothing # hide
 ```
 
@@ -85,7 +85,7 @@ Patches = load("assets/torus.stp")
 
 cellV, x, y, z = NURBS.vtk(Patches, 0.01)
 
-vtk_grid("/home/bernd/Dokumente/vtk/cells", x, y, z, cellV) do vtk
+vtk_grid("filename", x, y, z, cellV) do vtk
     vtk["dataName"] = 2 * x + y
 end
 nothing # hide

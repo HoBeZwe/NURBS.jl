@@ -1,4 +1,7 @@
 
+using StaticArrays
+using LinearAlgebra
+
 @testset "Knot insertion" begin
 
     @testset "Curves" begin

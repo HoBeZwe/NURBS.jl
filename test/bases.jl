@@ -1,4 +1,7 @@
 
+using StaticArrays
+using LinearAlgebra
+
 @testset "B-splines + Curry-Scheonberg" begin
 
     @testset "Basis Evaluation" begin

@@ -1,4 +1,7 @@
 
+using StaticArrays
+using LinearAlgebra
+
 @testset "NURBS" begin
 
     @testset "Curves Evaluation" begin

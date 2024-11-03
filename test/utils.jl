@@ -1,4 +1,9 @@
 
+using StaticArrays
+using LinearAlgebra
+using PlotlyJS
+using FileIO
+
 @testset "Ranges" begin
 
     b = 9

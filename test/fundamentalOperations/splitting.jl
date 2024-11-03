@@ -1,4 +1,7 @@
 
+using StaticArrays
+using LinearAlgebra
+
 @testset "Splitting" begin
 
     @testset "Curves" begin

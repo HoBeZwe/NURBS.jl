@@ -143,6 +143,10 @@ end
 
     Patches = readStep("assets/sphere.stp")
     @test length(Patches) == 6
+
+
+    # --- .vtk files
+    @test_nowarn Patches = saveVtk("test", Patches; resolution=0.02)
 end
 
 @testset "Plotting" begin

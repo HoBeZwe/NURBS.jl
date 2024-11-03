@@ -12,6 +12,14 @@ function cellCart2LinTruncated(cellU, cellV, pInd, cU, cV)
     return cellCart2Lin(cellU, cellV, pInd, cU, cV)
 end
 
+function cellLin2Cart(cell, cU, cV)
+
+    pInd, rem = divrem(cell - 1, cU * cV)
+    cellU, cellV = divrem(rem, cV)
+
+    return pInd + 1, cellU + 1, cellV + 1
+end
+
 
 # for a single patch cU ≠ cV is ok, for multipatch cU = cV is assumed
 function bezierAdjacency(interfaces, commonVtxs, cU, cV, nP)

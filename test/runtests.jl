@@ -8,7 +8,7 @@ using PlotlyJS
 using FileIO
 
 # --- testsets
-@testset "Testing NURBS functionality" begin
+@testset verbose = true "Testing NURBS functionality" begin
 
     @testset "Bases" begin
         include("bases.jl")

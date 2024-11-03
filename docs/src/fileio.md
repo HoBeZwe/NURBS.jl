@@ -52,3 +52,49 @@ savefig(t, "sphere.html"); nothing # hide
 ```@raw html
 <object data="../sphere.html" type="text/html"  style="width:100%;height:50vh;"> </object>
 ```
+
+
+## VTK Files (ParaView)
+
+To display surfaces in [ParaView](https://www.paraview.org/) the function [`saveVtk`](@ref saveVtk) is provided. 
+It converts the surface to an unstructured grid and exports a .vtu file which can be opened by ParaView.
+
+```@example vtk
+using NURBS, FileIO
+Patches = load("assets/torus.stp")
+
+saveVtk("path/filename", Patches; resolution=0.01) # filename without extension
+nothing # hide
+```
+
+```@raw html
+<div align="center">
+<img src="../assets/paraview.png" width="750"/>
+</div>
+<br/>
+```
+
+
+
+To add color information the function [`vtk`](@ref NURBS.vtk) can be used together with the [WriteVKT.jl](https://juliavtk.github.io/WriteVTK.jl/stable/) package.
+To this end, the color values at the four corner points of each cell have to be provided in a Vector.
+
+```@example vtk
+using NURBS, FileIO, WriteVTK
+Patches = load("assets/torus.stp")
+
+cellV, x, y, z = NURBS.vtk(Patches, 0.01)
+
+vtk_grid("/home/bernd/Dokumente/vtk/cells", x, y, z, cellV) do vtk
+    vtk["dataName"] = 2 * x + y
+end
+nothing # hide
+```
+
+```@raw html
+<div align="center">
+<img src="../assets/paraviewCol.png" width="750"/>
+</div>
+<br/>
+```
+

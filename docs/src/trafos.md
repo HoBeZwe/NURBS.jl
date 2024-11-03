@@ -19,7 +19,7 @@ nothing # hide
 
 ## Translating
 
-To translate a curve or a surface, the functions [`translate`](@ref translate) and [`translate!`](@ref translate!) are provided.
+To translate a curve or a surface, the functions [`translate`](@ref NURBS.translate) and [`translate!`](@ref NURBS.translate!) are provided.
 
 ```@example trafos
 using NURBS, StaticArrays
@@ -32,7 +32,7 @@ nothing # hide
 
 ## Rotating
 
-To rotate a curve or a surface around a rotation axis by a given angle, the functions [`rotate`](@ref rotate) and [`rotate!`](@ref rotate!) are provided.
+To rotate a curve or a surface around a rotation axis by a given angle, the functions [`rotate`](@ref NURBS.rotate) and [`rotate!`](@ref NURBS.rotate!) are provided.
 
 !!! tip
     The rotation axis is normalized by the rotate functions.

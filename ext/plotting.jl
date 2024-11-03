@@ -167,7 +167,7 @@ end
 Plot multipatch geometry.
 """
 function NURBS.plotPatches(
-    Patches; mesh=[], pos=[], plotControlPoints=true, localVertices=false, patchID=false, enforceRatio=true, resolution=0.05
+    Patches; mesh=[], pos=[], plotControlPoints=true, localVertices=false, patchID=false, enforceRatio=true, resolution=0.05, color=[]
 )
 
     uEvalpoints = collect(0:resolution:1.0)
@@ -193,7 +193,12 @@ function NURBS.plotPatches(
             )
         else
             maxi, trace = plotSurface(
-                S; returnTrace=true, surfaceColor=col[ind] * ones(length(uEvalpoints), length(vEvalpoints)), cmin=1, cmax=maximum(col)
+                S;
+                returnTrace=true,
+                surfaceColor=col[ind] * ones(length(uEvalpoints), length(vEvalpoints)),
+                cmin=1,
+                cmax=maximum(col),
+                #S; returnTrace=true, surfaceColor=color[ind], cmin=0, cmax=2
             )
         end
         [push!(traces, trace[i]) for i in eachindex(trace)]

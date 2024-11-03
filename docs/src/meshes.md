@@ -53,7 +53,7 @@ nothing # hide
 ```
 
 !!! tip
-    To determine all connectivity information, the [`Connectivity`](@ref Connectivity) function can be used, which returns a struct containing the interface vector, the patchwise vectors and the Bezier adjacency:
+    To determine all connectivity information, the [`Connectivity`](@ref NURBS.Connectivity) function can be used, which returns a struct containing the interface vector, the patchwise vectors and the Bezier adjacency:
 
     ```@example meshes
     using NURBS

@@ -7,6 +7,7 @@ using StaticArrays
 using Suppressor
 using FileIO
 using UUIDs
+using WriteVTK
 
 
 
@@ -25,7 +26,7 @@ export insertKnot!, insertKnot
 export coarsen, refine # NOTE: split is an extension of Base.split, i.e., it is publicly available without export
 export removeKnot!, removeKnot, removeKnotU, removeKnotV
 
-export readMultipatch, readStep
+export readMultipatch, readStep, saveVtk
 export generateKnotVec, numBasisFunctions, spanRanges
 export greville, anchors
 export scale, scale!
@@ -66,6 +67,7 @@ include("fundamentalOperations/knotRemoval.jl")
 include("utils.jl")
 include("fileIO/multipatch.jl")
 include("fileIO/step.jl")
+include("fileIO/vtk.jl")
 include("fileIO/fileIO.jl")
 
 function __init__() # locally initialize file formats for FileIO load and save functions
